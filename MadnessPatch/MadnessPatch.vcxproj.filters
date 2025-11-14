@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\dllmain.cpp" />
+    <ClCompile Include="..\include\safetyhook\safetyhook.cpp">
+      <Filter>safetyhook</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\safetyhook\Zydis.c">
+      <Filter>safetyhook</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\dllmain.hpp" />
+    <ClInclude Include="..\src\helper.hpp" />
+    <ClInclude Include="..\include\safetyhook\safetyhook.hpp">
+      <Filter>safetyhook</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\safetyhook\Zydis.h">
+      <Filter>safetyhook</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MadnessPatch.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="safetyhook">
+      <UniqueIdentifier>{3e16c9da-ba03-4fa3-a40a-d14c1a90f4bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
