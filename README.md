@@ -188,10 +188,6 @@ Bypasses intro videos on game launch:
 
 Enable individually in `MadnessPatch.ini`.
 
-## dinput8 Chaining Support
-
-Chains another `dinput8.dll` by loading `dinput8_hook.dll` for mod compatibility.
-
 ## Configuration
 
 All features can be customized via the `MadnessPatch.ini` file.
