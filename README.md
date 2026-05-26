@@ -27,7 +27,11 @@ If the game doesn't start on Windows after installing the patch, try updating th
 You can download it here: https://aka.ms/vs/17/release/vc_redist.x86.exe
 
 > [!TIP]  
-> If you own the remastered version of *American McGee's Alice*, check out [VorpalFix](https://github.com/Wemino/VorpalFix)! 
+> If you own the remastered version of *American McGee's Alice*, check out [VorpalFix](https://github.com/Wemino/VorpalFix)!
+
+### Steam Deck/Linux Specific Instructions (Windows users can skip this)
+> [!WARNING]
+> To launch the game on Steam Deck or Linux, open the game's properties in Steam and include `WINEDLLOVERRIDES="dinput8.dll=n,b" %command%` in the launch options.
 
 # Features
 
