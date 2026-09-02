@@ -3,7 +3,7 @@
 
 namespace FixMapProperties
 {
-	constexpr uint64_t scanIntervalMs = 1500;
+	constexpr uint64_t scanIntervalMs = 800;
 
 	struct SetAnimParams { FName Sequence; };
 	struct PlayAnimParams { uint32_t bLoop; float InRate; float StartTime; };
