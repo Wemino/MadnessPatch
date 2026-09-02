@@ -160,13 +160,6 @@ enum class Addr
 	FileWriterOpen,
 	FileWriterDtor,
 
-	// AchievementOverlay
-	D3D9DevicePtr,
-	D3D9PresentWindowed,
-	D3D9PresentFullscreen,
-	D3D9ResetPre,
-	D3D9ResetPost,
-
 	// AdaptivePhysXMemory
 	PhysXCreateSDK,
 	GetSystemVRAM,
@@ -334,13 +327,6 @@ namespace Addresses
 		// AtomicSaves
 		/* FileWriterOpen                  */ { 0x47B520, 0x47B490, 0x46D3D0 },
 		/* FileWriterDtor                  */ { 0x47E520, 0x47E5C0, 0x470880 },
-
-		// AchievementOverlay
-		/* D3D9DevicePtr                   */ { 0x151C2AC, 0x151C2AC, 0x149521C },
-		/* D3D9PresentWindowed             */ { 0xC7B69C, 0xC7BCEC, 0xC2513C },
-		/* D3D9PresentFullscreen           */ { 0xC7B648, 0xC7BC98, 0xC250E8 },
-		/* D3D9ResetPre                    */ { 0xC784EB, 0xC78B3B, 0xC2230D },
-		/* D3D9ResetPost                   */ { 0xC784F2, 0xC78B42, 0xC22314 },
 
 		// AdaptivePhysXMemory
 		/* PhysXCreateSDK                  */{ 0x9E80FF, 0x9E878F, 0x9A5607 },

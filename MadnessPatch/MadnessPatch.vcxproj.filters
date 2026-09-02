@@ -134,24 +134,6 @@
     <ClCompile Include="..\include\SDK\SDK_HEADERS\XAudio2_classes.cpp">
       <Filter>SDK\SDK_HEADERS</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui_draw.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui_impl_dx9.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui_impl_win32.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui_tables.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\imgui\imgui_widgets.cpp">
-      <Filter>include\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\MainLoop\BlockCameraInMenu.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
@@ -331,9 +313,6 @@
     </Filter>
     <Filter Include="src\MainLoop">
       <UniqueIdentifier>{c8b1e7d9-efc8-4071-e4a5-90d1f3c28eb7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\imgui">
-      <UniqueIdentifier>{be307cd0-245b-44a4-a8cc-39b8ef0f66d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

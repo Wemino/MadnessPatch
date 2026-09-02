@@ -97,16 +97,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>$(SolutionDir)src\dinput8.def</ModuleDefinitionFile>
-      <AdditionalDependencies>winmm.lib;imm32.lib;version.lib;setupapi.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;imm32.lib;version.lib;setupapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\imgui\imgui.cpp" />
-    <ClCompile Include="..\include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\include\imgui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="..\include\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\include\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\include\safetyhook\safetyhook.cpp" />
     <ClCompile Include="..\include\safetyhook\Zydis.c" />
     <ClCompile Include="..\include\SDK\GameDefines.cpp" />

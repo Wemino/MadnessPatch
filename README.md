@@ -293,4 +293,3 @@ All features can be customized via the `MadnessPatch.ini` file.
 - [safetyhook](https://github.com/cursey/safetyhook) for hooking.  
 - [mINI](https://github.com/metayeti/mINI) for INI file handling.  
 - [CRASHARKI](https://github.com/CRASHARKI) for the logo.
-- [ImGui](https://github.com/ocornut/imgui) for the achievement window.  

@@ -7,7 +7,6 @@
 #include <Windows.h>
 #include <shlwapi.h>
 #include <Xinput.h>
-#include <d3d9.h>
 
 #include <cstdint>
 #include <cstdio>
