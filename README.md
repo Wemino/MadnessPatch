@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="assets/MadnessPatch_Logo.png" width="575" />
 </p>
 
@@ -283,6 +283,16 @@ Bypasses intro videos on game launch:
 - **SkipUEIntro**: Skips the Unreal Engine logo video
 
 Enable individually in `MadnessPatch.ini`.
+
+## Archive Asset Dump
+
+Writes the game's assets into an `archive_dump` folder as they are loaded, using the same paths they have inside the archives.
+
+Enable with `DumpArchiveAssets = 1` in `MadnessPatch.ini`.
+
+## Mod File Loading
+
+Replaces game assets with loose files from `mods\<mod name>`, laid out the same way as the dump.
 
 ## Configuration
 

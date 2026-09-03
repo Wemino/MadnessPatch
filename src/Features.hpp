@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // Fixes
 void ApplyFixHighFPSHairPhysics();
@@ -20,6 +20,10 @@ void ApplyIntroSkip();
 void ApplyWarnAlice1InstallFolder();
 void ApplyAchievementSupport();
 void UpdateAchievementProgress();
+
+// Modding
+void ApplyExportFiles();
+void ApplyModFiles();
 
 // Display
 void ApplyFontScaling();

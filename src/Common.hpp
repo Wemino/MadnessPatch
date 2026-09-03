@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #define MINI_CASE_SENSITIVE
 #define _USE_MATH_DEFINES
@@ -16,7 +16,9 @@
 #include <string_view>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
+#include <atomic>
 #include <mutex>
 #include <utility>
 #include <filesystem>

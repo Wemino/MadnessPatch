@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // =============================
 // Ini Variables
@@ -39,6 +39,10 @@ inline bool EnableCrashHandler = false;
 inline bool ShowProfileCreation = false;
 inline bool AchievementSupport = false;
 inline bool EnableConsole = false;
+
+// Modding
+inline bool DumpArchiveAssets = false;
+inline bool LoadModFiles = false;
 
 // Display
 inline bool FontScaling = false;
@@ -107,6 +111,10 @@ inline void ReadConfig()
 	SkipEAIntro = IniHelper::ReadInteger("General", "SkipEAIntro", 0) == 1;
 	SkipSHIntro = IniHelper::ReadInteger("General", "SkipSHIntro", 1) == 1;
 	SkipUEIntro = IniHelper::ReadInteger("General", "SkipUEIntro", 1) == 1;
+
+	// Modding
+	DumpArchiveAssets = IniHelper::ReadInteger("Modding", "DumpArchiveAssets", 0) == 1;
+	LoadModFiles = IniHelper::ReadInteger("Modding", "LoadModFiles", 1) == 1;
 
 	// Display
 	FontScaling = IniHelper::ReadInteger("Display", "FontScaling", 1) == 1;

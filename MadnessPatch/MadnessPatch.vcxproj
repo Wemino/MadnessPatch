@@ -112,6 +112,8 @@
     <ClCompile Include="..\include\SDK\SDK_HEADERS\Kynapse_classes.cpp" />
     <ClCompile Include="..\include\SDK\SDK_HEADERS\WinDrv_classes.cpp" />
     <ClCompile Include="..\include\SDK\SDK_HEADERS\XAudio2_classes.cpp" />
+    <ClCompile Include="..\src\Modding\ExportFiles.cpp" />
+    <ClCompile Include="..\src\Modding\ModFiles.cpp" />
     <ClCompile Include="..\src\Engine\EnginePointers.cpp" />
     <ClCompile Include="..\src\Engine\ResolutionHook.cpp" />
     <ClCompile Include="..\src\Fixes\PhysicsFixes.cpp" />

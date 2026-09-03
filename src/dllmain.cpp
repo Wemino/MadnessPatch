@@ -1,4 +1,4 @@
-#include "Common.hpp"
+﻿#include "Common.hpp"
 
 #include "MFortress/Patches_EA.hpp"
 #include "MFortress/Patches_Steam.hpp"
@@ -66,6 +66,10 @@ static void Init()
 	ApplyIntroSkip();
 	ApplyWarnAlice1InstallFolder();
 	ApplyAchievementSupport();
+
+	// Modding
+	ApplyExportFiles();
+	ApplyModFiles();
 
 	// Display
 	ApplyFontScaling();

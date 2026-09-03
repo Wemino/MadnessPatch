@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 enum class GameBuild
 {
@@ -167,6 +167,12 @@ enum class Addr
 	// XAudio2Upgrade
 	XAudio2CreateEngine,
 
+	// Modding
+	CachePaths,
+	CacheDownloadedPackage,
+	FindPackageFile,
+	LinkerPreload,
+
 	Count
 };
 
@@ -329,11 +335,17 @@ namespace Addresses
 		/* FileWriterDtor                  */ { 0x47E520, 0x47E5C0, 0x470880 },
 
 		// AdaptivePhysXMemory
-		/* PhysXCreateSDK                  */{ 0x9E80FF, 0x9E878F, 0x9A5607 },
-		/* GetSystemVRAM                   */{ 0xC77592, 0xC77BE2, 0xC21576 },
+		/* PhysXCreateSDK                  */ { 0x9E80FF, 0x9E878F, 0x9A5607 },
+		/* GetSystemVRAM                   */ { 0xC77592, 0xC77BE2, 0xC21576 },
 
 		// XAudio2Upgrade
-		/* XAudio2CreateEngine             */{ 0xC87050, 0xC875B0, 0xC2F100 },
+		/* XAudio2CreateEngine             */ { 0xC87050, 0xC875B0, 0xC2F100 },
+
+		// Modding
+		/* CachePaths                      */ { 0x4F0110, 0x4F0390, 0x4D93B0 },
+		/* CacheDownloadedPackage          */ { 0x4F02E0, 0x4F0560, 0x4D97D0 },
+		/* FindPackageFile                 */ { 0x4EE4E0, 0x4EE760, 0x4D7EF0 },
+		/* LinkerPreload                   */ { 0x4CE030, 0x4CE0E0, 0x4B6020 },
 	};
 
 	inline void SetBuild(GameBuild build, uintptr_t moduleBase)

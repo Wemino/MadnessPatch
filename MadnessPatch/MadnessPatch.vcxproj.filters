@@ -50,6 +50,12 @@
     <ClCompile Include="..\src\Input\SDLControllerInput.cpp">
       <Filter>src\Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Modding\ExportFiles.cpp">
+      <Filter>src\Modding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Modding\ModFiles.cpp">
+      <Filter>src\Modding</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Graphics\ImprovedTextureStreaming.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
@@ -307,6 +313,9 @@
     </Filter>
     <Filter Include="src\Input">
       <UniqueIdentifier>{a6f9c5b7-cda6-4e5f-c283-7ebfd1a06c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Modding">
+      <UniqueIdentifier>{b4e1d7a2-6c3f-4a58-9d10-2e7f8a6b3c94}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Graphics">
       <UniqueIdentifier>{b7a0d6c8-deb7-4f60-d394-8fc0e2b17da6}</UniqueIdentifier>
