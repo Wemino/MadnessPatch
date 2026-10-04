@@ -61,6 +61,7 @@ static void Init()
 	ApplyThreadPoolClamp();
 	ApplyAtomicSaves();
 	ApplyXAudio2Upgrade();
+	ApplyFixMorphTargets();
 
 	// General
 	ApplyIntroSkip();

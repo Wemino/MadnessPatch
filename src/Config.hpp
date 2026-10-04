@@ -21,7 +21,7 @@ inline bool FixMapPropertiesEnabled = false;
 inline bool FixHatterElevatorEnabled = false;
 inline bool FixFadeToBlackEnabled = false;
 inline bool FixWeaponSwitchFadeInEnabled = false;
-inline bool CutsceneFPSCapEnabled = false;
+inline bool FixMorphTargets = false;
 inline bool FixUpgradeCursorLeak = false;
 inline bool FixTheatricalsTitles = false;
 inline bool FixPinballCannonPrompt = false;
@@ -97,7 +97,7 @@ inline void ReadConfig()
 	FixHatterElevatorEnabled = IniHelper::ReadInteger("Fixes", "FixHatterElevator", 1) == 1;
 	FixFadeToBlackEnabled = IniHelper::ReadInteger("Fixes", "FixFadeToBlack", 1) == 1;
 	FixWeaponSwitchFadeInEnabled = IniHelper::ReadInteger("Fixes", "FixWeaponSwitchFadeIn", 1) == 1;
-	CutsceneFPSCapEnabled = IniHelper::ReadInteger("Fixes", "CutsceneFPSCap", 1) == 1;
+	FixMorphTargets = IniHelper::ReadInteger("Fixes", "FixMorphTargets", 1) == 1;
 	FixUpgradeCursorLeak = IniHelper::ReadInteger("Fixes", "FixUpgradeCursorLeak", 1) == 1;
 	FixTheatricalsTitles = IniHelper::ReadInteger("Fixes", "FixTheatricalsTitles", 1) == 1;
 	FixPinballCannonPrompt = IniHelper::ReadInteger("Fixes", "FixPinballCannonPrompt", 1) == 1;

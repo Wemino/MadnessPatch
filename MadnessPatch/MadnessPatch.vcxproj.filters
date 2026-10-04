@@ -29,6 +29,9 @@
     <ClCompile Include="..\src\Fixes\XAudio2Upgrade.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixMorphTargets.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
@@ -99,9 +102,6 @@
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\FixFadeToBlack.cpp">
-      <Filter>src\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MainLoop\CutsceneFPSCap.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp">

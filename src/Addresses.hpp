@@ -69,6 +69,11 @@ enum class Addr
 	// Particle material destruction race
 	ParticleMaterialDispatchSite,
 
+	// FixMorphTargets
+	UpdateActiveMorphs,
+	ChildFaceFXCall,
+	UpdateMorphVertexBuffer,
+
 	// FixCPUPhysX
 	PhysXLoad,
 
@@ -242,11 +247,16 @@ namespace Addresses
 		/* SplinePrefetchOverrun           */ { 0xBE151E, 0xBE173E, 0xB9592E },
 
 		// FaceFX actor teardown
-		/* FaceFxActorLoopGuard            */ { 0x1053D13, 0x10547D3, 0xFE0F63 },
+		/* FaceFxActorLoopGuard            */ { 0x1053CF6, 0x10547B6, 0xFE0F46 },
 		/* FaceFxActorLoopExit             */ { 0x1053D1C, 0x10547DC, 0xFE0F6C },
 
 		// Particle material destruction race
 		/* ParticleMaterialDispatchSite    */ { 0xBA65FD, 0xBA660D, 0xB583ED },
+
+		// FixMorphTargets
+		/* UpdateActiveMorphs              */ { 0x90F490, 0x90FB20, 0x8D54A0 },
+		/* ChildFaceFXCall                 */ { 0x92257A, 0x922A1A, 0x8E68FA },
+		/* UpdateMorphVertexBuffer         */ { 0x929480, 0x9298A0, 0x8ECEE0 },
 
 		// FixCPUPhysX
 		/* PhysXLoad                       */ { 0x9DAC90, 0x9DB430, 0x9982C0 },

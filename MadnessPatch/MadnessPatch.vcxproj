@@ -123,6 +123,7 @@
     <ClCompile Include="..\src\Fixes\ThreadPoolClamp.cpp" />
     <ClCompile Include="..\src\Fixes\AtomicSaves.cpp" />
     <ClCompile Include="..\src\Fixes\XAudio2Upgrade.cpp" />
+    <ClCompile Include="..\src\Fixes\FixMorphTargets.cpp" />
     <ClCompile Include="..\src\General\IntroSkip.cpp" />
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />
     <ClCompile Include="..\src\General\AchievementSupport.cpp" />
@@ -148,7 +149,6 @@
     <ClCompile Include="..\src\MainLoop\FixMapProperties.cpp" />
     <ClCompile Include="..\src\MainLoop\FixHatterElevator.cpp" />
     <ClCompile Include="..\src\MainLoop\FixFadeToBlack.cpp" />
-    <ClCompile Include="..\src\MainLoop\CutsceneFPSCap.cpp" />
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp" />
     <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp" />
     <ClCompile Include="..\src\MainLoop\BlackBarGuard.cpp" />

@@ -14,6 +14,7 @@ void ApplyFixWindowHandling();
 void ApplyThreadPoolClamp();
 void ApplyAtomicSaves();
 void ApplyXAudio2Upgrade();
+void ApplyFixMorphTargets();
 
 // General
 void ApplyIntroSkip();
@@ -63,12 +64,6 @@ namespace FixMissingMusic { void Tick(); }
 namespace FixMapProperties { void Tick(); }
 namespace FixHatterElevator { void Tick(); }
 namespace FixFadeToBlack { void Tick(); }
-namespace CutsceneFPSCap
-{
-    void OnInterpStarted(USeqAct_Interp* mat);
-    void OnInterpFinished(USeqAct_Interp* mat);
-    void Tick();
-}
 namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }
 namespace BlockCameraInMenu { void Tick(); }

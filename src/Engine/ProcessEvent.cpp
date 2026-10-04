@@ -11,8 +11,6 @@ static UFunction* g_calloutPC = nullptr;
 static UFunction* g_updateCam = nullptr;
 static UFunction* g_getPlatform = nullptr;
 static UFunction* g_finishFirstUpgrade = nullptr;
-static UFunction* g_interpStarted = nullptr;
-static UFunction* g_interpFinished = nullptr;
 static UFunction* g_viewportPostRender = nullptr;
 
 static UFunction* g_meleeAttack = nullptr;
@@ -73,18 +71,6 @@ static void __fastcall ProcessEvent_Hook(int This, void*, UFunction* Function, i
 		{
 			s_lastSeenWeapon = nullptr;
 			g_weaponToRefresh = nullptr;
-		}
-	}
-
-	if (CutsceneFPSCapEnabled && uParams)
-	{
-		if (Function == g_interpStarted)
-		{
-			CutsceneFPSCap::OnInterpStarted(*reinterpret_cast<USeqAct_Interp**>(uParams));
-		}
-		else if (Function == g_interpFinished)
-		{
-			CutsceneFPSCap::OnInterpFinished(*reinterpret_cast<USeqAct_Interp**>(uParams));
 		}
 	}
 
@@ -231,8 +217,6 @@ void ResolveProcessEventFunctions()
 	g_updateCam = UFunction::FindFunction("Function AliceGame.AlicePlayerCamera.UpdateCamera");
 	g_getPlatform = UFunction::FindFunction("Function AliceGame.AliceGFXMovie.GetPlatform");
 	g_finishFirstUpgrade = UFunction::FindFunction("Function AliceGame.AliceGFXMovie.finishFirstWeaponUpgrade");
-	g_interpStarted = UFunction::FindFunction("Function Engine.Actor.InterpolationStarted");
-	g_interpFinished = UFunction::FindFunction("Function Engine.Actor.InterpolationFinished");
 	g_viewportPostRender = UFunction::FindFunction("Function Engine.GameViewportClient.PostRender");
 
 	g_meleeAttack = UFunction::FindFunction("Function AliceGame.AlicePlayerController.MeleeAttack");

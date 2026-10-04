@@ -5,6 +5,7 @@ safetyhook::InlineHook Localize;
 
 static uintptr_t Unattached_Collision_Skip = 0;
 static uintptr_t FxActorLoopExit = 0;
+static uintptr_t FxActorInstanceSetActor = 0;
 static uintptr_t ParticleMaterialContinue = 0;
 static uintptr_t ParticleMaterialSkip = 0;
 static uintptr_t HashChainEntryResume = 0;
@@ -138,10 +139,17 @@ static void OnUnattachedCollision(safetyhook::Context& ctx)
 
 static void OnFxActorLoop(safetyhook::Context& ctx)
 {
-	if (!MemoryHelper::IsReadable(reinterpret_cast<const void*>(ctx.eax), 4))
+	uintptr_t node = *reinterpret_cast<uintptr_t*>(ctx.ebp - 0x10);
+	uintptr_t end = *reinterpret_cast<uintptr_t*>(ctx.ebp - 0x14);
+
+	while (node != end)
 	{
-		ctx.eip = FxActorLoopExit;
+		uintptr_t next = *reinterpret_cast<uintptr_t*>(node + 0x4);
+		reinterpret_cast<void(__thiscall*)(uintptr_t, void*)>(FxActorInstanceSetActor)(*reinterpret_cast<uintptr_t*>(node), nullptr);
+		node = next;
 	}
+
+	ctx.eip = FxActorLoopExit;
 }
 
 void ApplyCrashFixes()
@@ -177,9 +185,11 @@ void ApplyCrashFixes()
 	MemoryHelper::WriteMemory<uint8_t>(GetAddress(Addr::MmxOverRead), 0x6E);
 	MemoryHelper::WriteMemory<uint8_t>(GetAddress(Addr::SplinePrefetchOverrun), 0x73);
 
-	// FaceFX actor teardown: skip the corrupt loop when the container is stale
+	// FaceFX actor teardown: walk the instance list without reading freed nodes
+	DWORD addr_FaceFxActorLoopGuard = GetAddress(Addr::FaceFxActorLoopGuard);
+	FxActorInstanceSetActor = addr_FaceFxActorLoopGuard + 0x24 + *reinterpret_cast<int32_t*>(addr_FaceFxActorLoopGuard + 0x20);
 	FxActorLoopExit = GetAddress(Addr::FaceFxActorLoopExit);
-	FxActorLoopGuard = safetyhook::create_mid(GetAddress(Addr::FaceFxActorLoopGuard), OnFxActorLoop);
+	FxActorLoopGuard = safetyhook::create_mid(addr_FaceFxActorLoopGuard, OnFxActorLoop);
 
 	// Particle mesh-emitter material destruction race
 	DWORD addr_ParticleMaterialDispatchSite = GetAddress(Addr::ParticleMaterialDispatchSite);
