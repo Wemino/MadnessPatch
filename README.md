@@ -67,6 +67,8 @@ Adds an in-game achievement overlay that tracks your progress and shows a notifi
 
 > **Note**: Achievements that unlock automatically are the ones whose progress is stored in your save data. Any achievement obtained while MadnessPatch isn't running isn't recorded anywhere.
 
+The unlock pop-up can also be switched to an Xbox 360 achievement or a PlayStation 3 trophy style with `AchievementNotificationStyle` in `MadnessPatch.ini`, including each achievement's original Gamerscore or trophy grade. Setting it to `3` picks the style matching the connected controller.
+
 > **Note**: Can be disabled by setting `AchievementSupport = 0` in `MadnessPatch.ini` if wanted.
 
 ## High FPS Fixes

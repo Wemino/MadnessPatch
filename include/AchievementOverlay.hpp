@@ -116,6 +116,75 @@ namespace AchievementOverlay
         return AchievementMaxFrom(g_maxOverride, index);
     }
 
+    // Unlock notification look, picked with AchievementNotificationStyle
+    enum class ToastStyle
+    {
+        Default = 0,
+        Xbox = 1,
+        PlayStation = 2,
+        MatchController = 3,
+    };
+
+    inline ToastStyle CurrentToastStyle()
+    {
+        switch (static_cast<ToastStyle>(AchievementNotificationStyle))
+        {
+        case ToastStyle::Xbox: return ToastStyle::Xbox;
+        case ToastStyle::PlayStation: return ToastStyle::PlayStation;
+        case ToastStyle::MatchController:
+            return (ControllerHelper::GetGamepadStyle() == ControllerHelper::GamepadStyle::PlayStation) ? ToastStyle::PlayStation : ToastStyle::Xbox;
+        default: return ToastStyle::Default;
+        }
+    }
+
+    enum class TrophyGrade : uint8_t
+    {
+        Bronze,
+        Silver,
+        Gold,
+        Platinum,
+    };
+
+    // Trophy grades from the PS3 release and Gamerscore from the Xbox 360 release, indexed like the icons.
+    // The platinum has no Xbox 360 counterpart, so it carries no Gamerscore
+    inline constexpr TrophyGrade kTrophyGrade[kAchievementCount] =
+    {
+        TrophyGrade::Platinum,
+        TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze,  // 1-5
+        TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Silver,  // 6-10
+        TrophyGrade::Bronze, TrophyGrade::Gold,   TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze,  // 11-15
+        TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Silver, TrophyGrade::Silver,  // 16-20
+        TrophyGrade::Silver, TrophyGrade::Bronze, TrophyGrade::Silver, TrophyGrade::Bronze, TrophyGrade::Silver,  // 21-25
+        TrophyGrade::Silver, TrophyGrade::Bronze, TrophyGrade::Silver, TrophyGrade::Silver, TrophyGrade::Bronze,  // 26-30
+        TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze,  // 31-35
+        TrophyGrade::Gold,   TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Silver,  // 36-40
+        TrophyGrade::Silver, TrophyGrade::Bronze, TrophyGrade::Bronze, TrophyGrade::Silver,                       // 41-44
+    };
+
+    inline constexpr int kGamerscore[kAchievementCount] =
+    {
+        0,
+        10, 10, 10, 10, 10,  // 1-5
+        10, 10, 25, 50, 75,  // 6-10
+        20, 80, 10, 10, 10,  // 11-15
+        10, 10, 20, 30, 10,  // 16-20
+        30, 10, 30, 10, 30,  // 21-25
+        20, 20, 10, 20, 10,  // 26-30
+        10, 10, 10, 10, 10,  // 31-35
+        50, 10, 20, 20, 30,  // 36-40
+        30, 20, 20, 30,      // 41-44
+    };
+
+    inline TrophyGrade GradeOf(int index)
+    {
+        return (index >= 0 && index < kAchievementCount) ? kTrophyGrade[index] : TrophyGrade::Bronze;
+    }
+
+    inline int GamerscoreOf(int index)
+    {
+        return (index >= 0 && index < kAchievementCount) ? kGamerscore[index] : 0;
+    }
+
     // Bink cutscenes and loading movies bypass PostRender, the list must not block input while it cannot be drawn
     inline constexpr unsigned long long kRenderStaleMs = 500;
     inline bool IsRendering() { return g_lastDrawTick != 0 && GetTickCount64() - g_lastDrawTick < kRenderStaleMs; }
@@ -651,7 +720,7 @@ namespace AchievementOverlay
         }
     }
 
-    inline UTexture2D* CreateEngineTexture(const std::vector<uint8_t>& bgra, int w, int h)
+    inline UTexture2D* CreateEngineTexture(const std::vector<uint8_t>& bgra, int w, int h, bool clampUV = false)
     {
         if (w <= 0 || h <= 0 || (w & (w - 1)) || (h & (h - 1)))
             return nullptr;
@@ -676,6 +745,13 @@ namespace AchievementOverlay
         tex->NeverStream = 1;
         tex->LODGroup = ETextureGroup::TEXTUREGROUP_UI;
         tex->SRGB = 1;
+
+        // Shapes are drawn a quadrant at a time, wrapping would bleed the opposite edge into the cut
+        if (clampUV)
+        {
+            tex->AddressX = ETextureAddress::TA_Clamp;
+            tex->AddressY = ETextureAddress::TA_Clamp;
+        }
 
         // Init only allocates the mip, the render resource is created here once the pixels are in
         if (!Native::UpdateResource(tex) || !tex->Resource.Dummy)
@@ -1215,7 +1291,7 @@ namespace AchievementOverlay
         FillRect(d, winX, listBottom, winW, bottomPad, WithAlpha(kWindowBg, 1.0f));
 
         float y = winY + pad * 0.5f;
-        DrawTextLine(d, L"Achievements", winX + pad, y, titleScale, kTextColor);
+        DrawTextLine(d, CurrentToastStyle() == ToastStyle::PlayStation ? L"Trophies" : L"Achievements", winX + pad, y, titleScale, kTextColor);
 
         int unlockedCount = 0;
         for (size_t i = 0; i < g_achievements.size() && i < g_unlocked.size(); i++)
@@ -1377,6 +1453,479 @@ namespace AchievementOverlay
         }
     }
 
+    // Console-style notifications
+
+    // White shapes with an anti-aliased alpha edge, tinted at draw time
+    inline constexpr int kShapeTextureSize = 128;
+    inline UTexture2D* g_circleTex = nullptr;
+    inline UTexture2D* g_cupTex = nullptr;
+    inline bool g_shapesLoaded = false;
+
+    template <typename Inside>
+    inline UTexture2D* RasteriseShape(Inside inside)
+    {
+        constexpr int kSize = kShapeTextureSize;
+        constexpr int kSamples = 4; // 4x4 supersampling per pixel
+
+        std::vector<uint8_t> pixels((size_t)kSize * kSize * 4);
+        for (int y = 0; y < kSize; y++)
+        {
+            for (int x = 0; x < kSize; x++)
+            {
+                int covered = 0;
+                for (int sy = 0; sy < kSamples; sy++)
+                {
+                    for (int sx = 0; sx < kSamples; sx++)
+                    {
+                        float u = (x + (sx + 0.5f) / kSamples) / kSize;
+                        float v = (y + (sy + 0.5f) / kSamples) / kSize;
+                        if (inside(u, v)) covered++;
+                    }
+                }
+
+                uint8_t* p = &pixels[((size_t)y * kSize + x) * 4];
+                p[0] = 255;
+                p[1] = 255;
+                p[2] = 255;
+                p[3] = (uint8_t)(covered * 255 / (kSamples * kSamples));
+            }
+        }
+
+        return CreateEngineTexture(pixels, kSize, kSize, true);
+    }
+
+    inline bool InsideCircle(float u, float v)
+    {
+        float dx = u - 0.5f, dy = v - 0.5f;
+        return dx * dx + dy * dy <= 0.25f;
+    }
+
+    // Trophy cup silhouette: rim, bowl, two handles, stem and a two-step base
+    inline bool InsideCup(float u, float v)
+    {
+        auto inRect = [&](float x0, float y0, float x1, float y1) { return u >= x0 && u <= x1 && v >= y0 && v <= y1; };
+        auto inRing = [&](float cx, float cy, float rOut, float rIn)
+        {
+            float dx = u - cx, dy = v - cy, d2 = dx * dx + dy * dy;
+            return d2 <= rOut * rOut && d2 >= rIn * rIn;
+        };
+
+        if (inRect(0.20f, 0.08f, 0.80f, 0.15f)) return true; // rim
+
+        if (v >= 0.10f) // bowl, lower half of an ellipse
+        {
+            float ex = (u - 0.5f) / 0.28f, ey = (v - 0.10f) / 0.42f;
+            if (ex * ex + ey * ey <= 1.0f) return true;
+        }
+
+        if (u <= 0.26f && inRing(0.22f, 0.28f, 0.14f, 0.08f)) return true; // left handle
+        if (u >= 0.74f && inRing(0.78f, 0.28f, 0.14f, 0.08f)) return true; // right handle
+
+        if (inRect(0.45f, 0.48f, 0.55f, 0.72f)) return true; // stem
+        if (inRect(0.34f, 0.70f, 0.66f, 0.78f)) return true; // base top
+        if (inRect(0.26f, 0.81f, 0.74f, 0.90f)) return true; // base bottom
+
+        return false;
+    }
+
+    inline void LoadShapes()
+    {
+        if (g_shapesLoaded)
+            return;
+
+        g_shapesLoaded = true;
+
+        // Same texture path as the icons, if that failed these would too
+        if (g_iconsUnavailable)
+            return;
+
+        g_circleTex = RasteriseShape(InsideCircle);
+        g_cupTex = RasteriseShape(InsideCup);
+    }
+
+    inline void DrawTexRect(DrawCtx& d, UTexture* tex, float x, float y, float w, float h, float u, float v, float ul, float vl, const FLinearColor& color)
+    {
+        if (!tex || w <= 0.0f || h <= 0.0f)
+            return;
+
+        Native::SetPos(d.canvas, x, y);
+        Native::DrawTile(d.canvas, tex, w, h, u, v, ul, vl, color);
+    }
+
+    // Four circle quadrants for the corners and three plain strips, snapped to whole pixels so the seams don't double up
+    inline void FillRoundedRect(DrawCtx& d, float x, float y, float w, float h, float r, const FLinearColor& color)
+    {
+        x = roundf(x);
+        y = roundf(y);
+        w = roundf(w);
+        h = roundf(h);
+        r = roundf((std::min)(r, (std::min)(w, h) * 0.5f));
+
+        if (!g_circleTex || r < 1.0f)
+        {
+            FillRect(d, x, y, w, h, color);
+            return;
+        }
+
+        const float half = kShapeTextureSize * 0.5f;
+        DrawTexRect(d, g_circleTex, x, y, r, r, 0.0f, 0.0f, half, half, color);
+        DrawTexRect(d, g_circleTex, x + w - r, y, r, r, half, 0.0f, half, half, color);
+        DrawTexRect(d, g_circleTex, x, y + h - r, r, r, 0.0f, half, half, half, color);
+        DrawTexRect(d, g_circleTex, x + w - r, y + h - r, r, r, half, half, half, half, color);
+
+        FillRect(d, x + r, y, w - r * 2.0f, h, color);
+        FillRect(d, x, y + r, r, h - r * 2.0f, color);
+        FillRect(d, x + w - r, y + r, r, h - r * 2.0f, color);
+    }
+
+    inline void FillCircle(DrawCtx& d, float cx, float cy, float radius, const FLinearColor& color)
+    {
+        if (radius <= 0.0f)
+            return;
+
+        if (!g_circleTex)
+        {
+            FillRect(d, cx - radius, cy - radius, radius * 2.0f, radius * 2.0f, color);
+            return;
+        }
+
+        DrawTexRect(d, g_circleTex, cx - radius, cy - radius, radius * 2.0f, radius * 2.0f, 0.0f, 0.0f, (float)kShapeTextureSize, (float)kShapeTextureSize, color);
+    }
+
+    inline void DrawCup(DrawCtx& d, float x, float y, float size, const FLinearColor& color)
+    {
+        DrawTexRect(d, g_cupTex, x, y, size, size, 0.0f, 0.0f, (float)kShapeTextureSize, (float)kShapeTextureSize, color);
+    }
+
+    // Single-line text cut down with "..." to a width, re-measured only when something changes
+    struct FittedText
+    {
+        std::wstring result;
+        std::wstring source;
+        float maxWidth = -1.0f;
+        float scale = -1.0f;
+        UFont* font = nullptr;
+    };
+
+    inline FittedText g_fitHead;
+    inline FittedText g_fitName;
+
+    inline const std::wstring& FitText(DrawCtx& d, const std::wstring& text, float maxWidth, float scale, FittedText& cache)
+    {
+        if (cache.maxWidth == maxWidth && cache.scale == scale && cache.font == d.canvas->Font && cache.source == text)
+            return cache.result;
+
+        cache.source = text;
+        cache.maxWidth = maxWidth;
+        cache.scale = scale;
+        cache.font = d.canvas->Font;
+        cache.result = text;
+
+        float w = 0.0f, h = 0.0f;
+        MeasureText(d, text.c_str(), scale, w, h);
+        if (w <= maxWidth)
+            return cache.result;
+
+        std::wstring cut = text;
+        while (!cut.empty())
+        {
+            cut.pop_back();
+            cache.result = cut + L"...";
+            MeasureText(d, cache.result.c_str(), scale, w, h);
+            if (w <= maxWidth)
+                return cache.result;
+        }
+
+        cache.result = L"...";
+        return cache.result;
+    }
+
+    inline float EaseOut(float k) { k = Clamp(k, 0.0f, 1.0f); return 1.0f - (1.0f - k) * (1.0f - k); }
+    inline float EaseIn(float k) { k = Clamp(k, 0.0f, 1.0f); return k * k; }
+
+    inline const std::wstring& XboxHeaderText()
+    {
+        static const std::wstring kEn = L"Achievement unlocked";
+        static const std::wstring kFr = L"Succ\u00E8s d\u00E9verrouill\u00E9";
+        static const std::wstring kDe = L"Erfolg freigeschaltet";
+        static const std::wstring kIt = L"Obiettivo sbloccato";
+        static const std::wstring kEs = L"Logro desbloqueado";
+
+        if (g_language == "fr") return kFr;
+        if (g_language == "de") return kDe;
+        if (g_language == "it") return kIt;
+        if (g_language == "es") return kEs;
+        return kEn;
+    }
+
+    inline const std::wstring& PlayStationHeaderText()
+    {
+        static const std::wstring kEn = L"You have earned a trophy.";
+        static const std::wstring kFr = L"Vous avez obtenu un troph\u00E9e.";
+        static const std::wstring kDe = L"Sie haben eine Troph\u00E4e erhalten.";
+        static const std::wstring kIt = L"Hai ottenuto un trofeo.";
+        static const std::wstring kEs = L"Has obtenido un trofeo.";
+
+        if (g_language == "fr") return kFr;
+        if (g_language == "de") return kDe;
+        if (g_language == "it") return kIt;
+        if (g_language == "es") return kEs;
+        return kEn;
+    }
+
+    inline FLinearColor GradeColor(TrophyGrade grade, float alpha)
+    {
+        switch (grade)
+        {
+        case TrophyGrade::Platinum: return Srgb(178, 203, 232, alpha);
+        case TrophyGrade::Gold: return Srgb(232, 190, 64, alpha);
+        case TrophyGrade::Silver: return Srgb(196, 200, 208, alpha);
+        default: return Srgb(196, 120, 62, alpha);
+        }
+    }
+
+    // Xbox 360: an orb pops in at the bottom centre, the dark pill slides out of it with the text, then folds back in
+    inline constexpr float kXboxOrbInMs = 200.0f;
+    inline constexpr float kXboxExpandEndMs = 550.0f;
+    inline constexpr float kXboxTextInEndMs = 750.0f;
+    inline constexpr float kXboxHoldEndMs = 5400.0f;
+    inline constexpr float kXboxTextOutEndMs = 5550.0f;
+    inline constexpr float kXboxCollapseEndMs = 5900.0f;
+    inline constexpr float kXboxTotalMs = 6200.0f;
+
+    inline void DrawXboxToast(DrawCtx& d, int id, float t)
+    {
+        UCanvas* c = d.canvas;
+        const float s = d.s;
+        const float dispW = (float)c->SizeX;
+        const float dispH = (float)c->SizeY;
+
+        const float pillH = 62.0f * s;
+        const float orbD = 76.0f * s;
+        const float textGap = 12.0f * s;
+
+        const float headScale = (17.0f * s) / d.fontUnitHeight;
+        const float nameScale = (21.0f * s) / d.fontUnitHeight;
+        const float headH = d.fontUnitHeight * headScale;
+        const float nameH = d.fontUnitHeight * nameScale;
+
+        const std::wstring& name = (id >= 0) ? NameOf((size_t)id) : g_emptyText;
+        const int gamerscore = GamerscoreOf(id);
+        std::wstring nameLine = gamerscore > 0 ? std::to_wstring(gamerscore) + L"G - " + name : name;
+
+        const float maxTextW = dispW * 0.6f;
+        const std::wstring& head = FitText(d, XboxHeaderText(), maxTextW, headScale, g_fitHead);
+        const std::wstring& line = FitText(d, nameLine, maxTextW, nameScale, g_fitName);
+
+        float headW = 0.0f, lineW = 0.0f, unused = 0.0f;
+        MeasureText(d, head.c_str(), headScale, headW, unused);
+        MeasureText(d, line.c_str(), nameScale, lineW, unused);
+        const float textW = (std::max)(headW, lineW);
+
+        // Timeline
+        float orbScale = 1.0f, orbAlpha = 1.0f, expand = 1.0f, textAlpha = 1.0f;
+        if (t < kXboxOrbInMs)
+        {
+            float k = t / kXboxOrbInMs;
+            orbScale = 0.5f + 0.5f * EaseOut(k);
+            orbAlpha = k;
+            expand = 0.0f;
+            textAlpha = 0.0f;
+        }
+        else if (t < kXboxExpandEndMs)
+        {
+            expand = EaseOut((t - kXboxOrbInMs) / (kXboxExpandEndMs - kXboxOrbInMs));
+            textAlpha = 0.0f;
+        }
+        else if (t < kXboxTextInEndMs)
+        {
+            textAlpha = (t - kXboxExpandEndMs) / (kXboxTextInEndMs - kXboxExpandEndMs);
+        }
+        else if (t < kXboxHoldEndMs)
+        {
+        }
+        else if (t < kXboxTextOutEndMs)
+        {
+            textAlpha = 1.0f - (t - kXboxHoldEndMs) / (kXboxTextOutEndMs - kXboxHoldEndMs);
+        }
+        else if (t < kXboxCollapseEndMs)
+        {
+            expand = 1.0f - EaseIn((t - kXboxTextOutEndMs) / (kXboxCollapseEndMs - kXboxTextOutEndMs));
+            textAlpha = 0.0f;
+        }
+        else
+        {
+            float k = Clamp((t - kXboxCollapseEndMs) / (kXboxTotalMs - kXboxCollapseEndMs), 0.0f, 1.0f);
+            orbScale = 1.0f - 0.5f * k;
+            orbAlpha = 1.0f - k;
+            expand = 0.0f;
+            textAlpha = 0.0f;
+        }
+
+        // The whole notification stays centred while it grows to the right of the orb
+        const float fullW = orbD + textGap + textW + pillH * 0.5f;
+        const float w = orbD + (fullW - orbD) * expand;
+        const float x = (dispW - w) * 0.5f;
+        const float cy = dispH * 0.84f;
+        const float orbCX = x + orbD * 0.5f;
+
+        // The pill's left cap sits behind the orb
+        if (expand > 0.0f)
+        {
+            const float pillX = orbCX - pillH * 0.5f;
+            FillRoundedRect(d, pillX - 1.0f * s, cy - pillH * 0.5f - 1.0f * s, x + w - pillX + 2.0f * s, pillH + 2.0f * s, pillH * 0.5f + 1.0f * s, Srgb(70, 70, 70, 0.6f * orbAlpha));
+            FillRoundedRect(d, pillX, cy - pillH * 0.5f, x + w - pillX, pillH, pillH * 0.5f, Srgb(18, 18, 18, 0.92f * orbAlpha));
+        }
+
+        const float orbR = orbD * 0.5f * orbScale;
+        FillCircle(d, orbCX, cy, orbR, Srgb(96, 96, 96, orbAlpha));
+        FillCircle(d, orbCX, cy, orbR - 3.0f * s * orbScale, Srgb(238, 238, 238, orbAlpha));
+
+        const float cupSize = orbR * 1.1f;
+        DrawCup(d, orbCX - cupSize * 0.5f, cy - cupSize * 0.5f, cupSize, Srgb(30, 30, 30, orbAlpha));
+
+        if (textAlpha > 0.0f)
+        {
+            uint8_t a8 = (uint8_t)(Clamp(textAlpha, 0.0f, 1.0f) * 255.0f + 0.5f);
+            float tx = x + orbD + textGap;
+            float ty = cy - (headH + nameH) * 0.5f;
+            DrawTextLine(d, head.c_str(), tx, ty, headScale, FColor(190, 190, 190, a8));
+            DrawTextLine(d, line.c_str(), tx, ty + headH, nameScale, FColor(255, 255, 255, a8));
+        }
+    }
+
+    // PS3: a rounded dark box fades in at the top right with the trophy icon, the grade cup and the trophy name
+    inline constexpr float kPlayStationFadeInMs = 250.0f;
+    inline constexpr float kPlayStationHoldEndMs = 5000.0f;
+    inline constexpr float kPlayStationTotalMs = 5400.0f;
+
+    inline void DrawPlayStationToast(DrawCtx& d, int id, float t)
+    {
+        UCanvas* c = d.canvas;
+        const float s = d.s;
+        const float dispW = (float)c->SizeX;
+
+        float alpha = 1.0f;
+        if (t < kPlayStationFadeInMs)
+        {
+            alpha = t / kPlayStationFadeInMs;
+        }
+        else if (t > kPlayStationHoldEndMs)
+        {
+            alpha = 1.0f - (t - kPlayStationHoldEndMs) / (kPlayStationTotalMs - kPlayStationHoldEndMs);
+        }
+        alpha = Clamp(alpha, 0.0f, 1.0f);
+
+        const float margin = 32.0f * s;
+        const float pad = 10.0f * s;
+        const float iconSize = 56.0f * s;
+        const float gap = 12.0f * s;
+        const float lineGap = 4.0f * s;
+
+        const float headScale = (16.0f * s) / d.fontUnitHeight;
+        const float nameScale = (19.0f * s) / d.fontUnitHeight;
+        const float headH = d.fontUnitHeight * headScale;
+        const float nameH = d.fontUnitHeight * nameScale;
+        const float cupSize = nameH;
+        const float cupGap = 4.0f * s;
+
+        const std::wstring& name = (id >= 0) ? NameOf((size_t)id) : g_emptyText;
+
+        const float maxTextW = dispW * 0.35f;
+        const std::wstring& head = FitText(d, PlayStationHeaderText(), maxTextW, headScale, g_fitHead);
+        const std::wstring& line = FitText(d, name, maxTextW - cupSize - cupGap, nameScale, g_fitName);
+
+        float headW = 0.0f, lineW = 0.0f, unused = 0.0f;
+        MeasureText(d, head.c_str(), headScale, headW, unused);
+        MeasureText(d, line.c_str(), nameScale, lineW, unused);
+        const float textW = (std::max)(headW, cupSize + cupGap + lineW);
+        const float textH = headH + lineGap + nameH;
+
+        const float boxW = pad + iconSize + gap + textW + pad * 1.5f;
+        const float boxH = pad * 2.0f + (std::max)(iconSize, textH);
+        const float x = dispW - boxW - margin;
+        const float y = margin;
+        const float radius = 8.0f * s;
+
+        FillRoundedRect(d, x, y, boxW, boxH, radius, Srgb(120, 120, 120, 0.5f * alpha));
+        FillRoundedRect(d, x + 1.0f * s, y + 1.0f * s, boxW - 2.0f * s, boxH - 2.0f * s, radius - 1.0f * s, Srgb(32, 32, 34, 0.9f * alpha));
+
+        const float iconX = x + pad;
+        const float iconY = y + (boxH - iconSize) * 0.5f;
+        if (id >= 0 && id < (int)g_achievements.size() && g_achievements[id].tex)
+        {
+            DrawIcon(d, g_achievements[id], iconX, iconY, iconSize, FLinearColor(1, 1, 1, alpha));
+        }
+        else
+        {
+            FillRect(d, iconX, iconY, iconSize, iconSize, WithAlpha(kHiddenBoxInner, alpha));
+            DrawCup(d, iconX + iconSize * 0.15f, iconY + iconSize * 0.15f, iconSize * 0.7f, GradeColor(GradeOf(id), alpha));
+        }
+
+        uint8_t a8 = (uint8_t)(alpha * 255.0f + 0.5f);
+        float tx = iconX + iconSize + gap;
+        float ty = y + (boxH - textH) * 0.5f;
+        DrawTextLine(d, head.c_str(), tx, ty, headScale, FColor(235, 235, 235, a8));
+
+        ty += headH + lineGap;
+        DrawCup(d, tx, ty, cupSize, GradeColor(GradeOf(id), alpha));
+        DrawTextLine(d, line.c_str(), tx + cupSize + cupGap, ty, nameScale, FColor(255, 255, 255, a8));
+    }
+
+    // The consoles show one notification at a time, so later unlocks wait their turn instead of stacking
+    inline void DrawConsoleToast(DrawCtx& d, ToastStyle style)
+    {
+        std::lock_guard<std::mutex> lock(g_toastMutex);
+
+        if (g_toasts.empty()) return;
+
+        LoadShapes();
+
+        const float totalMs = (style == ToastStyle::Xbox) ? kXboxTotalMs : kPlayStationTotalMs;
+        unsigned long long now = GetTickCount64();
+
+        // A queued toast's clock starts when it reaches the front
+        if (!g_toasts.front().placed)
+        {
+            g_toasts.front().start = now;
+            g_toasts.front().placed = true;
+        }
+
+        if ((float)(now - g_toasts.front().start) >= totalMs)
+        {
+            g_toasts.erase(g_toasts.begin());
+            if (g_toasts.empty()) return;
+
+            g_toasts.front().start = now;
+            g_toasts.front().placed = true;
+        }
+
+        const ToastItem& it = g_toasts.front();
+        const float t = (float)(now - it.start);
+
+        if (style == ToastStyle::Xbox)
+        {
+            DrawXboxToast(d, it.achvId, t);
+        }
+        else
+        {
+            DrawPlayStationToast(d, it.achvId, t);
+        }
+    }
+
+    inline void DrawToasts(DrawCtx& d)
+    {
+        const ToastStyle style = CurrentToastStyle();
+        if (style == ToastStyle::Default)
+        {
+            DrawUnlockToast(d);
+        }
+        else
+        {
+            DrawConsoleToast(d, style);
+        }
+    }
+
     // Keeps keyboard/mouse away from the game while the list is open and turns the wheel/keys into scrolling
     inline LRESULT CALLBACK WndProc_Hook(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
@@ -1482,6 +2031,8 @@ namespace AchievementOverlay
             g_descWrap.clear();
             g_toastNameWrap.clear();
             g_toastDescWrap.clear();
+            g_fitHead = {};
+            g_fitName = {};
         }
 
         if (!g_visible && g_toasts.empty())
@@ -1521,7 +2072,7 @@ namespace AchievementOverlay
             DrawAchievementsWindow(d, deltaSeconds);
         }
 
-        DrawUnlockToast(d);
+        DrawToasts(d);
 
         canvas->Font = prevFont;
         canvas->DrawColor = prevColor;

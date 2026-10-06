@@ -31,6 +31,7 @@ inline int MaxPoolThreads = 0;
 
 // General
 inline bool AchievementSupport = false;
+inline int AchievementNotificationStyle = 0;
 inline bool UnlockCompleteEditionDLC = false;
 inline bool ShowProfileCreation = false;
 inline int ForceLanguage = 0;
@@ -107,6 +108,7 @@ inline void ReadConfig()
 
 	// General
 	AchievementSupport = IniHelper::ReadInteger("General", "AchievementSupport", 1) == 1;
+	AchievementNotificationStyle = IniHelper::ReadInteger("General", "AchievementNotificationStyle", 0);
 	UnlockCompleteEditionDLC = IniHelper::ReadInteger("General", "UnlockCompleteEditionDLC", 1) == 1;
 	ShowProfileCreation = IniHelper::ReadInteger("General", "ShowProfileCreation", 1) == 1;
 	ForceLanguage = IniHelper::ReadInteger("General", "ForceLanguage", -1);
