@@ -130,6 +130,9 @@ enum class Addr
 	// FixBinkVideoBT709
 	Gyuvtorgb,
 
+	// FixCharacterLighting
+	LightEnvStaticUpdate,
+
 	// ResolutionHook
 	UpdateViewportRHI,
 
@@ -313,6 +316,9 @@ namespace Addresses
 
 		// FixBinkVideoBT709
 		/* Gyuvtorgb                       */ { 0x1421DC0, 0x1421DC0, 0x139ECE0 },
+
+		// FixCharacterLighting
+		/* LightEnvStaticUpdate            */ { 0x0, 0x0, 0x573B39 },
 
 		// ResolutionHook
 		/* UpdateViewportRHI               */ { 0x6D73C0, 0x6D7B60, 0x6AD6E0 },

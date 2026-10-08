@@ -41,6 +41,7 @@ void ApplyImprovedTextureStreaming();
 void ApplyReducedMipMapBias();
 void ApplyDisableBackgroundLevelStreaming();
 void ApplyFixBinkVideoBT709();
+void ApplyFixCharacterLighting();
 void ApplyFixAspectRatio();
 void ApplyMenuScripts();
 void ApplyAdaptivePhysXMemory();

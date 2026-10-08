@@ -87,6 +87,7 @@ static void Init()
 	ApplyReducedMipMapBias();
 	ApplyDisableBackgroundLevelStreaming();
 	ApplyFixBinkVideoBT709();
+	ApplyFixCharacterLighting();
 	ApplyFixAspectRatio();
 	ApplyMenuScripts();
 	ApplyAdaptivePhysXMemory();
