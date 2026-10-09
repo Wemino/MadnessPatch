@@ -25,6 +25,7 @@ struct GlobalState
 
 	// Misc
 	bool shouldBlockBlackBar = false;
+	bool isAlice1Missing = false;
 	bool loadEndPending = false;
 	ULONGLONG loadEndTick = 0;
 	bool bRealGameplay = false;

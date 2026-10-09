@@ -53,7 +53,7 @@ static void OnEngineInit(safetyhook::Context& ctx)
 	{
 		if (!SystemHelper::ResolveDirectory(pathStr))
 		{
-			HideAlice1WhenMissing = false;
+			g_State.isAlice1Missing = true;
 		}
 	}
 }

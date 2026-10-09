@@ -309,7 +309,9 @@ static int __fastcall GFx_LoadRootMovie_Hook(uint32_t thisp, uint32_t, uint32_t 
 			if (FixTheatricalsTitles && TheatricalsTitles::NeedsFix(blob, size))
 			{
 				const std::vector<uint8_t>& fixed = TheatricalsTitles::Build(blob, size);
-				if (!fixed.empty())
+
+				uint32_t* fileEnd = (uint32_t*)(a2 + 0x270);
+				if (!fixed.empty() && *fileEnd == size)
 				{
 					swappedData = (uint8_t**)(src + 0x08);
 					swappedSize = (uint32_t*)(src + 0x0C);
@@ -318,6 +320,7 @@ static int __fastcall GFx_LoadRootMovie_Hook(uint32_t thisp, uint32_t, uint32_t 
 
 					*swappedData = const_cast<uint8_t*>(fixed.data());
 					*swappedSize = (uint32_t)fixed.size();
+					*fileEnd = (uint32_t)fixed.size();
 				}
 			}
 		}
@@ -354,7 +357,7 @@ static void OnMenuScript(safetyhook::Context& ctx)
 		g_memoryBuf = buf;
 		ApplyMemoryPosition(buf);
 	}
-	else if (!HideAlice1WhenMissing && sig == 0xA409AC88)
+	else if (HideAlice1WhenMissing && g_State.isAlice1Missing && sig == 0xA409AC88)
 	{
 		// Remove the Alice 1 menu entry.
 		if (MemoryHelper::ReadMemory<uint8_t>((uintptr_t)(buf + 0xC39)) == 0x5)
