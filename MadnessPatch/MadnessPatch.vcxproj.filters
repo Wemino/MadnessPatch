@@ -32,6 +32,12 @@
     <ClCompile Include="..\src\Fixes\FixMorphTargets.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixCharacterLighting.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixMSAAFog.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
@@ -77,7 +83,10 @@
     <ClCompile Include="..\src\Graphics\FixBinkVideoBT709.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graphics\FixCharacterLighting.cpp">
+    <ClCompile Include="..\src\Graphics\ForceMSAA.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\Supersampling.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\FixAspectRatio.cpp">

@@ -133,6 +133,24 @@ enum class Addr
 	// FixCharacterLighting
 	LightEnvStaticUpdate,
 
+	// FixMSAAFog
+	FogDrawCall,
+	UpdateD3DDevice,
+
+	// ForceMSAA
+	ActivateSystemSettings,
+
+	// Supersampling
+	ScaleScreenCoords,
+	UnScaleScreenCoords,
+	NeedsUpscale,
+	ViewRectClamp,
+	AllocateSceneTargets,
+	AllocateSceneTargetsCommand,
+	ResetSceneTargets,
+	ViewTargetQuad,
+	UpdateD3DDeviceRHI,
+
 	// ResolutionHook
 	UpdateViewportRHI,
 
@@ -318,7 +336,25 @@ namespace Addresses
 		/* Gyuvtorgb                       */ { 0x1421DC0, 0x1421DC0, 0x139ECE0 },
 
 		// FixCharacterLighting
-		/* LightEnvStaticUpdate            */ { 0x0, 0x0, 0x573B39 },
+		/* LightEnvStaticUpdate            */ { 0x593B59, 0x594269, 0x573B39 },
+
+		// FixMSAAFog
+		/* FogDrawCall                     */ { 0xAD1614, 0xAD1844, 0xA8A544 },
+		/* UpdateD3DDevice                 */ { 0xC781F7, 0xC78847, 0xC220C7 },
+
+		// ForceMSAA
+		/* ActivateSystemSettings          */ { 0x621BB0, 0x621BF0, 0x5FE060 },
+
+		// Supersampling
+		/* ScaleScreenCoords               */ { 0x6258E0, 0x625A20, 0x600470 },
+		/* UnScaleScreenCoords             */ { 0x625A00, 0x625B40, 0x600590 },
+		/* NeedsUpscale                    */ { 0x621B80, 0x621BC0, 0x5FE030 },
+		/* ViewRectClamp                   */ { 0xAFA565, 0xAF9E85, 0xAB1405 },
+		/* AllocateSceneTargets            */ { 0xB0AB00, 0xB0A710, 0xAC5750 },
+		/* AllocateSceneTargetsCommand     */ { 0xB0E490, 0xB0E280, 0xAC7160 },
+		/* ResetSceneTargets               */ { 0xC784BF, 0xC78B0F, 0xC222DE },
+		/* ViewTargetQuad                  */ { 0xAEDCAD, 0xAED66D, 0xAA5DDD },
+		/* UpdateD3DDeviceRHI              */ { 0xC782A3, 0xC788F3, 0xC220CC },
 
 		// ResolutionHook
 		/* UpdateViewportRHI               */ { 0x6D73C0, 0x6D7B60, 0x6AD6E0 },

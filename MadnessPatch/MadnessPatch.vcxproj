@@ -124,6 +124,8 @@
     <ClCompile Include="..\src\Fixes\AtomicSaves.cpp" />
     <ClCompile Include="..\src\Fixes\XAudio2Upgrade.cpp" />
     <ClCompile Include="..\src\Fixes\FixMorphTargets.cpp" />
+    <ClCompile Include="..\src\Fixes\FixCharacterLighting.cpp" />
+    <ClCompile Include="..\src\Fixes\FixMSAAFog.cpp" />
     <ClCompile Include="..\src\General\IntroSkip.cpp" />
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />
     <ClCompile Include="..\src\General\AchievementSupport.cpp" />
@@ -138,7 +140,8 @@
     <ClCompile Include="..\src\Graphics\ReducedMipMapBias.cpp" />
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp" />
     <ClCompile Include="..\src\Graphics\FixBinkVideoBT709.cpp" />
-    <ClCompile Include="..\src\Graphics\FixCharacterLighting.cpp" />
+    <ClCompile Include="..\src\Graphics\ForceMSAA.cpp" />
+    <ClCompile Include="..\src\Graphics\Supersampling.cpp" />
     <ClCompile Include="..\src\Graphics\FixAspectRatio.cpp" />
     <ClCompile Include="..\src\Graphics\MenuScripts.cpp" />
     <ClCompile Include="..\src\Graphics\AdaptivePhysXMemory.cpp" />

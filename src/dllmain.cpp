@@ -62,6 +62,8 @@ static void Init()
 	ApplyAtomicSaves();
 	ApplyXAudio2Upgrade();
 	ApplyFixMorphTargets();
+	ApplyFixCharacterLighting();
+	ApplyFixMSAAFog();
 
 	// General
 	ApplyIntroSkip();
@@ -87,7 +89,8 @@ static void Init()
 	ApplyReducedMipMapBias();
 	ApplyDisableBackgroundLevelStreaming();
 	ApplyFixBinkVideoBT709();
-	ApplyFixCharacterLighting();
+	ApplyForceMSAA();
+	ApplySupersampling();
 	ApplyFixAspectRatio();
 	ApplyMenuScripts();
 	ApplyAdaptivePhysXMemory();

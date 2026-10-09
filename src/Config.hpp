@@ -22,6 +22,8 @@ inline bool FixHatterElevatorEnabled = false;
 inline bool FixFadeToBlackEnabled = false;
 inline bool FixWeaponSwitchFadeInEnabled = false;
 inline bool FixMorphTargets = false;
+inline bool FixCharacterLighting = false;
+inline bool FixMSAAFog = false;
 inline bool FixUpgradeCursorLeak = false;
 inline bool FixTheatricalsTitles = false;
 inline bool FixPinballCannonPrompt = false;
@@ -74,7 +76,8 @@ inline bool DisableBackgroundLevelStreaming = false;
 inline bool FixAspectRatio = false;
 inline bool ReducedMipMapBias = false;
 inline bool FixBinkVideoBT709 = false;
-inline bool FixCharacterLighting = false;
+inline int ForceMSAA = 0;
+inline float SSAAScale = 1.0f;
 inline bool AdaptivePhysXMemory = false;
 
 inline void ReadConfig()
@@ -99,6 +102,8 @@ inline void ReadConfig()
 	FixFadeToBlackEnabled = IniHelper::ReadInteger("Fixes", "FixFadeToBlack", 1) == 1;
 	FixWeaponSwitchFadeInEnabled = IniHelper::ReadInteger("Fixes", "FixWeaponSwitchFadeIn", 1) == 1;
 	FixMorphTargets = IniHelper::ReadInteger("Fixes", "FixMorphTargets", 1) == 1;
+	FixCharacterLighting = IniHelper::ReadInteger("Fixes", "FixCharacterLighting", 1) == 1;
+	FixMSAAFog = IniHelper::ReadInteger("Fixes", "FixMSAAFog", 1) == 1;
 	FixUpgradeCursorLeak = IniHelper::ReadInteger("Fixes", "FixUpgradeCursorLeak", 1) == 1;
 	FixTheatricalsTitles = IniHelper::ReadInteger("Fixes", "FixTheatricalsTitles", 1) == 1;
 	FixPinballCannonPrompt = IniHelper::ReadInteger("Fixes", "FixPinballCannonPrompt", 1) == 1;
@@ -151,7 +156,8 @@ inline void ReadConfig()
 	FixAspectRatio = IniHelper::ReadInteger("Graphics", "FixAspectRatio", 1) == 1;
 	ReducedMipMapBias = IniHelper::ReadInteger("Graphics", "ReducedMipMapBias", 1) == 1;
 	FixBinkVideoBT709 = IniHelper::ReadInteger("Graphics", "FixBinkVideoBT709", 1) == 1;
-	FixCharacterLighting = IniHelper::ReadInteger("Graphics", "FixCharacterLighting", 1) == 1;
+	ForceMSAA = std::clamp(IniHelper::ReadInteger("Graphics", "ForceMSAA", -1), -1, 16);
+	SSAAScale = std::clamp(IniHelper::ReadFloat("Graphics", "SSAAScale", 1.0f), 1.0f, 4.0f);
 	AdaptivePhysXMemory = IniHelper::ReadInteger("Graphics", "AdaptivePhysXMemory", 1) == 1;
 
 	if (UseSDLControllerInput)
