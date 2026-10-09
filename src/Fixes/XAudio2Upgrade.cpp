@@ -426,6 +426,7 @@ namespace
 
 		const uintptr_t rva = reinterpret_cast<uintptr_t>(vtbl) - reinterpret_cast<uintptr_t>(mod);
 
+		// CFXEQ's CXAPOBase vtable (what CreateFX hands out), then CAudioReverb's CMemoryManagedXAPOBase and IXAPOParameters ones
 		if (_wcsicmp(base, L"XAPOFX1_4.dll") == 0 && rva == 0x1100)
 		{
 			return TranslatedEffectKind::FXEQ29;
@@ -465,6 +466,7 @@ namespace
 		XA_EFFECT_DESCRIPTOR* Descs = Inline;
 		std::vector<unsigned char> Kinds;
 		std::vector<IUnknown*> OwnedEffects;
+		bool HasReverb = false; // the legacy reverb was in the chain, translated or not
 
 		TranslatedChain() = default;
 		TranslatedChain(const TranslatedChain&) = delete;
@@ -481,6 +483,7 @@ namespace
 		const XA_EFFECT_CHAIN* Translate(const XA_EFFECT_CHAIN* in)
 		{
 			Kinds.clear();
+			HasReverb = false;
 			if (!in || in->EffectCount == 0 || !in->pEffectDescriptors)
 			{
 				return in;
@@ -504,6 +507,7 @@ namespace
 				TranslatedEffectKind kind = ClassifyLegacyEffect(Descs[i].pEffect);
 				if (kind == TranslatedEffectKind::BuiltinReverb29)
 				{
+					HasReverb = true;
 					if (IUnknown* repl = CreateReverbEffect29())
 					{
 						OwnedEffects.push_back(repl);
@@ -612,7 +616,8 @@ public:
 
 	HRESULT STDMETHODCALLTYPE SetEffectParameters(UINT32 EffectIndex, const void* pParameters, UINT32 ParametersByteSize, UINT32 OperationSet) override
 	{
-		// 2.8 inserted SideDelay mid-struct, so the game's 52-byte reverb blob has to be re-packed or everything past offset 10 lands one byte off
+		// 2.9 inserted SideDelay mid-struct (2.8 only appended DisableLateField), so the game's 52-byte reverb blob has to be re-packed or everything past offset 10 lands one byte off
+		// and 2.9 copies its 57 bytes whatever size it's given
 		if (KindAt(EffectIndex) == TranslatedEffectKind::BuiltinReverb29 && ParametersByteSize == 52 && pParameters)
 		{
 			BYTE p29[57] = {};
@@ -1084,7 +1089,7 @@ public:
 		if (!ppSourceVoice) return E_POINTER;
 		*ppSourceVoice = nullptr;
 
-		// music voices come tagged XAUDIO2_VOICE_MUSIC, gone in 2.8+ where unknown= bits fail the call, keep NOPITCH | NOSRC | USEFILTER, drop the rest
+		// music voices come tagged XAUDIO2_VOICE_MUSIC, gone in 2.8+ where unknown bits fail the call, keep NOPITCH | NOSRC | USEFILTER, drop the rest
 		const UINT32 flags29 = Flags & 0x0E;
 
 		TranslatedSends t;
@@ -1178,6 +1183,12 @@ public:
 
 		if (SUCCEEDED(hr) && realVoice)
 		{
+			// the game runs its reverb fully wet, left without it this submix would play every reverb send a second time, dry
+			if (!chainApplied && c.HasReverb)
+			{
+				realVoice->SetVolume(0.0f, 0);
+			}
+
 			XA26SubmixVoiceWrap* wrap = new XA26SubmixVoiceWrap();
 			wrap->real = realVoice;
 			wrap->SetKinds(std::move(kinds));
