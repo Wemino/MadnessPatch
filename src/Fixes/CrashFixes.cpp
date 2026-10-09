@@ -196,4 +196,7 @@ void ApplyCrashFixes()
 	ParticleMaterialContinue = addr_ParticleMaterialDispatchSite + 0x5;
 	ParticleMaterialSkip = addr_ParticleMaterialDispatchSite + 0x14;
 	MemoryHelper::MakeJMP(addr_ParticleMaterialDispatchSite, reinterpret_cast<uintptr_t>(&ParticleMaterialDeadFlagStub));
+
+	// PhysX fluid emptied before its release, a force field touching it in the step in between crashes with PhysX on the CPU
+	MemoryHelper::WriteMemory<uint8_t>(GetAddress(Addr::FluidRemoveAllParticles), 0xEB);
 }

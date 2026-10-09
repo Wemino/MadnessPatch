@@ -11,7 +11,6 @@ inline bool FixHighFPSProjectileCollisionCheck = false;
 inline bool FixHighFPSPhysX = false;
 inline bool FixHighFPSWalkingPhysics = false;
 inline bool CrashFixes = false;
-inline bool FixCPUPhysX = false;
 inline bool FixInputBinding = false;
 inline bool FixWindowHandling = false;
 inline bool HysteriaLockOnGuardEnabled = false;
@@ -24,6 +23,7 @@ inline bool FixWeaponSwitchFadeInEnabled = false;
 inline bool FixMorphTargets = false;
 inline bool FixCharacterLighting = false;
 inline bool FixMSAAFog = false;
+inline bool FixSlowLoading = false;
 inline bool FixUpgradeCursorLeak = false;
 inline bool FixTheatricalsTitles = false;
 inline bool FixPinballCannonPrompt = false;
@@ -74,11 +74,13 @@ inline bool ImprovedTextureStreaming = false;
 inline bool ForceHighResTextures = false;
 inline bool DisableBackgroundLevelStreaming = false;
 inline bool FixAspectRatio = false;
-inline bool ReducedMipMapBias = false;
+inline bool TrilinearFiltering = false;
 inline bool FixBinkVideoBT709 = false;
+inline bool ImprovedBinkVideo = false;
 inline int ForceMSAA = 0;
 inline float SSAAScale = 1.0f;
 inline bool AdaptivePhysXMemory = false;
+inline bool OverlapGPUPhysX = false;
 
 inline void ReadConfig()
 {
@@ -91,7 +93,6 @@ inline void ReadConfig()
 	FixHighFPSPhysX = IniHelper::ReadInteger("Fixes", "FixHighFPSPhysX", 1) == 1;
 	FixHighFPSWalkingPhysics = IniHelper::ReadInteger("Fixes", "FixHighFPSWalkingPhysics", 1) == 1;
 	CrashFixes = IniHelper::ReadInteger("Fixes", "CrashFixes", 1) == 1;
-	FixCPUPhysX = IniHelper::ReadInteger("Fixes", "FixCPUPhysX", 1) == 1;
 	FixInputBinding = IniHelper::ReadInteger("Fixes", "FixInputBinding", 1) == 1;
 	FixWindowHandling = IniHelper::ReadInteger("Fixes", "FixWindowHandling", 1) == 1;
 	HysteriaLockOnGuardEnabled = IniHelper::ReadInteger("Fixes", "HysteriaLockOnGuard", 1) == 1;
@@ -104,6 +105,7 @@ inline void ReadConfig()
 	FixMorphTargets = IniHelper::ReadInteger("Fixes", "FixMorphTargets", 1) == 1;
 	FixCharacterLighting = IniHelper::ReadInteger("Fixes", "FixCharacterLighting", 1) == 1;
 	FixMSAAFog = IniHelper::ReadInteger("Fixes", "FixMSAAFog", 1) == 1;
+	FixSlowLoading = IniHelper::ReadInteger("Fixes", "FixSlowLoading", 1) == 1;
 	FixUpgradeCursorLeak = IniHelper::ReadInteger("Fixes", "FixUpgradeCursorLeak", 1) == 1;
 	FixTheatricalsTitles = IniHelper::ReadInteger("Fixes", "FixTheatricalsTitles", 1) == 1;
 	FixPinballCannonPrompt = IniHelper::ReadInteger("Fixes", "FixPinballCannonPrompt", 1) == 1;
@@ -154,11 +156,13 @@ inline void ReadConfig()
 	ImprovedTextureStreaming = IniHelper::ReadInteger("Graphics", "ImprovedTextureStreaming", 1) == 1;
 	DisableBackgroundLevelStreaming = IniHelper::ReadInteger("Graphics", "DisableBackgroundLevelStreaming", 1) == 1;
 	FixAspectRatio = IniHelper::ReadInteger("Graphics", "FixAspectRatio", 1) == 1;
-	ReducedMipMapBias = IniHelper::ReadInteger("Graphics", "ReducedMipMapBias", 1) == 1;
+	TrilinearFiltering = IniHelper::ReadInteger("Graphics", "TrilinearFiltering", 1) == 1;
 	FixBinkVideoBT709 = IniHelper::ReadInteger("Graphics", "FixBinkVideoBT709", 1) == 1;
+	ImprovedBinkVideo = IniHelper::ReadInteger("Graphics", "ImprovedBinkVideo", 1) == 1;
 	ForceMSAA = std::clamp(IniHelper::ReadInteger("Graphics", "ForceMSAA", -1), -1, 16);
 	SSAAScale = std::clamp(IniHelper::ReadFloat("Graphics", "SSAAScale", 1.0f), 1.0f, 4.0f);
 	AdaptivePhysXMemory = IniHelper::ReadInteger("Graphics", "AdaptivePhysXMemory", 1) == 1;
+	OverlapGPUPhysX = IniHelper::ReadInteger("Graphics", "OverlapGPUPhysX", 1) == 1;
 
 	if (UseSDLControllerInput)
 	{

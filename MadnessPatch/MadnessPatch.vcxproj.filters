@@ -14,9 +14,6 @@
     <ClCompile Include="..\src\Fixes\CrashFixes.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Fixes\FixCPUPhysX.cpp">
-      <Filter>src\Fixes</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Fixes\WindowHandling.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
@@ -36,6 +33,9 @@
       <Filter>src\Fixes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Fixes\FixMSAAFog.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixSlowLoading.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
@@ -74,13 +74,16 @@
     <ClCompile Include="..\src\Graphics\ImprovedTextureStreaming.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graphics\ReducedMipMapBias.cpp">
+    <ClCompile Include="..\src\Graphics\TrilinearFiltering.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\FixBinkVideoBT709.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\ImprovedBinkVideo.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\ForceMSAA.cpp">
@@ -168,6 +171,9 @@
       <Filter>src\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Graphics\AdaptivePhysXMemory.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Graphics\OverlapGPUPhysX.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

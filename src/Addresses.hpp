@@ -69,13 +69,13 @@ enum class Addr
 	// Particle material destruction race
 	ParticleMaterialDispatchSite,
 
+	// PhysX fluid emptied before its release
+	FluidRemoveAllParticles,
+
 	// FixMorphTargets
 	UpdateActiveMorphs,
 	ChildFaceFXCall,
 	UpdateMorphVertexBuffer,
-
-	// FixCPUPhysX
-	PhysXLoad,
 
 	// MaxPoolThreads
 	ThreadPoolCount,
@@ -121,8 +121,8 @@ enum class Addr
 	ShouldMipLevelsBeForcedResident,
 	GetWantedMips,
 
-	// ReducedMipMapBias
-	MipMapBias,
+	// TrilinearFiltering
+	AnisotropicPointMipFilter,
 
 	// DisableBackgroundLevelStreaming
 	BackgroundLevelStreaming,
@@ -130,12 +130,21 @@ enum class Addr
 	// FixBinkVideoBT709
 	Gyuvtorgb,
 
+	// ImprovedBinkVideo
+	DrawBinkTextures,
+	BinkDrawCall,
+	UpdateD3DDeviceBink,
+
 	// FixCharacterLighting
 	LightEnvStaticUpdate,
 
 	// FixMSAAFog
 	FogDrawCall,
 	UpdateD3DDevice,
+
+	// FixSlowLoading
+	AsyncIOCacheHandles,
+	AsyncIOCacheHandlesEnd,
 
 	// ForceMSAA
 	ActivateSystemSettings,
@@ -194,6 +203,18 @@ enum class Addr
 	// AdaptivePhysXMemory
 	PhysXCreateSDK,
 	GetSystemVRAM,
+
+	// OverlapGPUPhysX
+	DrawQueued,
+	DrawQueuedWrap,
+	BeginDrawingCommand,
+	WaitPhysCompartments,
+	FrameEndSync,
+	RenderFenceWait,
+	RingBufferAllocate,
+	RenderCommandBuffer,
+	PhysXSDK,
+	AppSleep,
 
 	// XAudio2Upgrade
 	XAudio2CreateEngine,
@@ -274,13 +295,13 @@ namespace Addresses
 		// Particle material destruction race
 		/* ParticleMaterialDispatchSite    */ { 0xBA65FD, 0xBA660D, 0xB583ED },
 
+		// PhysX fluid emptied before its release
+		/* FluidRemoveAllParticles         */ { 0xB76413, 0xB76613, 0xB2AA33 },
+
 		// FixMorphTargets
 		/* UpdateActiveMorphs              */ { 0x90F490, 0x90FB20, 0x8D54A0 },
 		/* ChildFaceFXCall                 */ { 0x92257A, 0x922A1A, 0x8E68FA },
 		/* UpdateMorphVertexBuffer         */ { 0x929480, 0x9298A0, 0x8ECEE0 },
-
-		// FixCPUPhysX
-		/* PhysXLoad                       */ { 0x9DAC90, 0x9DB430, 0x9982C0 },
 
 		// MaxPoolThreads
 		/* ThreadPoolCount                 */ { 0xC9107F, 0xC9169F, 0xC37B3A },
@@ -326,8 +347,8 @@ namespace Addresses
 		/* ShouldMipLevelsBeForcedResident */ { 0x646220, 0x6469F0, 0x620FE0 },
 		/* GetWantedMips                   */ { 0x6CC5E0, 0x6CCD60, 0x6A2110 },
 
-		// ReducedMipMapBias
-		/* MipMapBias                      */ { 0xC7137A, 0xC7188A, 0xC1C6BA },
+		// TrilinearFiltering
+		/* AnisotropicPointMipFilter       */ { 0xC72E9E, 0xC7353E, 0xC1DDCE },
 
 		// DisableBackgroundLevelStreaming
 		/* BackgroundLevelStreaming        */ { 0x9918DE, 0x991F4E, 0x95288E },
@@ -335,12 +356,21 @@ namespace Addresses
 		// FixBinkVideoBT709
 		/* Gyuvtorgb                       */ { 0x1421DC0, 0x1421DC0, 0x139ECE0 },
 
+		// ImprovedBinkVideo
+		/* DrawBinkTextures                */ { 0x6E1320, 0x6E1BF0, 0x6B5B30 },
+		/* BinkDrawCall                    */ { 0x6E1792, 0x6E2062, 0x6B5FA2 },
+		/* UpdateD3DDeviceBink             */ { 0xC782A8, 0xC788F8, 0xC220D1 },
+
 		// FixCharacterLighting
 		/* LightEnvStaticUpdate            */ { 0x593B59, 0x594269, 0x573B39 },
 
 		// FixMSAAFog
 		/* FogDrawCall                     */ { 0xAD1614, 0xAD1844, 0xA8A544 },
 		/* UpdateD3DDevice                 */ { 0xC781F7, 0xC78847, 0xC220C7 },
+
+		// FixSlowLoading
+		/* AsyncIOCacheHandles             */ { 0x4AF3FE, 0x4AF51E, 0x49D4DE },
+		/* AsyncIOCacheHandlesEnd          */ { 0x4AF477, 0x4AF597, 0x49D554 },
 
 		// ForceMSAA
 		/* ActivateSystemSettings          */ { 0x621BB0, 0x621BF0, 0x5FE060 },
@@ -399,6 +429,18 @@ namespace Addresses
 		// AdaptivePhysXMemory
 		/* PhysXCreateSDK                  */ { 0x9E80FF, 0x9E878F, 0x9A5607 },
 		/* GetSystemVRAM                   */ { 0xC77592, 0xC77BE2, 0xC21576 },
+
+		// OverlapGPUPhysX
+		/* DrawQueued                      */ { 0x6DF968, 0x6E0118, 0x6B5298 },
+		/* DrawQueuedWrap                  */ { 0x6DF994, 0x6E0144, 0x6B52C4 },
+		/* BeginDrawingCommand             */ { 0x6CB3F0, 0x6CBB70, 0x6A1500 },
+		/* WaitPhysCompartments            */ { 0x9D63C0, 0x9D6C10, 0x9941C0 },
+		/* FrameEndSync                    */ { 0xC8D4F0, 0xC8DB00, 0xC34300 },
+		/* RenderFenceWait                 */ { 0x60C6A0, 0x60CAB0, 0x5EA5E0 },
+		/* RingBufferAllocate              */ { 0x48D510, 0x48D260, 0x47C900 },
+		/* RenderCommandBuffer             */ { 0x14FD720, 0x14FD720, 0x1478AF8 },
+		/* PhysXSDK                        */ { 0x1509A50, 0x1509A50, 0x14836E0 },
+		/* AppSleep                        */ { 0x51A9B0, 0x51AEE0, 0x4FEF30 },
 
 		// XAudio2Upgrade
 		/* XAudio2CreateEngine             */ { 0xC87050, 0xC875B0, 0xC2F100 },

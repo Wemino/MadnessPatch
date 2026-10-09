@@ -8,7 +8,6 @@ void ApplyFixHighFPSPhysX();
 void ApplyFixHighFPSWalkingPhysics();
 void ApplyCrashFixes();
 void ApplyFixMissingMusic();
-void ApplyFixCPUPhysX();
 void ApplyFixInputBinding();
 void ApplyFixWindowHandling();
 void ApplyThreadPoolClamp();
@@ -17,6 +16,7 @@ void ApplyXAudio2Upgrade();
 void ApplyFixMorphTargets();
 void ApplyFixCharacterLighting();
 void ApplyFixMSAAFog();
+void ApplyFixSlowLoading();
 
 // General
 void ApplyIntroSkip();
@@ -40,14 +40,16 @@ void ApplyUseSDLControllerInput();
 
 // Graphics
 void ApplyImprovedTextureStreaming();
-void ApplyReducedMipMapBias();
+void ApplyTrilinearFiltering();
 void ApplyDisableBackgroundLevelStreaming();
 void ApplyFixBinkVideoBT709();
+void ApplyImprovedBinkVideo();
 void ApplyForceMSAA();
 void ApplySupersampling();
 void ApplyFixAspectRatio();
 void ApplyMenuScripts();
 void ApplyAdaptivePhysXMemory();
+void ApplyOverlapGPUPhysX();
 void ReapplyMenuLetterbox();
 void ReapplyMemoryPosition();
 

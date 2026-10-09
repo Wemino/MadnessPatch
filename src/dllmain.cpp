@@ -55,7 +55,6 @@ static void Init()
 	ApplyFixHighFPSWalkingPhysics();
 	ApplyCrashFixes();
 	ApplyFixMissingMusic();
-	ApplyFixCPUPhysX();
 	ApplyFixInputBinding();
 	ApplyFixWindowHandling();
 	ApplyThreadPoolClamp();
@@ -64,6 +63,7 @@ static void Init()
 	ApplyFixMorphTargets();
 	ApplyFixCharacterLighting();
 	ApplyFixMSAAFog();
+	ApplyFixSlowLoading();
 
 	// General
 	ApplyIntroSkip();
@@ -86,14 +86,16 @@ static void Init()
 
 	// Graphics
 	ApplyImprovedTextureStreaming();
-	ApplyReducedMipMapBias();
+	ApplyTrilinearFiltering();
 	ApplyDisableBackgroundLevelStreaming();
 	ApplyFixBinkVideoBT709();
+	ApplyImprovedBinkVideo();
 	ApplyForceMSAA();
 	ApplySupersampling();
 	ApplyFixAspectRatio();
 	ApplyMenuScripts();
 	ApplyAdaptivePhysXMemory();
+	ApplyOverlapGPUPhysX();
 
 	// Misc
 	ApplyResolutionHook();
