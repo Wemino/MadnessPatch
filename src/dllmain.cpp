@@ -88,7 +88,6 @@ static void Init()
 	ApplyImprovedTextureStreaming();
 	ApplyTrilinearFiltering();
 	ApplyDisableBackgroundLevelStreaming();
-	ApplyFixBinkVideoBT709();
 	ApplyImprovedBinkVideo();
 	ApplyForceMSAA();
 	ApplySupersampling();

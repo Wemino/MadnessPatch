@@ -42,7 +42,6 @@ void ApplyUseSDLControllerInput();
 void ApplyImprovedTextureStreaming();
 void ApplyTrilinearFiltering();
 void ApplyDisableBackgroundLevelStreaming();
-void ApplyFixBinkVideoBT709();
 void ApplyImprovedBinkVideo();
 void ApplyForceMSAA();
 void ApplySupersampling();

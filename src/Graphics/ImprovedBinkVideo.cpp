@@ -3,6 +3,31 @@
 
 #include <d3d9.h>
 
+// The EASU upscaling in VideoPixelShader and CleanVideoPixelShader is ported from AMD FidelityFX Super Resolution 1,
+// https://github.com/GPUOpen-Effects/FidelityFX-FSR, under the following license:
+//
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+// The debanding is based on mpv's deband shader (video/out/gpu/video_shaders.c)
+
 static safetyhook::MidHook DrawBinkTexturesHook{};
 static safetyhook::MidHook UpdateD3DDeviceHook{};
 
@@ -12,7 +37,23 @@ static bool bAlphaPlane = false;
 
 static IDirect3DDevice9* VideoDevice = nullptr;
 static IDirect3DPixelShader9* VideoPS = nullptr;
+static IDirect3DPixelShader9* CleanPS = nullptr;
+static IDirect3DPixelShader9* PackPS = nullptr;
+static IDirect3DPixelShader9* CleanVideoPS = nullptr;
 static bool bShaderFailed = false;
+static bool bCleanFailed = false;
+
+struct CleanTargets
+{
+	IDirect3DTexture9* Planes[3];
+	IDirect3DTexture9* PackedChroma;
+	UINT LumaWidth, LumaHeight, ChromaWidth, ChromaHeight;
+	UINT LastUse;
+};
+
+static CleanTargets CleanSets[2] = {};
+static UINT CleanDraws = 0;
+static UINT CleanRetryDraw = 0;
 
 static const DWORD PlaneSizesRegister = 220;
 
@@ -498,12 +539,912 @@ static const DWORD VideoPixelShader[] =
 	0x0000002B, 0x02000001, 0x800F0800, 0x80E4001F, 0x0000FFFF
 };
 
+// ps_3_0
+// def c200, 0, 0.5, 1, 0.25
+// def c201, 0.125, 8, 0.5, 2
+// def c202, 0.0392156863, 63.75, 0.0156862745, 127.5
+// def c203, -1, 1, -1, 1
+// def c204, 0.5, 7.5, 0.5, 7.5
+// def c205, 8, 4, 0.0625, 0.125
+// def c206, 0.5625, 0.1875, 0.1875, 0.0625
+// def c207, -7.5, -7.5, 0, 0
+// def c208, 0, 1, 2, 0
+// def c209, 3, 4, 5, 0
+// def c210, 6, 7, 8, 0
+// def c211, 9, 10, 11, 0
+// def c212, 12, 13, 14, 0
+// def c213, 15, 16, 17, 0
+// def c214, 18, 19, 20, 0
+// def c215, 21, 22, 23, 0
+// def c216, 4, -2, 0.5, 1.5
+// def c217, 0.0941176471, 31.875, 0, 0
+// dcl vPos.xy
+// dcl_2d s0
+// add r0.xy, vPos.xy, c200.w
+// frc r1.xy, r0.xy
+// add r0.xy, r0.xy, -r1.xy
+// mul r1.xy, r0.xy, c201.z
+// frc r1.xy, r1.xy
+// mul r0.zw, r1.xyxy, c201.w
+// mul r1.xy, r0.xy, c201.x
+// frc r1.xy, r1.xy
+// mul r1.zw, r1.xyxy, c201.y
+// add r1.xy, r0.xy, -r1.zw
+// mov r2.xz, r1.zzww
+// mov r2.yw, -r1.zzww
+// add r2, r2, c204
+// mov r3.xz, r1.xxyy
+// add r3.yw, c220.xxyy, -r1.xxyy
+// add r3.yw, r3, -c201.y
+// add r3, r3, -c200.y
+// cmp r3, r3, c200.z, c200.x
+// add r7.xy, r1.xy, c207.xy
+// mul r7.xy, r7.xy, c220.zw
+// add r7.zw, r0.xyxy, c200.y
+// mul r7.zw, r7, c220.zzzw
+// mov r24.xy, c220.zw
+// mov r4.w, r7.w
+// mov r5.x, r7.z
+// mad r4.xyz, c208, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r15.x, r6.x
+// texld r6, r4.yw, s0 / mov r14.x, r6.x
+// texld r6, r4.zw, s0 / mov r13.x, r6.x
+// mad r4.xyz, c209, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r12.x, r6.x
+// texld r6, r4.yw, s0 / mov r11.x, r6.x
+// texld r6, r4.zw, s0 / mov r10.x, r6.x
+// mad r4.xyz, c210, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r9.x, r6.x
+// texld r6, r4.yw, s0 / mov r8.x, r6.x
+// texld r6, r4.zw, s0 / mov r16.x, r6.x / mov r15.y, r6.x
+// mad r4.xyz, c211, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r17.x, r6.x / mov r14.y, r6.x
+// texld r6, r4.yw, s0 / mov r18.x, r6.x / mov r13.y, r6.x
+// texld r6, r4.zw, s0 / mov r19.x, r6.x / mov r12.y, r6.x
+// mad r4.xyz, c212, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r20.x, r6.x / mov r11.y, r6.x
+// texld r6, r4.yw, s0 / mov r21.x, r6.x / mov r10.y, r6.x
+// texld r6, r4.zw, s0 / mov r22.x, r6.x / mov r9.y, r6.x
+// mad r4.xyz, c213, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r23.x, r6.x / mov r8.y, r6.x
+// texld r6, r4.yw, s0 / mov r16.y, r6.x
+// texld r6, r4.zw, s0 / mov r17.y, r6.x
+// mad r4.xyz, c214, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r18.y, r6.x
+// texld r6, r4.yw, s0 / mov r19.y, r6.x
+// texld r6, r4.zw, s0 / mov r20.y, r6.x
+// mad r4.xyz, c215, r24.x, r7.x
+// texld r6, r4.xw, s0 / mov r21.y, r6.x
+// texld r6, r4.yw, s0 / mov r22.y, r6.x
+// texld r6, r4.zw, s0 / mov r23.y, r6.x
+// mad r5.yzw, c208.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r15.z, r6.x
+// texld r6, r5.xz, s0 / mov r14.z, r6.x
+// texld r6, r5.xw, s0 / mov r13.z, r6.x
+// mad r5.yzw, c209.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r12.z, r6.x
+// texld r6, r5.xz, s0 / mov r11.z, r6.x
+// texld r6, r5.xw, s0 / mov r10.z, r6.x
+// mad r5.yzw, c210.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r9.z, r6.x
+// texld r6, r5.xz, s0 / mov r8.z, r6.x
+// texld r6, r5.xw, s0 / mov r16.z, r6.x / mov r15.w, r6.x
+// mad r5.yzw, c211.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r17.z, r6.x / mov r14.w, r6.x
+// texld r6, r5.xz, s0 / mov r18.z, r6.x / mov r13.w, r6.x
+// texld r6, r5.xw, s0 / mov r19.z, r6.x / mov r12.w, r6.x
+// mad r5.yzw, c212.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r20.z, r6.x / mov r11.w, r6.x
+// texld r6, r5.xz, s0 / mov r21.z, r6.x / mov r10.w, r6.x
+// texld r6, r5.xw, s0 / mov r22.z, r6.x / mov r9.w, r6.x
+// mad r5.yzw, c213.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r23.z, r6.x / mov r8.w, r6.x
+// texld r6, r5.xz, s0 / mov r16.w, r6.x
+// texld r6, r5.xw, s0 / mov r17.w, r6.x
+// mad r5.yzw, c214.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r18.w, r6.x
+// texld r6, r5.xz, s0 / mov r19.w, r6.x
+// texld r6, r5.xw, s0 / mov r20.w, r6.x
+// mad r5.yzw, c215.xxyz, r24.y, r7.y
+// texld r6, r5.xy, s0 / mov r21.w, r6.x
+// texld r6, r5.xz, s0 / mov r22.w, r6.x
+// texld r6, r5.xw, s0 / mov r23.w, r6.x
+// max r24, r8, r9 / max r24, r24, r10 / max r24, r24, r11 / max r24, r24, r12 / max r24, r24, r13 / max r24, r24, r14 / max r24, r24, r15
+// min r25, r8, r9 / min r25, r25, r10 / min r25, r25, r11 / min r25, r25, r12 / min r25, r25, r13 / min r25, r25, r14 / min r25, r25, r15
+// max r26, r16, r17 / max r26, r26, r18 / max r26, r26, r19 / max r26, r26, r20 / max r26, r26, r21 / max r26, r26, r22 / max r26, r26, r23
+// min r27, r16, r17 / min r27, r27, r18 / min r27, r27, r19 / min r27, r27, r20 / min r27, r27, r21 / min r27, r27, r22 / min r27, r27, r23
+// add r24, r24, -r25
+// add r26, r26, -r27
+// max r25, r24, r26
+// cmp r28, -r25, c205.x, c205.y
+// cmp r29, -r25, c205.z, c205.w
+// add r30.x, r26.x, r26.z
+// add r24, r16, -r8
+// add r25, r8, -r9
+// add r26, r17, -r16
+// add r27, r25, r26
+// mad r27, r27, -c200.y, r24
+// max r25, r25_abs, r26_abs
+// add r26, r9, -r10
+// max r25, r25, r26_abs
+// add r26, r10, -r11
+// max r25, r25, r26_abs
+// add r26, r17, -r18
+// max r25, r25, r26_abs
+// add r26, r18, -r19
+// max r25, r25, r26_abs
+// add r24, -r24_abs, c202.x
+// mul_sat r24, r24, c202.y
+// add r25, -r25, c202.z
+// mul_sat r25, r25, c202.w
+// mul r24, r24, r25
+// mul r24, r24, r3
+// add r25, r28, -r2
+// max r25, r25, c200.x
+// mul r25, r25, r29
+// mul r24, r24, r27
+// mul r24, r24, r25
+// dp4 r30.y, r24, c203
+// add r8.xy, r0.xy, -r0.zw
+// mad r8.zw, r0, c216.x, c216.y
+// add r9, r8.xxyy, c216.zwzw
+// mul r9, r9, c220.zzww
+// mul r7.xy, r8.zw, c220.zw
+// add r10.xy, r9.xy, r7.x
+// mov r10.zw, r9
+// mov r11.xy, r9.xy
+// add r11.zw, r9, r7.y
+// mov r12.xy, r10.xy
+// mov r12.zw, r11
+// texld r6, r9.xz, s0 / mov r13.x, r6.x
+// texld r6, r9.yz, s0 / mov r14.x, r6.x
+// texld r6, r9.xw, s0 / mov r15.x, r6.x
+// texld r6, r9.yw, s0 / mov r16.x, r6.x
+// texld r6, r10.xz, s0 / mov r13.y, r6.x
+// texld r6, r10.yz, s0 / mov r14.y, r6.x
+// texld r6, r10.xw, s0 / mov r15.y, r6.x
+// texld r6, r10.yw, s0 / mov r16.y, r6.x
+// texld r6, r11.xz, s0 / mov r13.z, r6.x
+// texld r6, r11.yz, s0 / mov r14.z, r6.x
+// texld r6, r11.xw, s0 / mov r15.z, r6.x
+// texld r6, r11.yw, s0 / mov r16.z, r6.x
+// texld r6, r12.xz, s0 / mov r13.w, r6.x
+// texld r6, r12.yz, s0 / mov r14.w, r6.x
+// texld r6, r12.xw, s0 / mov r15.w, r6.x
+// texld r6, r12.yw, s0 / mov r16.w, r6.x
+// max r17, r13, r14 / max r17, r17, r15 / max r17, r17, r16
+// min r18, r13, r14 / min r18, r18, r15 / min r18, r18, r16
+// add r17, r17, -r18
+// cmp r17, -r17, c200.z, c200.x
+// add r18.xy, r8.xy, r8.zw
+// add r19.xy, r18.xy, c200.y
+// add r19.zw, c220.xyxy, -r18.xyxy
+// add r19.zw, r19, -c216.w
+// cmp r19, r19, c200.z, c200.x
+// mul r19.xy, r19.xy, r19.zw
+// mov r20.x, c200.z
+// mul r20.y, r17.y, r19.x
+// mul r20.z, r17.z, r19.y
+// mul r20.w, r17.w, r19.x
+// mul r20.w, r20.w, r19.y
+// add r18, r13, -r13.x
+// add r18, -r18_abs, c217.x
+// mul_sat r18, r18, c217.y
+// mul r20, r20, r18
+// lrp r21, r20, r13, r13.x
+// dp4 r21.x, r21, c206
+// lrp r22.x, r0.z, r14.x, r13.x
+// lrp r22.y, r0.z, r16.x, r15.x
+// lrp r25.x, r0.w, r22.y, r22.x
+// cmp r23.x, -r30.x, c200.x, c200.z
+// mul r23.x, r23.x, r17.x
+// add r22.w, r25.x, r30.y
+// lrp r24.x, r23.x, r21.x, r22.w
+// mov oC0, r24.x
+static const DWORD CleanPixelShader[] =
+{
+	0xFFFF0300, 0x0200001F, 0x80000000, 0x90031000, 0x05000051, 0xA00F00C8, 0x00000000, 0x3F000000,
+	0x3F800000, 0x3E800000, 0x05000051, 0xA00F00C9, 0x3E000000, 0x41000000, 0x3F000000, 0x40000000,
+	0x05000051, 0xA00F00CA, 0x3D20A0A1, 0x427F0000, 0x3C808080, 0x42FF0000, 0x05000051, 0xA00F00CB,
+	0xBF800000, 0x3F800000, 0xBF800000, 0x3F800000, 0x05000051, 0xA00F00CC, 0x3F000000, 0x40F00000,
+	0x3F000000, 0x40F00000, 0x05000051, 0xA00F00CD, 0x41000000, 0x40800000, 0x3D800000, 0x3E000000,
+	0x05000051, 0xA00F00CE, 0x3F100000, 0x3E400000, 0x3E400000, 0x3D800000, 0x05000051, 0xA00F00CF,
+	0xC0F00000, 0xC0F00000, 0x00000000, 0x00000000, 0x05000051, 0xA00F00D0, 0x00000000, 0x3F800000,
+	0x40000000, 0x00000000, 0x05000051, 0xA00F00D1, 0x40400000, 0x40800000, 0x40A00000, 0x00000000,
+	0x05000051, 0xA00F00D2, 0x40C00000, 0x40E00000, 0x41000000, 0x00000000, 0x05000051, 0xA00F00D3,
+	0x41100000, 0x41200000, 0x41300000, 0x00000000, 0x05000051, 0xA00F00D4, 0x41400000, 0x41500000,
+	0x41600000, 0x00000000, 0x05000051, 0xA00F00D5, 0x41700000, 0x41800000, 0x41880000, 0x00000000,
+	0x05000051, 0xA00F00D6, 0x41900000, 0x41980000, 0x41A00000, 0x00000000, 0x05000051, 0xA00F00D7,
+	0x41A80000, 0x41B00000, 0x41B80000, 0x00000000, 0x05000051, 0xA00F00D8, 0x40800000, 0xC0000000,
+	0x3F000000, 0x3FC00000, 0x05000051, 0xA00F00D9, 0x3DC0C0C1, 0x41FF0000, 0x00000000, 0x00000000,
+	0x0200001F, 0x90000000, 0xA00F0800, 0x03000002, 0x80030000, 0x90541000, 0xA0FF00C8, 0x02000013,
+	0x80030001, 0x80540000, 0x03000002, 0x80030000, 0x80540000, 0x81540001, 0x03000005, 0x80030001,
+	0x80540000, 0xA0AA00C9, 0x02000013, 0x80030001, 0x80540001, 0x03000005, 0x800C0000, 0x80440001,
+	0xA0FF00C9, 0x03000005, 0x80030001, 0x80540000, 0xA00000C9, 0x02000013, 0x80030001, 0x80540001,
+	0x03000005, 0x800C0001, 0x80440001, 0xA05500C9, 0x03000002, 0x80030001, 0x80540000, 0x81FE0001,
+	0x02000001, 0x80050002, 0x80FA0001, 0x02000001, 0x800A0002, 0x81FA0001, 0x03000002, 0x800F0002,
+	0x80E40002, 0xA0E400CC, 0x02000001, 0x80050003, 0x80500001, 0x03000002, 0x800A0003, 0xA05000DC,
+	0x81500001, 0x03000002, 0x800A0003, 0x80E40003, 0xA15500C9, 0x03000002, 0x800F0003, 0x80E40003,
+	0xA15500C8, 0x04000058, 0x800F0003, 0x80E40003, 0xA0AA00C8, 0xA00000C8, 0x03000002, 0x80030007,
+	0x80540001, 0xA05400CF, 0x03000005, 0x80030007, 0x80540007, 0xA0FE00DC, 0x03000002, 0x800C0007,
+	0x80440000, 0xA05500C8, 0x03000005, 0x800C0007, 0x80E40007, 0xA0EA00DC, 0x02000001, 0x80030018,
+	0xA0FE00DC, 0x02000001, 0x80080004, 0x80FF0007, 0x02000001, 0x80010005, 0x80AA0007, 0x04000004,
+	0x80070004, 0xA0E400D0, 0x80000018, 0x80000007, 0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800,
+	0x02000001, 0x8001000F, 0x80000006, 0x03000042, 0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001,
+	0x8001000E, 0x80000006, 0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800, 0x02000001, 0x8001000D,
+	0x80000006, 0x04000004, 0x80070004, 0xA0E400D1, 0x80000018, 0x80000007, 0x03000042, 0x800F0006,
+	0x80FC0004, 0xA0E40800, 0x02000001, 0x8001000C, 0x80000006, 0x03000042, 0x800F0006, 0x80FD0004,
+	0xA0E40800, 0x02000001, 0x8001000B, 0x80000006, 0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800,
+	0x02000001, 0x8001000A, 0x80000006, 0x04000004, 0x80070004, 0xA0E400D2, 0x80000018, 0x80000007,
+	0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800, 0x02000001, 0x80010009, 0x80000006, 0x03000042,
+	0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001, 0x80010008, 0x80000006, 0x03000042, 0x800F0006,
+	0x80FE0004, 0xA0E40800, 0x02000001, 0x80010010, 0x80000006, 0x02000001, 0x8002000F, 0x80000006,
+	0x04000004, 0x80070004, 0xA0E400D3, 0x80000018, 0x80000007, 0x03000042, 0x800F0006, 0x80FC0004,
+	0xA0E40800, 0x02000001, 0x80010011, 0x80000006, 0x02000001, 0x8002000E, 0x80000006, 0x03000042,
+	0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001, 0x80010012, 0x80000006, 0x02000001, 0x8002000D,
+	0x80000006, 0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800, 0x02000001, 0x80010013, 0x80000006,
+	0x02000001, 0x8002000C, 0x80000006, 0x04000004, 0x80070004, 0xA0E400D4, 0x80000018, 0x80000007,
+	0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800, 0x02000001, 0x80010014, 0x80000006, 0x02000001,
+	0x8002000B, 0x80000006, 0x03000042, 0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001, 0x80010015,
+	0x80000006, 0x02000001, 0x8002000A, 0x80000006, 0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800,
+	0x02000001, 0x80010016, 0x80000006, 0x02000001, 0x80020009, 0x80000006, 0x04000004, 0x80070004,
+	0xA0E400D5, 0x80000018, 0x80000007, 0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800, 0x02000001,
+	0x80010017, 0x80000006, 0x02000001, 0x80020008, 0x80000006, 0x03000042, 0x800F0006, 0x80FD0004,
+	0xA0E40800, 0x02000001, 0x80020010, 0x80000006, 0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800,
+	0x02000001, 0x80020011, 0x80000006, 0x04000004, 0x80070004, 0xA0E400D6, 0x80000018, 0x80000007,
+	0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800, 0x02000001, 0x80020012, 0x80000006, 0x03000042,
+	0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001, 0x80020013, 0x80000006, 0x03000042, 0x800F0006,
+	0x80FE0004, 0xA0E40800, 0x02000001, 0x80020014, 0x80000006, 0x04000004, 0x80070004, 0xA0E400D7,
+	0x80000018, 0x80000007, 0x03000042, 0x800F0006, 0x80FC0004, 0xA0E40800, 0x02000001, 0x80020015,
+	0x80000006, 0x03000042, 0x800F0006, 0x80FD0004, 0xA0E40800, 0x02000001, 0x80020016, 0x80000006,
+	0x03000042, 0x800F0006, 0x80FE0004, 0xA0E40800, 0x02000001, 0x80020017, 0x80000006, 0x04000004,
+	0x800E0005, 0xA09000D0, 0x80550018, 0x80550007, 0x03000042, 0x800F0006, 0x80540005, 0xA0E40800,
+	0x02000001, 0x8004000F, 0x80000006, 0x03000042, 0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001,
+	0x8004000E, 0x80000006, 0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800, 0x02000001, 0x8004000D,
+	0x80000006, 0x04000004, 0x800E0005, 0xA09000D1, 0x80550018, 0x80550007, 0x03000042, 0x800F0006,
+	0x80540005, 0xA0E40800, 0x02000001, 0x8004000C, 0x80000006, 0x03000042, 0x800F0006, 0x80A80005,
+	0xA0E40800, 0x02000001, 0x8004000B, 0x80000006, 0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800,
+	0x02000001, 0x8004000A, 0x80000006, 0x04000004, 0x800E0005, 0xA09000D2, 0x80550018, 0x80550007,
+	0x03000042, 0x800F0006, 0x80540005, 0xA0E40800, 0x02000001, 0x80040009, 0x80000006, 0x03000042,
+	0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001, 0x80040008, 0x80000006, 0x03000042, 0x800F0006,
+	0x80FC0005, 0xA0E40800, 0x02000001, 0x80040010, 0x80000006, 0x02000001, 0x8008000F, 0x80000006,
+	0x04000004, 0x800E0005, 0xA09000D3, 0x80550018, 0x80550007, 0x03000042, 0x800F0006, 0x80540005,
+	0xA0E40800, 0x02000001, 0x80040011, 0x80000006, 0x02000001, 0x8008000E, 0x80000006, 0x03000042,
+	0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001, 0x80040012, 0x80000006, 0x02000001, 0x8008000D,
+	0x80000006, 0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800, 0x02000001, 0x80040013, 0x80000006,
+	0x02000001, 0x8008000C, 0x80000006, 0x04000004, 0x800E0005, 0xA09000D4, 0x80550018, 0x80550007,
+	0x03000042, 0x800F0006, 0x80540005, 0xA0E40800, 0x02000001, 0x80040014, 0x80000006, 0x02000001,
+	0x8008000B, 0x80000006, 0x03000042, 0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001, 0x80040015,
+	0x80000006, 0x02000001, 0x8008000A, 0x80000006, 0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800,
+	0x02000001, 0x80040016, 0x80000006, 0x02000001, 0x80080009, 0x80000006, 0x04000004, 0x800E0005,
+	0xA09000D5, 0x80550018, 0x80550007, 0x03000042, 0x800F0006, 0x80540005, 0xA0E40800, 0x02000001,
+	0x80040017, 0x80000006, 0x02000001, 0x80080008, 0x80000006, 0x03000042, 0x800F0006, 0x80A80005,
+	0xA0E40800, 0x02000001, 0x80080010, 0x80000006, 0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800,
+	0x02000001, 0x80080011, 0x80000006, 0x04000004, 0x800E0005, 0xA09000D6, 0x80550018, 0x80550007,
+	0x03000042, 0x800F0006, 0x80540005, 0xA0E40800, 0x02000001, 0x80080012, 0x80000006, 0x03000042,
+	0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001, 0x80080013, 0x80000006, 0x03000042, 0x800F0006,
+	0x80FC0005, 0xA0E40800, 0x02000001, 0x80080014, 0x80000006, 0x04000004, 0x800E0005, 0xA09000D7,
+	0x80550018, 0x80550007, 0x03000042, 0x800F0006, 0x80540005, 0xA0E40800, 0x02000001, 0x80080015,
+	0x80000006, 0x03000042, 0x800F0006, 0x80A80005, 0xA0E40800, 0x02000001, 0x80080016, 0x80000006,
+	0x03000042, 0x800F0006, 0x80FC0005, 0xA0E40800, 0x02000001, 0x80080017, 0x80000006, 0x0300000B,
+	0x800F0018, 0x80E40008, 0x80E40009, 0x0300000B, 0x800F0018, 0x80E40018, 0x80E4000A, 0x0300000B,
+	0x800F0018, 0x80E40018, 0x80E4000B, 0x0300000B, 0x800F0018, 0x80E40018, 0x80E4000C, 0x0300000B,
+	0x800F0018, 0x80E40018, 0x80E4000D, 0x0300000B, 0x800F0018, 0x80E40018, 0x80E4000E, 0x0300000B,
+	0x800F0018, 0x80E40018, 0x80E4000F, 0x0300000A, 0x800F0019, 0x80E40008, 0x80E40009, 0x0300000A,
+	0x800F0019, 0x80E40019, 0x80E4000A, 0x0300000A, 0x800F0019, 0x80E40019, 0x80E4000B, 0x0300000A,
+	0x800F0019, 0x80E40019, 0x80E4000C, 0x0300000A, 0x800F0019, 0x80E40019, 0x80E4000D, 0x0300000A,
+	0x800F0019, 0x80E40019, 0x80E4000E, 0x0300000A, 0x800F0019, 0x80E40019, 0x80E4000F, 0x0300000B,
+	0x800F001A, 0x80E40010, 0x80E40011, 0x0300000B, 0x800F001A, 0x80E4001A, 0x80E40012, 0x0300000B,
+	0x800F001A, 0x80E4001A, 0x80E40013, 0x0300000B, 0x800F001A, 0x80E4001A, 0x80E40014, 0x0300000B,
+	0x800F001A, 0x80E4001A, 0x80E40015, 0x0300000B, 0x800F001A, 0x80E4001A, 0x80E40016, 0x0300000B,
+	0x800F001A, 0x80E4001A, 0x80E40017, 0x0300000A, 0x800F001B, 0x80E40010, 0x80E40011, 0x0300000A,
+	0x800F001B, 0x80E4001B, 0x80E40012, 0x0300000A, 0x800F001B, 0x80E4001B, 0x80E40013, 0x0300000A,
+	0x800F001B, 0x80E4001B, 0x80E40014, 0x0300000A, 0x800F001B, 0x80E4001B, 0x80E40015, 0x0300000A,
+	0x800F001B, 0x80E4001B, 0x80E40016, 0x0300000A, 0x800F001B, 0x80E4001B, 0x80E40017, 0x03000002,
+	0x800F0018, 0x80E40018, 0x81E40019, 0x03000002, 0x800F001A, 0x80E4001A, 0x81E4001B, 0x0300000B,
+	0x800F0019, 0x80E40018, 0x80E4001A, 0x04000058, 0x800F001C, 0x81E40019, 0xA00000CD, 0xA05500CD,
+	0x04000058, 0x800F001D, 0x81E40019, 0xA0AA00CD, 0xA0FF00CD, 0x03000002, 0x8001001E, 0x8000001A,
+	0x80AA001A, 0x03000002, 0x800F0018, 0x80E40010, 0x81E40008, 0x03000002, 0x800F0019, 0x80E40008,
+	0x81E40009, 0x03000002, 0x800F001A, 0x80E40011, 0x81E40010, 0x03000002, 0x800F001B, 0x80E40019,
+	0x80E4001A, 0x04000004, 0x800F001B, 0x80E4001B, 0xA15500C8, 0x80E40018, 0x0300000B, 0x800F0019,
+	0x8BE40019, 0x8BE4001A, 0x03000002, 0x800F001A, 0x80E40009, 0x81E4000A, 0x0300000B, 0x800F0019,
+	0x80E40019, 0x8BE4001A, 0x03000002, 0x800F001A, 0x80E4000A, 0x81E4000B, 0x0300000B, 0x800F0019,
+	0x80E40019, 0x8BE4001A, 0x03000002, 0x800F001A, 0x80E40011, 0x81E40012, 0x0300000B, 0x800F0019,
+	0x80E40019, 0x8BE4001A, 0x03000002, 0x800F001A, 0x80E40012, 0x81E40013, 0x0300000B, 0x800F0019,
+	0x80E40019, 0x8BE4001A, 0x03000002, 0x800F0018, 0x8CE40018, 0xA00000CA, 0x03000005, 0x801F0018,
+	0x80E40018, 0xA05500CA, 0x03000002, 0x800F0019, 0x81E40019, 0xA0AA00CA, 0x03000005, 0x801F0019,
+	0x80E40019, 0xA0FF00CA, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40019, 0x03000005, 0x800F0018,
+	0x80E40018, 0x80E40003, 0x03000002, 0x800F0019, 0x80E4001C, 0x81E40002, 0x0300000B, 0x800F0019,
+	0x80E40019, 0xA00000C8, 0x03000005, 0x800F0019, 0x80E40019, 0x80E4001D, 0x03000005, 0x800F0018,
+	0x80E40018, 0x80E4001B, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40019, 0x03000009, 0x8002001E,
+	0x80E40018, 0xA0E400CB, 0x03000002, 0x80030008, 0x80540000, 0x81FE0000, 0x04000004, 0x800C0008,
+	0x80E40000, 0xA00000D8, 0xA05500D8, 0x03000002, 0x800F0009, 0x80500008, 0xA0EE00D8, 0x03000005,
+	0x800F0009, 0x80E40009, 0xA0FA00DC, 0x03000005, 0x80030007, 0x80FE0008, 0xA0FE00DC, 0x03000002,
+	0x8003000A, 0x80540009, 0x80000007, 0x02000001, 0x800C000A, 0x80E40009, 0x02000001, 0x8003000B,
+	0x80540009, 0x03000002, 0x800C000B, 0x80E40009, 0x80550007, 0x02000001, 0x8003000C, 0x8054000A,
+	0x02000001, 0x800C000C, 0x80E4000B, 0x03000042, 0x800F0006, 0x80A80009, 0xA0E40800, 0x02000001,
+	0x8001000D, 0x80000006, 0x03000042, 0x800F0006, 0x80A90009, 0xA0E40800, 0x02000001, 0x8001000E,
+	0x80000006, 0x03000042, 0x800F0006, 0x80FC0009, 0xA0E40800, 0x02000001, 0x8001000F, 0x80000006,
+	0x03000042, 0x800F0006, 0x80FD0009, 0xA0E40800, 0x02000001, 0x80010010, 0x80000006, 0x03000042,
+	0x800F0006, 0x80A8000A, 0xA0E40800, 0x02000001, 0x8002000D, 0x80000006, 0x03000042, 0x800F0006,
+	0x80A9000A, 0xA0E40800, 0x02000001, 0x8002000E, 0x80000006, 0x03000042, 0x800F0006, 0x80FC000A,
+	0xA0E40800, 0x02000001, 0x8002000F, 0x80000006, 0x03000042, 0x800F0006, 0x80FD000A, 0xA0E40800,
+	0x02000001, 0x80020010, 0x80000006, 0x03000042, 0x800F0006, 0x80A8000B, 0xA0E40800, 0x02000001,
+	0x8004000D, 0x80000006, 0x03000042, 0x800F0006, 0x80A9000B, 0xA0E40800, 0x02000001, 0x8004000E,
+	0x80000006, 0x03000042, 0x800F0006, 0x80FC000B, 0xA0E40800, 0x02000001, 0x8004000F, 0x80000006,
+	0x03000042, 0x800F0006, 0x80FD000B, 0xA0E40800, 0x02000001, 0x80040010, 0x80000006, 0x03000042,
+	0x800F0006, 0x80A8000C, 0xA0E40800, 0x02000001, 0x8008000D, 0x80000006, 0x03000042, 0x800F0006,
+	0x80A9000C, 0xA0E40800, 0x02000001, 0x8008000E, 0x80000006, 0x03000042, 0x800F0006, 0x80FC000C,
+	0xA0E40800, 0x02000001, 0x8008000F, 0x80000006, 0x03000042, 0x800F0006, 0x80FD000C, 0xA0E40800,
+	0x02000001, 0x80080010, 0x80000006, 0x0300000B, 0x800F0011, 0x80E4000D, 0x80E4000E, 0x0300000B,
+	0x800F0011, 0x80E40011, 0x80E4000F, 0x0300000B, 0x800F0011, 0x80E40011, 0x80E40010, 0x0300000A,
+	0x800F0012, 0x80E4000D, 0x80E4000E, 0x0300000A, 0x800F0012, 0x80E40012, 0x80E4000F, 0x0300000A,
+	0x800F0012, 0x80E40012, 0x80E40010, 0x03000002, 0x800F0011, 0x80E40011, 0x81E40012, 0x04000058,
+	0x800F0011, 0x81E40011, 0xA0AA00C8, 0xA00000C8, 0x03000002, 0x80030012, 0x80540008, 0x80FE0008,
+	0x03000002, 0x80030013, 0x80540012, 0xA05500C8, 0x03000002, 0x800C0013, 0xA04400DC, 0x81440012,
+	0x03000002, 0x800C0013, 0x80E40013, 0xA1FF00D8, 0x04000058, 0x800F0013, 0x80E40013, 0xA0AA00C8,
+	0xA00000C8, 0x03000005, 0x80030013, 0x80540013, 0x80FE0013, 0x02000001, 0x80010014, 0xA0AA00C8,
+	0x03000005, 0x80020014, 0x80550011, 0x80000013, 0x03000005, 0x80040014, 0x80AA0011, 0x80550013,
+	0x03000005, 0x80080014, 0x80FF0011, 0x80000013, 0x03000005, 0x80080014, 0x80FF0014, 0x80550013,
+	0x03000002, 0x800F0012, 0x80E4000D, 0x8100000D, 0x03000002, 0x800F0012, 0x8CE40012, 0xA00000D9,
+	0x03000005, 0x801F0012, 0x80E40012, 0xA05500D9, 0x03000005, 0x800F0014, 0x80E40014, 0x80E40012,
+	0x04000012, 0x800F0015, 0x80E40014, 0x80E4000D, 0x8000000D, 0x03000009, 0x80010015, 0x80E40015,
+	0xA0E400CE, 0x04000012, 0x80010016, 0x80AA0000, 0x8000000E, 0x8000000D, 0x04000012, 0x80020016,
+	0x80AA0000, 0x80000010, 0x8000000F, 0x04000012, 0x80010019, 0x80FF0000, 0x80550016, 0x80000016,
+	0x04000058, 0x80010017, 0x8100001E, 0xA00000C8, 0xA0AA00C8, 0x03000005, 0x80010017, 0x80000017,
+	0x80000011, 0x03000002, 0x80080016, 0x80000019, 0x8055001E, 0x04000012, 0x80010018, 0x80000017,
+	0x80000015, 0x80FF0016, 0x02000001, 0x800F0800, 0x80000018, 0x0000FFFF
+};
+
+// ps_3_0
+// def c200, 0, 0.5, 1, 0.25
+// def c201, 2, 1.5, 0.125, 0
+// def c202, -0.5, 0.5, 1.5, 0.5
+// dcl vPos.xy
+// dcl_2d s0
+// dcl_2d s1
+// dcl_2d s2
+// add r0.xy, vPos.xy, c200.w
+// frc r1.xy, r0.xy
+// add r0.xy, r0.xy, -r1.xy
+// add r1.xy, r0.xy, c200.y
+// mul r1.xy, r1.xy, c221.zw
+// texld r2, r1, s1
+// texld r3, r1, s2
+// mul r4.xy, r0.xy, c201.x
+// add r5, r4.xxxy, c202
+// mul r5, r5, c220.zzzw
+// add r7.x, r4.y, c201.y
+// mul r7.x, r7.x, c220.w
+// mov r6.xyz, r5
+// mov r6.w, r7.x
+// texld r8, r5.xw, s0
+// texld r9, r5.yw, s0
+// texld r10, r5.zw, s0
+// texld r11, r6.xw, s0
+// texld r12, r6.yw, s0
+// texld r13, r6.zw, s0
+// add r8.x, r8.x, r10.x
+// add r8.x, r8.x, r11.x
+// add r8.x, r8.x, r13.x
+// add r9.x, r9.x, r12.x
+// add r8.x, r8.x, r9.x
+// add r8.x, r8.x, r9.x
+// mul r14.x, r8.x, c201.z
+// mov r14.y, r2.x
+// mov r14.z, r3.x
+// mov r14.w, c200.z
+// mov oC0, r14
+static const DWORD PackPixelShader[] =
+{
+	0xFFFF0300, 0x0200001F, 0x80000000, 0x90031000, 0x05000051, 0xA00F00C8, 0x00000000, 0x3F000000,
+	0x3F800000, 0x3E800000, 0x05000051, 0xA00F00C9, 0x40000000, 0x3FC00000, 0x3E000000, 0x00000000,
+	0x05000051, 0xA00F00CA, 0xBF000000, 0x3F000000, 0x3FC00000, 0x3F000000, 0x0200001F, 0x90000000,
+	0xA00F0800, 0x0200001F, 0x90000000, 0xA00F0801, 0x0200001F, 0x90000000, 0xA00F0802, 0x03000002,
+	0x80030000, 0x90541000, 0xA0FF00C8, 0x02000013, 0x80030001, 0x80540000, 0x03000002, 0x80030000,
+	0x80540000, 0x81540001, 0x03000002, 0x80030001, 0x80540000, 0xA05500C8, 0x03000005, 0x80030001,
+	0x80540001, 0xA0FE00DD, 0x03000042, 0x800F0002, 0x80E40001, 0xA0E40801, 0x03000042, 0x800F0003,
+	0x80E40001, 0xA0E40802, 0x03000005, 0x80030004, 0x80540000, 0xA00000C9, 0x03000002, 0x800F0005,
+	0x80400004, 0xA0E400CA, 0x03000005, 0x800F0005, 0x80E40005, 0xA0EA00DC, 0x03000002, 0x80010007,
+	0x80550004, 0xA05500C9, 0x03000005, 0x80010007, 0x80000007, 0xA0FF00DC, 0x02000001, 0x80070006,
+	0x80E40005, 0x02000001, 0x80080006, 0x80000007, 0x03000042, 0x800F0008, 0x80FC0005, 0xA0E40800,
+	0x03000042, 0x800F0009, 0x80FD0005, 0xA0E40800, 0x03000042, 0x800F000A, 0x80FE0005, 0xA0E40800,
+	0x03000042, 0x800F000B, 0x80FC0006, 0xA0E40800, 0x03000042, 0x800F000C, 0x80FD0006, 0xA0E40800,
+	0x03000042, 0x800F000D, 0x80FE0006, 0xA0E40800, 0x03000002, 0x80010008, 0x80000008, 0x8000000A,
+	0x03000002, 0x80010008, 0x80000008, 0x8000000B, 0x03000002, 0x80010008, 0x80000008, 0x8000000D,
+	0x03000002, 0x80010009, 0x80000009, 0x8000000C, 0x03000002, 0x80010008, 0x80000008, 0x80000009,
+	0x03000002, 0x80010008, 0x80000008, 0x80000009, 0x03000005, 0x8001000E, 0x80000008, 0xA0AA00C9,
+	0x02000001, 0x8002000E, 0x80000002, 0x02000001, 0x8004000E, 0x80000003, 0x02000001, 0x8008000E,
+	0xA0AA00C8, 0x02000001, 0x800F0800, 0x80E4000E, 0x0000FFFF
+};
+
+// ps_3_0
+// def c199, -0.249755859375, -0.499755859375, -0.249755859375, -0.499755859375
+// def c200, 0, 0.5, 1, -1
+// def c201, 0, 1, 0, 1
+// def c202, 0, 0, 1, 1
+// def c203, -1, -1, 2, 2
+// def c204, 1, 0, 0, 1
+// def c205, 1, 1, 0, -1
+// def c206, 1, -1, 0, 2
+// def c207, 1, 2, -1, 0
+// def c208, -1, 1, 2, 0
+// def c209, 2, 1, 0, 0
+// def c210, 0.4, -1, 1.5625, -0.5625
+// def c211, -0.29, 0.5, 0.000030517578125, 0.001953125
+// def c212, 1.5, -2.5, 2, -0.499755859375
+// def c213, 0.003460207612, 289, 34, 1
+// def c214, 0.0243902439, 16, 6.283185307, -3.141592654
+// def c215, 0.0029296875, 0.25, 0, 0
+// def c216, 0.06711056, 0.00583715, 52.9829189, 0.003921568627
+// def c217, -1, 0, -1, 0
+// def c218, -1, 0, 1, 2
+// def c219, 1, 2, 1, 2
+// def c222, 0.0625, 0.000001, 0.0000000001, 0
+// def c223, 0, 1, 1, 0
+// dcl_texcoord v0
+// dcl vPos.xy
+// dcl_2d s0
+// dcl_2d s1
+// dcl_2d s3
+// mov r30, c200.x
+// if b1
+//     mul r0, v0.xyxy, c220.xyxy
+//     add r0, r0, c212.w
+//     frc r1, r0
+//     add r0, r0, -r1
+//     add r0, r0, c200.y
+//     mul r0, r0, c220.zwzw
+//     mov r2, c220.zwzw
+//     texld r3, r0, s0 / mov r10.x, r3.x
+//     mad r4, c204.xyxy, r2, r0 / texld r3, r4, s0 / mov r10.y, r3.x
+//     mad r4, c204.zwzw, r2, r0 / texld r3, r4, s0 / mov r10.z, r3.x
+//     mad r4, c205.xyxy, r2, r0 / texld r3, r4, s0 / mov r10.w, r3.x
+//     mad r4, c205.zwzw, r2, r0 / texld r3, r4, s0 / mov r11.x, r3.x
+//     mad r4, c206.xyxy, r2, r0 / texld r3, r4, s0 / mov r11.y, r3.x
+//     mad r4, c206.zwzw, r2, r0 / texld r3, r4, s0 / mov r11.z, r3.x
+//     mad r4, c207.xyxy, r2, r0 / texld r3, r4, s0 / mov r11.w, r3.x
+//     mad r4, c207.zwzw, r2, r0 / texld r3, r4, s0 / mov r12.x, r3.x
+//     mad r4, c208.xyxy, r2, r0 / texld r3, r4, s0 / mov r12.y, r3.x
+//     mad r4, c208.zwzw, r2, r0 / texld r3, r4, s0 / mov r12.z, r3.x
+//     mad r4, c209.xyxy, r2, r0 / texld r3, r4, s0 / mov r12.w, r3.x
+//     mov r13, r11 / mov r13.zw, r10.xyxy
+//     mov r14.xz, r12.xxyy / mov r14.yw, r10.xxzz
+//     mov r15.xz, r10.yyww / mov r15.yw, r12.zzww
+//     mov r16, r11 / mov r16.xy, r10.zwzw
+//     add r5, r15, -r10 / add r6, r10, -r14 / max r5, r5_abs, r6_abs / max r5, r5, c211.w / add r6, r15, -r14
+//     rcp r7.x, r5.x / rcp r7.y, r5.y / rcp r7.z, r5.z / rcp r7.w, r5.w / mul_sat r7, r6_abs, r7 / mul r7, r7, r7
+//     add r5, r16, -r10 / add r8, r10, -r13 / max r5, r5_abs, r8_abs / max r5, r5, c211.w / add r8, r16, -r13
+//     rcp r9.x, r5.x / rcp r9.y, r5.y / rcp r9.z, r5.z / rcp r9.w, r5.w / mul_sat r9, r8_abs, r9 / mad r7, r9, r9, r7
+//     add r5.xy, -r1, c200.z
+//     mov r9.xz, r5.x / mov r9.yw, r1.x / mov r17.xy, r5.y / mov r17.zw, r1.y / mul r9, r9, r17
+//     dp4 r17.x, r6, r9
+//     dp4 r17.y, r8, r9
+//     dp4 r17.z, r7, r9
+//     mul r18.xy, r17, r17
+//     add r18.x, r18.x, r18.y
+//     add r18.y, r18.x, -c211.z
+//     rsq r18.z, r18.x
+//     cmp r18.z, r18.y, r18.z, c200.z
+//     cmp r17.x, r18.y, r17.x, c200.z
+//     mul r17.xy, r17, r18.z
+//     mul r17.z, r17.z, c200.y
+//     mul r17.z, r17.z, r17.z
+//     max r18.x, r17_abs.x, r17_abs.y
+//     rcp r18.x, r18.x
+//     mul r18.yw, r17.xxxy, r17.xxxy
+//     add r18.y, r18.y, r18.w
+//     mul r18.x, r18.y, r18.x
+//     add r18.x, r18.x, c200.w
+//     mad r19.x, r18.x, r17.z, c200.z
+//     mad r19.y, r17.z, -c200.y, c200.z
+//     mad r19.z, r17.z, c211.x, c211.y
+//     rcp r19.w, r19.z
+//     mul r20.xy, r17, r19.x
+//     mul r20.zw, r17.yyyx, r19.y
+//     add r21, c201, -r1.x
+//     add r22, c202, -r1.y
+//     mul r23, r21, r20.x / mad r23, r22, r20.y, r23 / mul r24, r22, r20.w / mad r24, r21, -r20.z, r24
+//     mul r23, r23, r23 / mad r23, r24, r24, r23 / min r23, r23, r19.w
+//     mad r24, r23, c210.x, c210.y / mad r25, r23, r19.z, c210.y / mul r24, r24, r24 / mul r25, r25, r25
+//     mad r24, r24, c210.z, c210.w / mul r24, r24, r25
+//     mul r26, r24, r10
+//     mov r27, r24
+//     add r22, c203, -r1.y
+//     mul r23, r21, r20.x / mad r23, r22, r20.y, r23 / mul r24, r22, r20.w / mad r24, r21, -r20.z, r24
+//     mul r23, r23, r23 / mad r23, r24, r24, r23 / min r23, r23, r19.w
+//     mad r24, r23, c210.x, c210.y / mad r25, r23, r19.z, c210.y / mul r24, r24, r24 / mul r25, r25, r25
+//     mad r24, r24, c210.z, c210.w / mul r24, r24, r25
+//     mad r26, r24, r11, r26
+//     add r27, r27, r24
+//     add r21, c203, -r1.x
+//     add r22, c201, -r1.y
+//     mul r23, r21, r20.x / mad r23, r22, r20.y, r23 / mul r24, r22, r20.w / mad r24, r21, -r20.z, r24
+//     mul r23, r23, r23 / mad r23, r24, r24, r23 / min r23, r23, r19.w
+//     mad r24, r23, c210.x, c210.y / mad r25, r23, r19.z, c210.y / mul r24, r24, r24 / mul r25, r25, r25
+//     mad r24, r24, c210.z, c210.w / mul r24, r24, r25
+//     mad r26, r24, r12, r26
+//     add r27, r27, r24
+//     dp4 r26.x, r26, c200.z
+//     dp4 r27.x, r27, c200.z
+//     rcp r27.x, r27.x
+//     mul r26.x, r26.x, r27.x
+//     min r27.xy, r10.xy, r10.zw / min r27.x, r27.x, r27.y
+//     max r27.zw, r10.xyxy, r10.zwzw / max r27.z, r27.z, r27.w
+//     max r26.x, r26.x, r27.x
+//     min r30.x, r26.x, r27.z
+// else
+//     texld r0, v0, s0
+//     mov r30.x, r0.x
+// endif
+// mul r0, v0.xyxy, c221.xyxy
+// add r0, r0, c199
+// frc r1, r0
+// add r0, r0, -r1
+// add r0, r0, c200.y
+// add r2.xy, -r1, c200.z
+// mov r3.xz, r2.x / mov r3.yw, r1.x / mad r4, r3, c212.x, c212.y / mul r5, r3, r3 / mad r4, r5, r4, c200.z
+// mul r5.x, r1.x, r2.x / mul r5.x, r5.x, -c200.y / mul r4.xw, r3, r5.x
+// add r29, r3.xxyy, c223
+// mov r3.xz, r2.y / mov r3.yw, r1.y / mad r6, r3, c212.x, c212.y / mul r5, r3, r3 / mad r6, r5, r6, c200.z
+// mul r5.x, r1.y, r2.y / mul r5.x, r5.x, -c200.y / mul r6.xw, r3, r5.x
+// add r31, r3.xxyy, c223
+// mul r10, r4, r6.x / mul r11, r4, r6.y / mul r12, r4, r6.z / mul r13, r4, r6.w
+// mul r25, r29, r31.x / mul r26, r29, r31.y / mul r27, r29, r31.z / mul r28, r29, r31.w
+// add r7, r0.xxyy, c217 / add r8, r0.xxyy, c207 / add r9, r0.xxyy, c218 / add r14, r0.xxyy, c219
+// mul r7, r7, c221.zzww / mul r8, r8, c221.zzww / mul r9, r9, c221.zzww / mul r14, r14, c221.zzww
+// texld r21, r7.xz, s1
+// mul r24.xyz, r21, r25.x / mov r15.xyz, r24 / mul r16.xyz, r24, r21 / mul r17.yz, r24.x, r21 / mul r18.yz, r21, r10.x
+// texld r21, r7.yz, s1
+// mul r24.xyz, r21, r25.y / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r10.y, r18
+// texld r21, r8.xz, s1
+// mul r24.xyz, r21, r25.z / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r10.z, r18
+// texld r21, r8.yz, s1
+// mul r24.xyz, r21, r25.w / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r10.w, r18
+// texld r21, r7.xw, s1
+// mul r24.xyz, r21, r26.x / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r11.x, r18
+// texld r21, r7.yw, s1
+// mul r24.xyz, r21, r26.y / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r11.y, r18
+// mov r19.yz, r21 / mov r20.yz, r21
+// texld r21, r8.xw, s1
+// mul r24.xyz, r21, r26.z / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r11.z, r18
+// min r19.yz, r19, r21 / max r20.yz, r20, r21
+// texld r21, r8.yw, s1
+// mul r24.xyz, r21, r26.w / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r11.w, r18
+// texld r21, r9.xz, s1
+// mul r24.xyz, r21, r27.x / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r12.x, r18
+// texld r21, r9.yz, s1
+// mul r24.xyz, r21, r27.y / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r12.y, r18
+// min r19.yz, r19, r21 / max r20.yz, r20, r21
+// texld r21, r14.xz, s1
+// mul r24.xyz, r21, r27.z / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r12.z, r18
+// min r19.yz, r19, r21 / max r20.yz, r20, r21
+// texld r21, r14.yz, s1
+// mul r24.xyz, r21, r27.w / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r12.w, r18
+// texld r21, r9.xw, s1
+// mul r24.xyz, r21, r28.x / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r13.x, r18
+// texld r21, r9.yw, s1
+// mul r24.xyz, r21, r28.y / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r13.y, r18
+// texld r21, r14.xw, s1
+// mul r24.xyz, r21, r28.z / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r13.z, r18
+// texld r21, r14.yw, s1
+// mul r24.xyz, r21, r28.w / add r15.xyz, r15, r24 / mad r16.xyz, r24, r21, r16 / mad r17.yz, r24.x, r21, r17 / mad r18.yz, r21, r13.w, r18
+// mul r15.xyz, r15, c222.x / mul r16.xyz, r16, c222.x / mul r17.yz, r17, c222.x
+// mad r16.xyz, -r15, r15, r16 / mad r17.yz, -r15.x, r15, r17
+// max r16.x, r16.x, c222.y / rcp r22.x, r16.x / mul r22.yz, r17, r22.x
+// mad r23.yz, -r22, r15.x, r15 / mad r23.yz, r22, r30.x, r23
+// max r23.yz, r23, r19 / min r23.yz, r23, r20
+// mul r24.yz, r17, r17 / mul r25.yz, r16.x, r16 / max r25.yz, r25, c222.z / rcp r26.y, r25.y / rcp r26.z, r25.z / mul_sat r24.yz, r24, r26
+// lrp r30.yz, r24, r23, r18
+// mul r0.xy, vPos.xy, c213.x / frc r0.xy, r0 / mul r0.xy, r0, c213.y
+// mad r1.x, r0.x, c213.z, c213.w / mul r1.x, r1.x, r0.x / mul r1.x, r1.x, c213.x / frc r1.x, r1.x / mad r1.x, r1.x, c213.y, r0.y
+// mad r1.y, r1.x, c213.z, c213.w / mul r1.y, r1.y, r1.x / mul r1.y, r1.y, c213.x / frc r1.y, r1.y / mul r1.y, r1.y, c213.y
+// mul r1.z, r1.y, c214.x / frc r1.z, r1.z / mul r1.z, r1.z, c214.y
+// mad r1.w, r1.y, c213.z, c213.w / mul r1.w, r1.w, r1.y / mul r1.w, r1.w, c213.x / frc r1.w, r1.w / mul r1.w, r1.w, c213.y
+// mul r1.w, r1.w, c214.x / frc r1.w, r1.w / mad r1.w, r1.w, c214.z, c214.w
+// sincos r2.xy, r1.w
+// mul r2.xy, r2, r1.z
+// mov r3.xw, r2.x / mov r3.y, r2.y / mov r3.z, -r2.y
+// mul r3, r3, c220.zwzw
+// add r4, v0.xyxy, r3
+// add r5, v0.xyxy, -r3
+// mov r6, r4.zwzw
+// mov r7, r5.zwzw
+// texld r8, r4, s0 / texld r9, r4, s1 / mov r11.x, r8.x / mov r11.yz, r9
+// texld r8, r6, s0 / texld r9, r6, s1 / add r11.x, r11.x, r8.x / add r11.yz, r11, r9
+// texld r8, r5, s0 / texld r9, r5, s1 / add r11.x, r11.x, r8.x / add r11.yz, r11, r9
+// texld r8, r7, s0 / texld r9, r7, s1 / add r11.x, r11.x, r8.x / add r11.yz, r11, r9
+// mul r11.xyz, r11, c215.y
+// add r12.xyz, r30, -r11
+// add r12.xyz, r12_abs, -c215.x
+// cmp r30.xyz, r12, r30, r11
+// mov r30.w, c3.x
+// dp4 r31.x, c0, r30
+// dp4 r31.y, c1, r30
+// dp4 r31.z, c2, r30
+// mul r0.xy, vPos.xy, c216
+// add r0.x, r0.x, r0.y
+// frc r0.x, r0.x
+// mul r0.x, r0.x, c216.z
+// frc r0.x, r0.x
+// add r0.x, r0.x, -c200.y
+// mad r31.xyz, r0.x, c216.w, r31
+// mov r31.w, c3.w
+// if b0
+//     texld r0, v0, s3
+//     mul r31.w, r0.x, c3.w
+// endif
+// mov oC0, r31
+static const DWORD CleanVideoPixelShader[] =
+{
+	0xFFFF0300, 0x0200001F, 0x80000005, 0x900F0000, 0x0200001F, 0x80000000, 0x90031000, 0x05000051,
+	0xA00F00C7, 0xBE7FC000, 0xBEFFE000, 0xBE7FC000, 0xBEFFE000, 0x05000051, 0xA00F00C8, 0x00000000,
+	0x3F000000, 0x3F800000, 0xBF800000, 0x05000051, 0xA00F00C9, 0x00000000, 0x3F800000, 0x00000000,
+	0x3F800000, 0x05000051, 0xA00F00CA, 0x00000000, 0x00000000, 0x3F800000, 0x3F800000, 0x05000051,
+	0xA00F00CB, 0xBF800000, 0xBF800000, 0x40000000, 0x40000000, 0x05000051, 0xA00F00CC, 0x3F800000,
+	0x00000000, 0x00000000, 0x3F800000, 0x05000051, 0xA00F00CD, 0x3F800000, 0x3F800000, 0x00000000,
+	0xBF800000, 0x05000051, 0xA00F00CE, 0x3F800000, 0xBF800000, 0x00000000, 0x40000000, 0x05000051,
+	0xA00F00CF, 0x3F800000, 0x40000000, 0xBF800000, 0x00000000, 0x05000051, 0xA00F00D0, 0xBF800000,
+	0x3F800000, 0x40000000, 0x00000000, 0x05000051, 0xA00F00D1, 0x40000000, 0x3F800000, 0x00000000,
+	0x00000000, 0x05000051, 0xA00F00D2, 0x3ECCCCCD, 0xBF800000, 0x3FC80000, 0xBF100000, 0x05000051,
+	0xA00F00D3, 0xBE947AE1, 0x3F000000, 0x38000000, 0x3B000000, 0x05000051, 0xA00F00D4, 0x3FC00000,
+	0xC0200000, 0x40000000, 0xBEFFE000, 0x05000051, 0xA00F00D5, 0x3B62C4A7, 0x43908000, 0x42080000,
+	0x3F800000, 0x05000051, 0xA00F00D6, 0x3CC7CE0C, 0x41800000, 0x40C90FDB, 0xC0490FDB, 0x05000051,
+	0xA00F00D7, 0x3B400000, 0x3E800000, 0x00000000, 0x00000000, 0x05000051, 0xA00F00D8, 0x3D897143,
+	0x3BBF4590, 0x4253EE82, 0x3B808081, 0x05000051, 0xA00F00D9, 0xBF800000, 0x00000000, 0xBF800000,
+	0x00000000, 0x05000051, 0xA00F00DA, 0xBF800000, 0x00000000, 0x3F800000, 0x40000000, 0x05000051,
+	0xA00F00DB, 0x3F800000, 0x40000000, 0x3F800000, 0x40000000, 0x05000051, 0xA00F00DE, 0x3D800000,
+	0x358637BD, 0x2EDBE6FF, 0x00000000, 0x05000051, 0xA00F00DF, 0x00000000, 0x3F800000, 0x3F800000,
+	0x00000000, 0x0200001F, 0x90000000, 0xA00F0800, 0x0200001F, 0x90000000, 0xA00F0801, 0x0200001F,
+	0x90000000, 0xA00F0803, 0x02000001, 0x800F001E, 0xA00000C8, 0x01000028, 0xE0E40801, 0x03000005,
+	0x800F0000, 0x90440000, 0xA04400DC, 0x03000002, 0x800F0000, 0x80E40000, 0xA0FF00D4, 0x02000013,
+	0x800F0001, 0x80E40000, 0x03000002, 0x800F0000, 0x80E40000, 0x81E40001, 0x03000002, 0x800F0000,
+	0x80E40000, 0xA05500C8, 0x03000005, 0x800F0000, 0x80E40000, 0xA0EE00DC, 0x02000001, 0x800F0002,
+	0xA0EE00DC, 0x03000042, 0x800F0003, 0x80E40000, 0xA0E40800, 0x02000001, 0x8001000A, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400CC, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8002000A, 0x80000003, 0x04000004, 0x800F0004, 0xA0EE00CC, 0x80E40002,
+	0x80E40000, 0x03000042, 0x800F0003, 0x80E40004, 0xA0E40800, 0x02000001, 0x8004000A, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400CD, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8008000A, 0x80000003, 0x04000004, 0x800F0004, 0xA0EE00CD, 0x80E40002,
+	0x80E40000, 0x03000042, 0x800F0003, 0x80E40004, 0xA0E40800, 0x02000001, 0x8001000B, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400CE, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8002000B, 0x80000003, 0x04000004, 0x800F0004, 0xA0EE00CE, 0x80E40002,
+	0x80E40000, 0x03000042, 0x800F0003, 0x80E40004, 0xA0E40800, 0x02000001, 0x8004000B, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400CF, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8008000B, 0x80000003, 0x04000004, 0x800F0004, 0xA0EE00CF, 0x80E40002,
+	0x80E40000, 0x03000042, 0x800F0003, 0x80E40004, 0xA0E40800, 0x02000001, 0x8001000C, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400D0, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8002000C, 0x80000003, 0x04000004, 0x800F0004, 0xA0EE00D0, 0x80E40002,
+	0x80E40000, 0x03000042, 0x800F0003, 0x80E40004, 0xA0E40800, 0x02000001, 0x8004000C, 0x80000003,
+	0x04000004, 0x800F0004, 0xA04400D1, 0x80E40002, 0x80E40000, 0x03000042, 0x800F0003, 0x80E40004,
+	0xA0E40800, 0x02000001, 0x8008000C, 0x80000003, 0x02000001, 0x800F000D, 0x80E4000B, 0x02000001,
+	0x800C000D, 0x8044000A, 0x02000001, 0x8005000E, 0x8050000C, 0x02000001, 0x800A000E, 0x80A0000A,
+	0x02000001, 0x8005000F, 0x80F5000A, 0x02000001, 0x800A000F, 0x80FA000C, 0x02000001, 0x800F0010,
+	0x80E4000B, 0x02000001, 0x80030010, 0x80EE000A, 0x03000002, 0x800F0005, 0x80E4000F, 0x81E4000A,
+	0x03000002, 0x800F0006, 0x80E4000A, 0x81E4000E, 0x0300000B, 0x800F0005, 0x8BE40005, 0x8BE40006,
+	0x0300000B, 0x800F0005, 0x80E40005, 0xA0FF00D3, 0x03000002, 0x800F0006, 0x80E4000F, 0x81E4000E,
+	0x02000006, 0x80010007, 0x80000005, 0x02000006, 0x80020007, 0x80550005, 0x02000006, 0x80040007,
+	0x80AA0005, 0x02000006, 0x80080007, 0x80FF0005, 0x03000005, 0x801F0007, 0x8BE40006, 0x80E40007,
+	0x03000005, 0x800F0007, 0x80E40007, 0x80E40007, 0x03000002, 0x800F0005, 0x80E40010, 0x81E4000A,
+	0x03000002, 0x800F0008, 0x80E4000A, 0x81E4000D, 0x0300000B, 0x800F0005, 0x8BE40005, 0x8BE40008,
+	0x0300000B, 0x800F0005, 0x80E40005, 0xA0FF00D3, 0x03000002, 0x800F0008, 0x80E40010, 0x81E4000D,
+	0x02000006, 0x80010009, 0x80000005, 0x02000006, 0x80020009, 0x80550005, 0x02000006, 0x80040009,
+	0x80AA0005, 0x02000006, 0x80080009, 0x80FF0005, 0x03000005, 0x801F0009, 0x8BE40008, 0x80E40009,
+	0x04000004, 0x800F0007, 0x80E40009, 0x80E40009, 0x80E40007, 0x03000002, 0x80030005, 0x81E40001,
+	0xA0AA00C8, 0x02000001, 0x80050009, 0x80000005, 0x02000001, 0x800A0009, 0x80000001, 0x02000001,
+	0x80030011, 0x80550005, 0x02000001, 0x800C0011, 0x80550001, 0x03000005, 0x800F0009, 0x80E40009,
+	0x80E40011, 0x03000009, 0x80010011, 0x80E40006, 0x80E40009, 0x03000009, 0x80020011, 0x80E40008,
+	0x80E40009, 0x03000009, 0x80040011, 0x80E40007, 0x80E40009, 0x03000005, 0x80030012, 0x80E40011,
+	0x80E40011, 0x03000002, 0x80010012, 0x80000012, 0x80550012, 0x03000002, 0x80020012, 0x80000012,
+	0xA1AA00D3, 0x02000007, 0x80040012, 0x80000012, 0x04000058, 0x80040012, 0x80550012, 0x80AA0012,
+	0xA0AA00C8, 0x04000058, 0x80010011, 0x80550012, 0x80000011, 0xA0AA00C8, 0x03000005, 0x80030011,
+	0x80E40011, 0x80AA0012, 0x03000005, 0x80040011, 0x80AA0011, 0xA05500C8, 0x03000005, 0x80040011,
+	0x80AA0011, 0x80AA0011, 0x0300000B, 0x80010012, 0x8B000011, 0x8B550011, 0x02000006, 0x80010012,
+	0x80000012, 0x03000005, 0x800A0012, 0x80400011, 0x80400011, 0x03000002, 0x80020012, 0x80550012,
+	0x80FF0012, 0x03000005, 0x80010012, 0x80550012, 0x80000012, 0x03000002, 0x80010012, 0x80000012,
+	0xA0FF00C8, 0x04000004, 0x80010013, 0x80000012, 0x80AA0011, 0xA0AA00C8, 0x04000004, 0x80020013,
+	0x80AA0011, 0xA15500C8, 0xA0AA00C8, 0x04000004, 0x80040013, 0x80AA0011, 0xA00000D3, 0xA05500D3,
+	0x02000006, 0x80080013, 0x80AA0013, 0x03000005, 0x80030014, 0x80E40011, 0x80000013, 0x03000005,
+	0x800C0014, 0x80150011, 0x80550013, 0x03000002, 0x800F0015, 0xA0E400C9, 0x81000001, 0x03000002,
+	0x800F0016, 0xA0E400CA, 0x81550001, 0x03000005, 0x800F0017, 0x80E40015, 0x80000014, 0x04000004,
+	0x800F0017, 0x80E40016, 0x80550014, 0x80E40017, 0x03000005, 0x800F0018, 0x80E40016, 0x80FF0014,
+	0x04000004, 0x800F0018, 0x80E40015, 0x81AA0014, 0x80E40018, 0x03000005, 0x800F0017, 0x80E40017,
+	0x80E40017, 0x04000004, 0x800F0017, 0x80E40018, 0x80E40018, 0x80E40017, 0x0300000A, 0x800F0017,
+	0x80E40017, 0x80FF0013, 0x04000004, 0x800F0018, 0x80E40017, 0xA00000D2, 0xA05500D2, 0x04000004,
+	0x800F0019, 0x80E40017, 0x80AA0013, 0xA05500D2, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40018,
+	0x03000005, 0x800F0019, 0x80E40019, 0x80E40019, 0x04000004, 0x800F0018, 0x80E40018, 0xA0AA00D2,
+	0xA0FF00D2, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40019, 0x03000005, 0x800F001A, 0x80E40018,
+	0x80E4000A, 0x02000001, 0x800F001B, 0x80E40018, 0x03000002, 0x800F0016, 0xA0E400CB, 0x81550001,
+	0x03000005, 0x800F0017, 0x80E40015, 0x80000014, 0x04000004, 0x800F0017, 0x80E40016, 0x80550014,
+	0x80E40017, 0x03000005, 0x800F0018, 0x80E40016, 0x80FF0014, 0x04000004, 0x800F0018, 0x80E40015,
+	0x81AA0014, 0x80E40018, 0x03000005, 0x800F0017, 0x80E40017, 0x80E40017, 0x04000004, 0x800F0017,
+	0x80E40018, 0x80E40018, 0x80E40017, 0x0300000A, 0x800F0017, 0x80E40017, 0x80FF0013, 0x04000004,
+	0x800F0018, 0x80E40017, 0xA00000D2, 0xA05500D2, 0x04000004, 0x800F0019, 0x80E40017, 0x80AA0013,
+	0xA05500D2, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40018, 0x03000005, 0x800F0019, 0x80E40019,
+	0x80E40019, 0x04000004, 0x800F0018, 0x80E40018, 0xA0AA00D2, 0xA0FF00D2, 0x03000005, 0x800F0018,
+	0x80E40018, 0x80E40019, 0x04000004, 0x800F001A, 0x80E40018, 0x80E4000B, 0x80E4001A, 0x03000002,
+	0x800F001B, 0x80E4001B, 0x80E40018, 0x03000002, 0x800F0015, 0xA0E400CB, 0x81000001, 0x03000002,
+	0x800F0016, 0xA0E400C9, 0x81550001, 0x03000005, 0x800F0017, 0x80E40015, 0x80000014, 0x04000004,
+	0x800F0017, 0x80E40016, 0x80550014, 0x80E40017, 0x03000005, 0x800F0018, 0x80E40016, 0x80FF0014,
+	0x04000004, 0x800F0018, 0x80E40015, 0x81AA0014, 0x80E40018, 0x03000005, 0x800F0017, 0x80E40017,
+	0x80E40017, 0x04000004, 0x800F0017, 0x80E40018, 0x80E40018, 0x80E40017, 0x0300000A, 0x800F0017,
+	0x80E40017, 0x80FF0013, 0x04000004, 0x800F0018, 0x80E40017, 0xA00000D2, 0xA05500D2, 0x04000004,
+	0x800F0019, 0x80E40017, 0x80AA0013, 0xA05500D2, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40018,
+	0x03000005, 0x800F0019, 0x80E40019, 0x80E40019, 0x04000004, 0x800F0018, 0x80E40018, 0xA0AA00D2,
+	0xA0FF00D2, 0x03000005, 0x800F0018, 0x80E40018, 0x80E40019, 0x04000004, 0x800F001A, 0x80E40018,
+	0x80E4000C, 0x80E4001A, 0x03000002, 0x800F001B, 0x80E4001B, 0x80E40018, 0x03000009, 0x8001001A,
+	0x80E4001A, 0xA0AA00C8, 0x03000009, 0x8001001B, 0x80E4001B, 0xA0AA00C8, 0x02000006, 0x8001001B,
+	0x8000001B, 0x03000005, 0x8001001A, 0x8000001A, 0x8000001B, 0x0300000A, 0x8003001B, 0x8054000A,
+	0x80FE000A, 0x0300000A, 0x8001001B, 0x8000001B, 0x8055001B, 0x0300000B, 0x800C001B, 0x8044000A,
+	0x80EE000A, 0x0300000B, 0x8004001B, 0x80AA001B, 0x80FF001B, 0x0300000B, 0x8001001A, 0x8000001A,
+	0x8000001B, 0x0300000A, 0x8001001E, 0x8000001A, 0x80AA001B, 0x0000002A, 0x03000042, 0x800F0000,
+	0x90E40000, 0xA0E40800, 0x02000001, 0x8001001E, 0x80000000, 0x0000002B, 0x03000005, 0x800F0000,
+	0x90440000, 0xA04400DD, 0x03000002, 0x800F0000, 0x80E40000, 0xA0E400C7, 0x02000013, 0x800F0001,
+	0x80E40000, 0x03000002, 0x800F0000, 0x80E40000, 0x81E40001, 0x03000002, 0x800F0000, 0x80E40000,
+	0xA05500C8, 0x03000002, 0x80030002, 0x81E40001, 0xA0AA00C8, 0x02000001, 0x80050003, 0x80000002,
+	0x02000001, 0x800A0003, 0x80000001, 0x04000004, 0x800F0004, 0x80E40003, 0xA00000D4, 0xA05500D4,
+	0x03000005, 0x800F0005, 0x80E40003, 0x80E40003, 0x04000004, 0x800F0004, 0x80E40005, 0x80E40004,
+	0xA0AA00C8, 0x03000005, 0x80010005, 0x80000001, 0x80000002, 0x03000005, 0x80010005, 0x80000005,
+	0xA15500C8, 0x03000005, 0x80090004, 0x80E40003, 0x80000005, 0x03000002, 0x800F001D, 0x80500003,
+	0xA0E400DF, 0x02000001, 0x80050003, 0x80550002, 0x02000001, 0x800A0003, 0x80550001, 0x04000004,
+	0x800F0006, 0x80E40003, 0xA00000D4, 0xA05500D4, 0x03000005, 0x800F0005, 0x80E40003, 0x80E40003,
+	0x04000004, 0x800F0006, 0x80E40005, 0x80E40006, 0xA0AA00C8, 0x03000005, 0x80010005, 0x80550001,
+	0x80550002, 0x03000005, 0x80010005, 0x80000005, 0xA15500C8, 0x03000005, 0x80090006, 0x80E40003,
+	0x80000005, 0x03000002, 0x800F001F, 0x80500003, 0xA0E400DF, 0x03000005, 0x800F000A, 0x80E40004,
+	0x80000006, 0x03000005, 0x800F000B, 0x80E40004, 0x80550006, 0x03000005, 0x800F000C, 0x80E40004,
+	0x80AA0006, 0x03000005, 0x800F000D, 0x80E40004, 0x80FF0006, 0x03000005, 0x800F0019, 0x80E4001D,
+	0x8000001F, 0x03000005, 0x800F001A, 0x80E4001D, 0x8055001F, 0x03000005, 0x800F001B, 0x80E4001D,
+	0x80AA001F, 0x03000005, 0x800F001C, 0x80E4001D, 0x80FF001F, 0x03000002, 0x800F0007, 0x80500000,
+	0xA0E400D9, 0x03000002, 0x800F0008, 0x80500000, 0xA0E400CF, 0x03000002, 0x800F0009, 0x80500000,
+	0xA0E400DA, 0x03000002, 0x800F000E, 0x80500000, 0xA0E400DB, 0x03000005, 0x800F0007, 0x80E40007,
+	0xA0FA00DD, 0x03000005, 0x800F0008, 0x80E40008, 0xA0FA00DD, 0x03000005, 0x800F0009, 0x80E40009,
+	0xA0FA00DD, 0x03000005, 0x800F000E, 0x80E4000E, 0xA0FA00DD, 0x03000042, 0x800F0015, 0x80A80007,
+	0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x80000019, 0x02000001, 0x8007000F, 0x80E40018,
+	0x03000005, 0x80070010, 0x80E40018, 0x80E40015, 0x03000005, 0x80060011, 0x80000018, 0x80E40015,
+	0x03000005, 0x80060012, 0x80E40015, 0x8000000A, 0x03000042, 0x800F0015, 0x80A90007, 0xA0E40801,
+	0x03000005, 0x80070018, 0x80E40015, 0x80550019, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018,
+	0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018,
+	0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x8055000A, 0x80E40012, 0x03000042,
+	0x800F0015, 0x80A80008, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x80AA0019, 0x03000002,
+	0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010,
+	0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015,
+	0x80AA000A, 0x80E40012, 0x03000042, 0x800F0015, 0x80A90008, 0xA0E40801, 0x03000005, 0x80070018,
+	0x80E40015, 0x80FF0019, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010,
+	0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011,
+	0x04000004, 0x80060012, 0x80E40015, 0x80FF000A, 0x80E40012, 0x03000042, 0x800F0015, 0x80FC0007,
+	0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x8000001A, 0x03000002, 0x8007000F, 0x80E4000F,
+	0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011,
+	0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x8000000B, 0x80E40012,
+	0x03000042, 0x800F0015, 0x80FD0007, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x8055001A,
+	0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015,
+	0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012,
+	0x80E40015, 0x8055000B, 0x80E40012, 0x02000001, 0x80060013, 0x80E40015, 0x02000001, 0x80060014,
+	0x80E40015, 0x03000042, 0x800F0015, 0x80FC0008, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015,
+	0x80AA001A, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018,
+	0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004,
+	0x80060012, 0x80E40015, 0x80AA000B, 0x80E40012, 0x0300000A, 0x80060013, 0x80E40013, 0x80E40015,
+	0x0300000B, 0x80060014, 0x80E40014, 0x80E40015, 0x03000042, 0x800F0015, 0x80FD0008, 0xA0E40801,
+	0x03000005, 0x80070018, 0x80E40015, 0x80FF001A, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018,
+	0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018,
+	0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x80FF000B, 0x80E40012, 0x03000042,
+	0x800F0015, 0x80A80009, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x8000001B, 0x03000002,
+	0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010,
+	0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015,
+	0x8000000C, 0x80E40012, 0x03000042, 0x800F0015, 0x80A90009, 0xA0E40801, 0x03000005, 0x80070018,
+	0x80E40015, 0x8055001B, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010,
+	0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011,
+	0x04000004, 0x80060012, 0x80E40015, 0x8055000C, 0x80E40012, 0x0300000A, 0x80060013, 0x80E40013,
+	0x80E40015, 0x0300000B, 0x80060014, 0x80E40014, 0x80E40015, 0x03000042, 0x800F0015, 0x80A8000E,
+	0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x80AA001B, 0x03000002, 0x8007000F, 0x80E4000F,
+	0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011,
+	0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x80AA000C, 0x80E40012,
+	0x0300000A, 0x80060013, 0x80E40013, 0x80E40015, 0x0300000B, 0x80060014, 0x80E40014, 0x80E40015,
+	0x03000042, 0x800F0015, 0x80A9000E, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x80FF001B,
+	0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015,
+	0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012,
+	0x80E40015, 0x80FF000C, 0x80E40012, 0x03000042, 0x800F0015, 0x80FC0009, 0xA0E40801, 0x03000005,
+	0x80070018, 0x80E40015, 0x8000001C, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004,
+	0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015,
+	0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x8000000D, 0x80E40012, 0x03000042, 0x800F0015,
+	0x80FD0009, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015, 0x8055001C, 0x03000002, 0x8007000F,
+	0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004,
+	0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x8055000D,
+	0x80E40012, 0x03000042, 0x800F0015, 0x80FC000E, 0xA0E40801, 0x03000005, 0x80070018, 0x80E40015,
+	0x80AA001C, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018, 0x04000004, 0x80070010, 0x80E40018,
+	0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018, 0x80E40015, 0x80E40011, 0x04000004,
+	0x80060012, 0x80E40015, 0x80AA000D, 0x80E40012, 0x03000042, 0x800F0015, 0x80FD000E, 0xA0E40801,
+	0x03000005, 0x80070018, 0x80E40015, 0x80FF001C, 0x03000002, 0x8007000F, 0x80E4000F, 0x80E40018,
+	0x04000004, 0x80070010, 0x80E40018, 0x80E40015, 0x80E40010, 0x04000004, 0x80060011, 0x80000018,
+	0x80E40015, 0x80E40011, 0x04000004, 0x80060012, 0x80E40015, 0x80FF000D, 0x80E40012, 0x03000005,
+	0x8007000F, 0x80E4000F, 0xA00000DE, 0x03000005, 0x80070010, 0x80E40010, 0xA00000DE, 0x03000005,
+	0x80060011, 0x80E40011, 0xA00000DE, 0x04000004, 0x80070010, 0x81E4000F, 0x80E4000F, 0x80E40010,
+	0x04000004, 0x80060011, 0x8100000F, 0x80E4000F, 0x80E40011, 0x0300000B, 0x80010010, 0x80000010,
+	0xA05500DE, 0x02000006, 0x80010016, 0x80000010, 0x03000005, 0x80060016, 0x80E40011, 0x80000016,
+	0x04000004, 0x80060017, 0x81E40016, 0x8000000F, 0x80E4000F, 0x04000004, 0x80060017, 0x80E40016,
+	0x8000001E, 0x80E40017, 0x0300000B, 0x80060017, 0x80E40017, 0x80E40013, 0x0300000A, 0x80060017,
+	0x80E40017, 0x80E40014, 0x03000005, 0x80060018, 0x80E40011, 0x80E40011, 0x03000005, 0x80060019,
+	0x80000010, 0x80E40010, 0x0300000B, 0x80060019, 0x80E40019, 0xA0AA00DE, 0x02000006, 0x8002001A,
+	0x80550019, 0x02000006, 0x8004001A, 0x80AA0019, 0x03000005, 0x80160018, 0x80E40018, 0x80E4001A,
+	0x04000012, 0x8006001E, 0x80E40018, 0x80E40017, 0x80E40012, 0x03000005, 0x80030000, 0x90541000,
+	0xA00000D5, 0x02000013, 0x80030000, 0x80E40000, 0x03000005, 0x80030000, 0x80E40000, 0xA05500D5,
+	0x04000004, 0x80010001, 0x80000000, 0xA0AA00D5, 0xA0FF00D5, 0x03000005, 0x80010001, 0x80000001,
+	0x80000000, 0x03000005, 0x80010001, 0x80000001, 0xA00000D5, 0x02000013, 0x80010001, 0x80000001,
+	0x04000004, 0x80010001, 0x80000001, 0xA05500D5, 0x80550000, 0x04000004, 0x80020001, 0x80000001,
+	0xA0AA00D5, 0xA0FF00D5, 0x03000005, 0x80020001, 0x80550001, 0x80000001, 0x03000005, 0x80020001,
+	0x80550001, 0xA00000D5, 0x02000013, 0x80020001, 0x80550001, 0x03000005, 0x80020001, 0x80550001,
+	0xA05500D5, 0x03000005, 0x80040001, 0x80550001, 0xA00000D6, 0x02000013, 0x80040001, 0x80AA0001,
+	0x03000005, 0x80040001, 0x80AA0001, 0xA05500D6, 0x04000004, 0x80080001, 0x80550001, 0xA0AA00D5,
+	0xA0FF00D5, 0x03000005, 0x80080001, 0x80FF0001, 0x80550001, 0x03000005, 0x80080001, 0x80FF0001,
+	0xA00000D5, 0x02000013, 0x80080001, 0x80FF0001, 0x03000005, 0x80080001, 0x80FF0001, 0xA05500D5,
+	0x03000005, 0x80080001, 0x80FF0001, 0xA00000D6, 0x02000013, 0x80080001, 0x80FF0001, 0x04000004,
+	0x80080001, 0x80FF0001, 0xA0AA00D6, 0xA0FF00D6, 0x02000025, 0x80030002, 0x80FF0001, 0x03000005,
+	0x80030002, 0x80E40002, 0x80AA0001, 0x02000001, 0x80090003, 0x80000002, 0x02000001, 0x80020003,
+	0x80550002, 0x02000001, 0x80040003, 0x81550002, 0x03000005, 0x800F0003, 0x80E40003, 0xA0EE00DC,
+	0x03000002, 0x800F0004, 0x90440000, 0x80E40003, 0x03000002, 0x800F0005, 0x90440000, 0x81E40003,
+	0x02000001, 0x800F0006, 0x80EE0004, 0x02000001, 0x800F0007, 0x80EE0005, 0x03000042, 0x800F0008,
+	0x80E40004, 0xA0E40800, 0x03000042, 0x800F0009, 0x80E40004, 0xA0E40801, 0x02000001, 0x8001000B,
+	0x80000008, 0x02000001, 0x8006000B, 0x80E40009, 0x03000042, 0x800F0008, 0x80E40006, 0xA0E40800,
+	0x03000042, 0x800F0009, 0x80E40006, 0xA0E40801, 0x03000002, 0x8001000B, 0x8000000B, 0x80000008,
+	0x03000002, 0x8006000B, 0x80E4000B, 0x80E40009, 0x03000042, 0x800F0008, 0x80E40005, 0xA0E40800,
+	0x03000042, 0x800F0009, 0x80E40005, 0xA0E40801, 0x03000002, 0x8001000B, 0x8000000B, 0x80000008,
+	0x03000002, 0x8006000B, 0x80E4000B, 0x80E40009, 0x03000042, 0x800F0008, 0x80E40007, 0xA0E40800,
+	0x03000042, 0x800F0009, 0x80E40007, 0xA0E40801, 0x03000002, 0x8001000B, 0x8000000B, 0x80000008,
+	0x03000002, 0x8006000B, 0x80E4000B, 0x80E40009, 0x03000005, 0x8007000B, 0x80E4000B, 0xA05500D7,
+	0x03000002, 0x8007000C, 0x80E4001E, 0x81E4000B, 0x03000002, 0x8007000C, 0x8BE4000C, 0xA10000D7,
+	0x04000058, 0x8007001E, 0x80E4000C, 0x80E4001E, 0x80E4000B, 0x02000001, 0x8008001E, 0xA0000003,
+	0x03000009, 0x8001001F, 0xA0E40000, 0x80E4001E, 0x03000009, 0x8002001F, 0xA0E40001, 0x80E4001E,
+	0x03000009, 0x8004001F, 0xA0E40002, 0x80E4001E, 0x03000005, 0x80030000, 0x90541000, 0xA0E400D8,
+	0x03000002, 0x80010000, 0x80000000, 0x80550000, 0x02000013, 0x80010000, 0x80000000, 0x03000005,
+	0x80010000, 0x80000000, 0xA0AA00D8, 0x02000013, 0x80010000, 0x80000000, 0x03000002, 0x80010000,
+	0x80000000, 0xA15500C8, 0x04000004, 0x8007001F, 0x80000000, 0xA0FF00D8, 0x80E4001F, 0x02000001,
+	0x8008001F, 0xA0FF0003, 0x01000028, 0xE0E40800, 0x03000042, 0x800F0000, 0x90E40000, 0xA0E40803,
+	0x03000005, 0x8008001F, 0x80000000, 0xA0FF0003, 0x0000002B, 0x02000001, 0x800F0800, 0x80E4001F,
+	0x0000FFFF
+};
+
+static void ReleaseCleanTargets(CleanTargets& Set)
+{
+	for (IDirect3DTexture9* Texture : Set.Planes)
+	{
+		if (Texture) Texture->Release();
+	}
+
+	if (Set.PackedChroma) Set.PackedChroma->Release();
+	Set = {};
+}
+
 static void ReleaseVideoResources()
 {
-	if (VideoPS) VideoPS->Release();
+	IDirect3DPixelShader9** Shaders[] = { &VideoPS, &CleanPS, &PackPS, &CleanVideoPS };
+	for (IDirect3DPixelShader9** Shader : Shaders)
+	{
+		if (*Shader) (*Shader)->Release();
+		*Shader = nullptr;
+	}
 
-	VideoPS = nullptr;
+	for (CleanTargets& Set : CleanSets)
+	{
+		ReleaseCleanTargets(Set);
+	}
+
+	CleanRetryDraw = 0;
 	VideoDevice = nullptr;
+}
+
+static bool SupportsFilteredTarget(IDirect3DDevice9* Device, D3DFORMAT Format)
+{
+	IDirect3D9* Direct3D = nullptr;
+	if (FAILED(Device->GetDirect3D(&Direct3D)))
+		return false;
+
+	D3DDEVICE_CREATION_PARAMETERS Creation;
+	D3DDISPLAYMODE Mode;
+	const bool bSupported = SUCCEEDED(Device->GetCreationParameters(&Creation)) && SUCCEEDED(Direct3D->GetAdapterDisplayMode(Creation.AdapterOrdinal, &Mode)) &&
+		SUCCEEDED(Direct3D->CheckDeviceFormat(Creation.AdapterOrdinal, Creation.DeviceType, Mode.Format, D3DUSAGE_RENDERTARGET, D3DRTYPE_TEXTURE, Format)) &&
+		SUCCEEDED(Direct3D->CheckDeviceFormat(Creation.AdapterOrdinal, Creation.DeviceType, Mode.Format, D3DUSAGE_QUERY_FILTER, D3DRTYPE_TEXTURE, Format));
+
+	Direct3D->Release();
+	return bSupported;
 }
 
 static bool CreateVideoResources(IDirect3DDevice9* Device)
@@ -525,9 +1466,61 @@ static bool CreateVideoResources(IDirect3DDevice9* Device)
 			ReleaseVideoResources();
 			return false;
 		}
+
+		// Without filtered half float targets the video is drawn in one pass straight from the Bink planes
+		bCleanFailed = !SupportsFilteredTarget(Device, D3DFMT_R16F) || !SupportsFilteredTarget(Device, D3DFMT_A16B16G16R16F) ||
+			FAILED(Device->CreatePixelShader(CleanPixelShader, &CleanPS)) || FAILED(Device->CreatePixelShader(PackPixelShader, &PackPS)) ||
+			FAILED(Device->CreatePixelShader(CleanVideoPixelShader, &CleanVideoPS));
 	}
 
 	return true;
+}
+
+static CleanTargets* GetCleanTargets(IDirect3DDevice9* Device, const D3DSURFACE_DESC& LumaDesc, const D3DSURFACE_DESC& ChromaDesc)
+{
+	if (bCleanFailed)
+		return nullptr;
+
+	CleanDraws++;
+	CleanTargets* Oldest = &CleanSets[0];
+	for (CleanTargets& Set : CleanSets)
+	{
+		if (Set.PackedChroma && Set.LumaWidth == LumaDesc.Width && Set.LumaHeight == LumaDesc.Height && Set.ChromaWidth == ChromaDesc.Width && Set.ChromaHeight == ChromaDesc.Height)
+		{
+			Set.LastUse = CleanDraws;
+			return &Set;
+		}
+
+		if (Set.LastUse < Oldest->LastUse)
+			Oldest = &Set;
+	}
+
+	// After a failed creation, try again some seconds later
+	if (CleanDraws < CleanRetryDraw)
+		return nullptr;
+
+	CleanTargets& Set = *Oldest;
+	ReleaseCleanTargets(Set);
+
+	const bool bCreated =
+		SUCCEEDED(Device->CreateTexture(LumaDesc.Width, LumaDesc.Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_R16F, D3DPOOL_DEFAULT, &Set.Planes[0], nullptr)) &&
+		SUCCEEDED(Device->CreateTexture(ChromaDesc.Width, ChromaDesc.Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_R16F, D3DPOOL_DEFAULT, &Set.Planes[1], nullptr)) &&
+		SUCCEEDED(Device->CreateTexture(ChromaDesc.Width, ChromaDesc.Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_R16F, D3DPOOL_DEFAULT, &Set.Planes[2], nullptr)) &&
+		SUCCEEDED(Device->CreateTexture(ChromaDesc.Width, ChromaDesc.Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &Set.PackedChroma, nullptr));
+
+	if (!bCreated)
+	{
+		ReleaseCleanTargets(Set);
+		CleanRetryDraw = CleanDraws + 300;
+		return nullptr;
+	}
+
+	Set.LumaWidth = LumaDesc.Width;
+	Set.LumaHeight = LumaDesc.Height;
+	Set.ChromaWidth = ChromaDesc.Width;
+	Set.ChromaHeight = ChromaDesc.Height;
+	Set.LastUse = CleanDraws;
+	return &Set;
 }
 
 static void DrawVideoQuad(void* RHI, UINT PrimitiveType, UINT NumPrimitives, const void* VertexData, UINT VertexDataStride)
@@ -535,24 +1528,178 @@ static void DrawVideoQuad(void* RHI, UINT PrimitiveType, UINT NumPrimitives, con
 	reinterpret_cast<void(__thiscall*)(void*, UINT, UINT, const void*, UINT)>(DrawPrimitiveUP)(RHI, PrimitiveType, NumPrimitives, VertexData, VertexDataStride);
 }
 
-static bool GetPlaneDesc(IDirect3DDevice9* Device, DWORD Sampler, D3DSURFACE_DESC& Desc)
+// Whole target, offset by half a pixel like the video quad, with the engine's Bink vertex shader and declaration
+static void DrawIntoTarget(IDirect3DDevice9* Device, void* RHI, UINT PrimitiveType, IDirect3DTexture9* Target)
 {
-	IDirect3DBaseTexture9* Texture = nullptr;
+	D3DSURFACE_DESC Desc;
+	IDirect3DSurface9* Surface = nullptr;
+	if (FAILED(Target->GetLevelDesc(0, &Desc)) || FAILED(Target->GetSurfaceLevel(0, &Surface)))
+		return;
+
+	Device->SetRenderTarget(0, Surface);
+	Surface->Release();
+
+	const float X0 = -1.0f - 1.0f / Desc.Width;
+	const float X1 = 1.0f - 1.0f / Desc.Width;
+	const float Y0 = 1.0f + 1.0f / Desc.Height;
+	const float Y1 = -1.0f + 1.0f / Desc.Height;
+	const BinkVertex Quad[4] =
+	{
+		{ X0, Y0, 0.0f, 1.0f, 0.0f, 0.0f },
+		{ X1, Y0, 0.0f, 1.0f, 1.0f, 0.0f },
+		{ X0, Y1, 0.0f, 1.0f, 0.0f, 1.0f },
+		{ X1, Y1, 0.0f, 1.0f, 1.0f, 1.0f }
+	};
+
+	DrawVideoQuad(RHI, PrimitiveType, 2, Quad, sizeof(BinkVertex));
+}
+
+static const D3DRENDERSTATETYPE CleanRenderStates[] =
+{
+	D3DRS_ZENABLE, D3DRS_ZWRITEENABLE, D3DRS_ALPHABLENDENABLE, D3DRS_ALPHATESTENABLE, D3DRS_STENCILENABLE,
+	D3DRS_SCISSORTESTENABLE, D3DRS_COLORWRITEENABLE, D3DRS_SRGBWRITEENABLE, D3DRS_CULLMODE, D3DRS_FILLMODE
+};
+
+static const DWORD CleanRenderValues[] =
+{
+	D3DZB_FALSE, FALSE, FALSE, FALSE, FALSE,
+	FALSE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA, FALSE, D3DCULL_NONE, D3DFILL_SOLID
+};
+
+static const D3DSAMPLERSTATETYPE SavedSamplerStates[] =
+{
+	D3DSAMP_MINFILTER, D3DSAMP_MAGFILTER, D3DSAMP_MIPFILTER, D3DSAMP_ADDRESSU, D3DSAMP_ADDRESSV, D3DSAMP_SRGBTEXTURE
+};
+
+static bool DrawCleanedVideo(IDirect3DDevice9* Device, void* RHI, UINT PrimitiveType, const BinkVertex* Quad, IDirect3DBaseTexture9* const Planes[3], const D3DSURFACE_DESC& LumaDesc, const D3DSURFACE_DESC& ChromaDesc, const float PlaneSizes[2][4], const BOOL Flags[2])
+{
+	IDirect3DSurface9* GameTarget = nullptr;
+	IDirect3DSurface9* SecondTarget = nullptr;
+	Device->GetRenderTarget(0, &GameTarget);
+	Device->GetRenderTarget(1, &SecondTarget);
+
+	const bool bSingleTarget = GameTarget && !SecondTarget;
+	if (SecondTarget) SecondTarget->Release();
+
+	CleanTargets* Targets = bSingleTarget ? GetCleanTargets(Device, LumaDesc, ChromaDesc) : nullptr;
+	if (!Targets)
+	{
+		if (GameTarget) GameTarget->Release();
+		return false;
+	}
+
+	IDirect3DSurface9* GameDepth = nullptr;
+	D3DVIEWPORT9 Viewport;
+	RECT Scissor;
+	DWORD RenderStates[std::size(CleanRenderStates)];
+	DWORD SamplerStates[3][std::size(SavedSamplerStates)];
+
+	Device->GetDepthStencilSurface(&GameDepth);
+	Device->GetViewport(&Viewport);
+	Device->GetScissorRect(&Scissor);
+	for (size_t i = 0; i < std::size(CleanRenderStates); i++)
+	{
+		Device->GetRenderState(CleanRenderStates[i], &RenderStates[i]);
+		Device->SetRenderState(CleanRenderStates[i], CleanRenderValues[i]);
+	}
+	for (DWORD s = 0; s < 3; s++)
+	{
+		for (size_t i = 0; i < std::size(SavedSamplerStates); i++)
+		{
+			Device->GetSamplerState(s, SavedSamplerStates[i], &SamplerStates[s][i]);
+		}
+
+		Device->SetSamplerState(s, D3DSAMP_MINFILTER, D3DTEXF_POINT);
+		Device->SetSamplerState(s, D3DSAMP_MAGFILTER, D3DTEXF_POINT);
+		Device->SetSamplerState(s, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
+		Device->SetSamplerState(s, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+		Device->SetSamplerState(s, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+		Device->SetSamplerState(s, D3DSAMP_SRGBTEXTURE, FALSE);
+	}
+	Device->SetDepthStencilSurface(nullptr);
+
+	// Y, Cr and Cb, each at its own resolution
+	Device->SetPixelShader(CleanPS);
+	for (int p = 0; p < 3; p++)
+	{
+		Device->SetTexture(0, Planes[p]);
+		Device->SetPixelShaderConstantF(PlaneSizesRegister, PlaneSizes[p == 0 ? 0 : 1], 1);
+		DrawIntoTarget(Device, RHI, PrimitiveType, Targets->Planes[p]);
+	}
+
+	// Chroma together with the luma at its sites
+	Device->SetPixelShader(PackPS);
+	for (DWORD s = 0; s < 3; s++)
+	{
+		Device->SetTexture(s, Targets->Planes[s]);
+	}
+	Device->SetPixelShaderConstantF(PlaneSizesRegister, PlaneSizes[0], 2);
+	DrawIntoTarget(Device, RHI, PrimitiveType, Targets->PackedChroma);
+
+	// The video quad on the game's target, with the game's states
+	Device->SetRenderTarget(0, GameTarget);
+	Device->SetDepthStencilSurface(GameDepth);
+	Device->SetViewport(&Viewport);
+	Device->SetScissorRect(&Scissor);
+	for (size_t i = 0; i < std::size(CleanRenderStates); i++)
+	{
+		Device->SetRenderState(CleanRenderStates[i], RenderStates[i]);
+	}
+	for (DWORD s = 0; s < 2; s++)
+	{
+		Device->SetSamplerState(s, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		Device->SetSamplerState(s, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	}
+	Device->SetTexture(0, Targets->Planes[0]);
+	Device->SetTexture(1, Targets->PackedChroma);
+	Device->SetTexture(2, Planes[2]);
+
+	Device->SetPixelShader(CleanVideoPS);
+	Device->SetPixelShaderConstantB(0, Flags, 2);
+	DrawVideoQuad(RHI, PrimitiveType, 2, Quad, sizeof(BinkVertex));
+
+	// The engine's planes and samplers
+	for (DWORD s = 0; s < 3; s++)
+	{
+		Device->SetTexture(s, Planes[s]);
+		for (size_t i = 0; i < std::size(SavedSamplerStates); i++)
+		{
+			Device->SetSamplerState(s, SavedSamplerStates[i], SamplerStates[s][i]);
+		}
+	}
+
+	GameTarget->Release();
+	if (GameDepth) GameDepth->Release();
+	return true;
+}
+
+static bool GetPlane(IDirect3DDevice9* Device, DWORD Sampler, IDirect3DBaseTexture9*& Texture, D3DSURFACE_DESC& Desc)
+{
+	Texture = nullptr;
 	Device->GetTexture(Sampler, &Texture);
 
-	const bool bResult = Texture && Texture->GetType() == D3DRTYPE_TEXTURE && SUCCEEDED(static_cast<IDirect3DTexture9*>(Texture)->GetLevelDesc(0, &Desc));
-
-	if (Texture) Texture->Release();
-	return bResult;
+	return Texture && Texture->GetType() == D3DRTYPE_TEXTURE && SUCCEEDED(static_cast<IDirect3DTexture9*>(Texture)->GetLevelDesc(0, &Desc));
 }
 
 static bool DrawFilteredVideo(IDirect3DDevice9* Device, void* RHI, UINT PrimitiveType, UINT NumPrimitives, const void* VertexData, UINT VertexDataStride)
 {
 	// The engine's shader samples Y in s0, Cr in s1, Cb in s2 and alpha in s3, all bilinear and clamped
-	D3DSURFACE_DESC LumaDesc, ChromaDesc;
-	if (NumPrimitives != 2 || VertexDataStride != sizeof(BinkVertex) || !GetPlaneDesc(Device, 0, LumaDesc) || !GetPlaneDesc(Device, 1, ChromaDesc) ||
+	IDirect3DBaseTexture9* Planes[3] = {};
+	D3DSURFACE_DESC LumaDesc, ChromaDesc, CbDesc;
+	const bool bPlanes = GetPlane(Device, 0, Planes[0], LumaDesc) && GetPlane(Device, 1, Planes[1], ChromaDesc) && GetPlane(Device, 2, Planes[2], CbDesc);
+
+	auto ReleasePlanes = [&]()
+	{
+		for (IDirect3DBaseTexture9* Plane : Planes)
+		{
+			if (Plane) Plane->Release();
+		}
+	};
+
+	if (NumPrimitives != 2 || VertexDataStride != sizeof(BinkVertex) || !bPlanes || CbDesc.Width != ChromaDesc.Width || CbDesc.Height != ChromaDesc.Height ||
 		!CreateVideoResources(Device))
 	{
+		ReleasePlanes();
 		return false;
 	}
 
@@ -590,16 +1737,20 @@ static bool DrawFilteredVideo(IDirect3DDevice9* Device, void* RHI, UINT Primitiv
 	// EASU only when the video is upscaled, it reshapes edges even at 1:1
 	const BOOL Flags[2] = { bAlphaPlane, QuadSizeX > LumaDesc.Width + 0.5f || QuadSizeY > LumaDesc.Height + 0.5f };
 
-	Device->SetPixelShader(VideoPS);
-	Device->SetPixelShaderConstantF(PlaneSizesRegister, PlaneSizes[0], 2);
-	Device->SetPixelShaderConstantB(0, Flags, 2);
-	DrawVideoQuad(RHI, PrimitiveType, NumPrimitives, Quad, VertexDataStride);
+	if (bCleanFailed || !DrawCleanedVideo(Device, RHI, PrimitiveType, Quad, Planes, LumaDesc, ChromaDesc, PlaneSizes, Flags))
+	{
+		Device->SetPixelShader(VideoPS);
+		Device->SetPixelShaderConstantF(PlaneSizesRegister, PlaneSizes[0], 2);
+		Device->SetPixelShaderConstantB(0, Flags, 2);
+		DrawVideoQuad(RHI, PrimitiveType, NumPrimitives, Quad, VertexDataStride);
+	}
 
 	Device->SetPixelShader(PixelShader);
 	Device->SetPixelShaderConstantF(PlaneSizesRegister, SavedSizes[0], 2);
 	Device->SetPixelShaderConstantB(0, SavedFlags, 2);
 
 	if (PixelShader) PixelShader->Release();
+	ReleasePlanes();
 	return true;
 }
 
@@ -628,9 +1779,36 @@ static void OnUpdateD3DDevice(safetyhook::Context& ctx)
 	ReleaseVideoResources();
 }
 
+static void WriteBT601Matrix()
+{
+	const float Kr = 0.299f;
+	const float Kb = 0.114f;
+	const float Kg = 1.0f - Kr - Kb;
+	const float YScale = 255.0f / 219.0f;
+	const float CScale = 255.0f / 224.0f;
+	const float RCr = 2.0f * (1.0f - Kr) * CScale;
+	const float GCr = -2.0f * (1.0f - Kr) * Kr / Kg * CScale;
+	const float GCb = -2.0f * (1.0f - Kb) * Kb / Kg * CScale;
+	const float BCb = 2.0f * (1.0f - Kb) * CScale;
+	const float YOffset = 16.0f / 255.0f;
+	const float COffset = 128.0f / 255.0f;
+
+	const float Matrix[16] =
+	{
+		YScale, RCr, 0.0f, -(YScale * YOffset + RCr * COffset),
+		YScale, GCr, GCb, -(YScale * YOffset + (GCr + GCb) * COffset),
+		YScale, 0.0f, BCb, -(YScale * YOffset + BCb * COffset),
+		1.0f, 0.0f, 0.0f, 0.0f
+	};
+
+	MemoryHelper::WriteMemoryRaw(GetAddress(Addr::Gyuvtorgb), Matrix, sizeof(Matrix));
+}
+
 void ApplyImprovedBinkVideo()
 {
 	if (!ImprovedBinkVideo) return;
+
+	WriteBT601Matrix();
 
 	DWORD addr_BinkDrawCall = GetAddress(Addr::BinkDrawCall);
 

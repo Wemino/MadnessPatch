@@ -139,7 +139,6 @@
     <ClCompile Include="..\src\Graphics\ImprovedTextureStreaming.cpp" />
     <ClCompile Include="..\src\Graphics\TrilinearFiltering.cpp" />
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp" />
-    <ClCompile Include="..\src\Graphics\FixBinkVideoBT709.cpp" />
     <ClCompile Include="..\src\Graphics\ImprovedBinkVideo.cpp" />
     <ClCompile Include="..\src\Graphics\ForceMSAA.cpp" />
     <ClCompile Include="..\src\Graphics\Supersampling.cpp" />

@@ -75,7 +75,6 @@ inline bool ForceHighResTextures = false;
 inline bool DisableBackgroundLevelStreaming = false;
 inline bool FixAspectRatio = false;
 inline bool TrilinearFiltering = false;
-inline bool FixBinkVideoBT709 = false;
 inline bool ImprovedBinkVideo = false;
 inline int ForceMSAA = 0;
 inline float SSAAScale = 1.0f;
@@ -157,7 +156,6 @@ inline void ReadConfig()
 	DisableBackgroundLevelStreaming = IniHelper::ReadInteger("Graphics", "DisableBackgroundLevelStreaming", 1) == 1;
 	FixAspectRatio = IniHelper::ReadInteger("Graphics", "FixAspectRatio", 1) == 1;
 	TrilinearFiltering = IniHelper::ReadInteger("Graphics", "TrilinearFiltering", 1) == 1;
-	FixBinkVideoBT709 = IniHelper::ReadInteger("Graphics", "FixBinkVideoBT709", 1) == 1;
 	ImprovedBinkVideo = IniHelper::ReadInteger("Graphics", "ImprovedBinkVideo", 1) == 1;
 	ForceMSAA = std::clamp(IniHelper::ReadInteger("Graphics", "ForceMSAA", -1), -1, 16);
 	SSAAScale = std::clamp(IniHelper::ReadFloat("Graphics", "SSAAScale", 1.0f), 1.0f, 4.0f);

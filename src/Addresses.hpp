@@ -127,10 +127,8 @@ enum class Addr
 	// DisableBackgroundLevelStreaming
 	BackgroundLevelStreaming,
 
-	// FixBinkVideoBT709
-	Gyuvtorgb,
-
 	// ImprovedBinkVideo
+	Gyuvtorgb,
 	DrawBinkTextures,
 	BinkDrawCall,
 	UpdateD3DDeviceBink,
@@ -353,10 +351,8 @@ namespace Addresses
 		// DisableBackgroundLevelStreaming
 		/* BackgroundLevelStreaming        */ { 0x9918DE, 0x991F4E, 0x95288E },
 
-		// FixBinkVideoBT709
-		/* Gyuvtorgb                       */ { 0x1421DC0, 0x1421DC0, 0x139ECE0 },
-
 		// ImprovedBinkVideo
+		/* Gyuvtorgb                       */ { 0x1421DC0, 0x1421DC0, 0x139ECE0 },
 		/* DrawBinkTextures                */ { 0x6E1320, 0x6E1BF0, 0x6B5B30 },
 		/* BinkDrawCall                    */ { 0x6E1792, 0x6E2062, 0x6B5FA2 },
 		/* UpdateD3DDeviceBink             */ { 0xC782A8, 0xC788F8, 0xC220D1 },

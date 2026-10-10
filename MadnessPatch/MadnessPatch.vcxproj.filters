@@ -80,9 +80,6 @@
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Graphics\FixBinkVideoBT709.cpp">
-      <Filter>src\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Graphics\ImprovedBinkVideo.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
