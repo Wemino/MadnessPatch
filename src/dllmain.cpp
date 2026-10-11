@@ -66,6 +66,7 @@ static void Init()
 	ApplyFixSlowLoading();
 	ApplyFixStuckKeys();
 	ApplyFixFadeToBlack();
+	ApplyFixMapProperties();
 
 	// General
 	ApplyIntroSkip();

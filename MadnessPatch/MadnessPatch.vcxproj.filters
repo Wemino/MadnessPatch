@@ -44,6 +44,9 @@
     <ClCompile Include="..\src\Fixes\FixFadeToBlack.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixMapProperties.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
@@ -108,9 +111,6 @@
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp">
-      <Filter>src\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MainLoop\FixMapProperties.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\FixHatterElevator.cpp">

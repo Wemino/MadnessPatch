@@ -19,6 +19,7 @@ void ApplyFixMSAAFog();
 void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
 void ApplyFixFadeToBlack();
+void ApplyFixMapProperties();
 
 // General
 void ApplyIntroSkip();
@@ -67,7 +68,6 @@ void ApplyMainLoopHooks();
 
 namespace HysteriaLockOnGuard { void Tick(); }
 namespace FixMissingMusic { void Tick(); }
-namespace FixMapProperties { void Tick(); }
 namespace FixHatterElevator { void Tick(); }
 namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }

@@ -152,6 +152,9 @@ enum class Addr
 	// FixFadeToBlack
 	GammaColorScale,
 
+	// FixMapProperties
+	AddToWorld,
+
 	// ForceMSAA
 	ActivateSystemSettings,
 
@@ -383,6 +386,9 @@ namespace Addresses
 
 		// FixFadeToBlack
 		/* GammaColorScale                 */ { 0x64BAE4, 0x64C1D4, 0x6290D4 },
+
+		// FixMapProperties
+		/* AddToWorld                      */ { 0x98F0D0, 0x98F740, 0x950400 },
 
 		// ForceMSAA
 		/* ActivateSystemSettings          */ { 0x621BB0, 0x621BF0, 0x5FE060 },
