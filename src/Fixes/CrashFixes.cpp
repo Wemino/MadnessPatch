@@ -3,7 +3,6 @@
 
 safetyhook::InlineHook Localize;
 
-static uintptr_t Unattached_Collision_Skip = 0;
 static uintptr_t FxActorLoopExit = 0;
 static uintptr_t FxActorInstanceSetActor = 0;
 static uintptr_t ParticleMaterialContinue = 0;
@@ -11,7 +10,6 @@ static uintptr_t ParticleMaterialSkip = 0;
 static uintptr_t HashChainEntryResume = 0;
 static uintptr_t HashChainLoopHead = 0;
 static uintptr_t HashChainNotFound = 0;
-static safetyhook::MidHook UnattachedCollisionGuard{};
 static safetyhook::MidHook FxActorLoopGuard{};
 
 static __declspec(thread) int t_hashChainBudget = 0;
@@ -130,13 +128,6 @@ static DWORD __cdecl Localize_Hook(DWORD* a1, void* a2, const wchar_t* a3, int a
 	return ret;
 }
 
-static void OnUnattachedCollision(safetyhook::Context& ctx)
-{
-	*reinterpret_cast<uint32_t*>(ctx.esi + 0x3C) |= 0x80;
-	ctx.eax = 0;
-	ctx.eip = Unattached_Collision_Skip;
-}
-
 static void OnFxActorLoop(safetyhook::Context& ctx)
 {
 	uintptr_t node = *reinterpret_cast<uintptr_t*>(ctx.ebp - 0x10);
@@ -175,8 +166,7 @@ void ApplyCrashFixes()
 
 	// Unattached-collision panic
 	DWORD addr_FixUnattachedCollisionPanic = GetAddress(Addr::FixUnattachedCollisionPanic);
-	Unattached_Collision_Skip = addr_FixUnattachedCollisionPanic + 0x1B0B;
-	UnattachedCollisionGuard = safetyhook::create_mid(addr_FixUnattachedCollisionPanic + 0x6, OnUnattachedCollision);
+	MemoryHelper::MakeJMP(addr_FixUnattachedCollisionPanic + 0x6, addr_FixUnattachedCollisionPanic + 0xB9);
 
 	// Hair-curve over-read
 	MemoryHelper::WriteMemory<uint8_t>(GetAddress(Addr::FixHairCurveOverRead), 0x73);
