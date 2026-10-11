@@ -21,6 +21,7 @@ void ApplyFixMissingMusic()
 namespace FixMissingMusic
 {
 	constexpr uint64_t kLoadGraceMs = 3000;
+	constexpr uint64_t kRescanMs = 250;
 
 	struct AreaMusic { const char* level; const char* cue; };
 	static const AreaMusic kAreaMusic[] =
@@ -37,6 +38,13 @@ namespace FixMissingMusic
 		{ "Chapter6_DMHouse",       "Ch6_Amb_Cue"           },
 	};
 
+	static uint64_t nextScan = 0;
+
+	static bool NameIs(const FName& name, const char* text)
+	{
+		return name.IsValid() && name.GetInstance() == 0 && strcmp(FName::Names()->at(name.GetDisplayIndex())->Name, text) == 0;
+	}
+
 	static void FireMusicTrack(AWorldInfo* wi, const FMusicTrackStruct& track)
 	{
 		reinterpret_cast<void(__thiscall*)(AWorldInfo*, FMusicTrackStruct)>(GetAddress(Addr::UpdateMusicTrack))(wi, track);
@@ -47,43 +55,42 @@ namespace FixMissingMusic
 	{
 		for (ULevelStreaming* ls : wi->StreamingLevels)
 		{
-			if (!ls || !ls->bIsVisible) // only the active (visible) sublevel
+			if (!ls || !ls->bIsVisible)
 				continue;
 
-			std::string pkg = ls->PackageName.ToString();
 			for (const AreaMusic& area : kAreaMusic)
 			{
-				if (pkg == area.level)
-				{
+				if (NameIs(ls->PackageName, area.level))
 					return area.cue;
-				}
 			}
 		}
 
 		return nullptr;
 	}
 
-	// Is that cue already the one playing?
 	static bool CueAlreadyPlaying(AWorldInfo* wi, const char* cue)
 	{
-		if (!wi->MusicComp) // nothing playing -> not it
+		if (!wi->MusicComp)
 			return false;
 
 		USoundCue* cur = wi->CurrentMusicTrack.TheSoundCue;
-		return cur && cur->GetName() == cue;
+		return cur && NameIs(cur->Name, cue);
 	}
 
 	// Start the area's music by firing its own Kismet node
 	static bool PlayCue(AWorldInfo* wi, const char* cue)
 	{
-		for (USeqAct_PlayMusicTrack* node : UObject::FindAllOf<USeqAct_PlayMusicTrack>(true))
+		TArray<UObject*>* objects = UObject::GObjObjects();
+		for (int32_t i = 0; i < objects->size(); i++)
 		{
-			if (!node || !node->MusicTrack.TheSoundCue)
+			UObject* object = objects->at(i);
+			if (!object || !object->IsA<USeqAct_PlayMusicTrack>() || object->IsDefaultObject())
 				continue;
 
-			if (node->MusicTrack.TheSoundCue->GetName() == cue)
+			const FMusicTrackStruct& track = static_cast<USeqAct_PlayMusicTrack*>(object)->MusicTrack;
+			if (track.TheSoundCue && NameIs(track.TheSoundCue->Name, cue))
 			{
-				FireMusicTrack(wi, node->MusicTrack);
+				FireMusicTrack(wi, track);
 				return true;
 			}
 		}
@@ -96,24 +103,38 @@ namespace FixMissingMusic
 		if (!g_State.loadEndPending)
 			return;
 
+		uint64_t now = GetTickCount64();
+		if (now - g_State.loadEndTick > kLoadGraceMs)
+		{
+			g_State.loadEndPending = false;
+			nextScan = 0;
+			return;
+		}
+
 		AAlicePlayerController* pc = g_State.AlicePlayerController;
 		if (!pc || !pc->Pawn || !pc->WorldInfo)
 			return;
 
 		AWorldInfo* wi = pc->WorldInfo;
+		const char* cue = WantedCueForArea(wi);
+		if (!cue)
+			return;
 
-		if (const char* cue = WantedCueForArea(wi))
-		{
-			if (CueAlreadyPlaying(wi, cue) || PlayCue(wi, cue))
-			{
-				g_State.loadEndPending = false;
-				return;
-			}
-		}
-
-		if ((GetTickCount64() - g_State.loadEndTick) > kLoadGraceMs)
+		if (CueAlreadyPlaying(wi, cue))
 		{
 			g_State.loadEndPending = false;
+			nextScan = 0;
+			return;
+		}
+
+		if (now < nextScan)
+			return;
+
+		nextScan = now + kRescanMs;
+		if (PlayCue(wi, cue))
+		{
+			g_State.loadEndPending = false;
+			nextScan = 0;
 		}
 	}
 }
