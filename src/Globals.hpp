@@ -22,6 +22,9 @@ struct GlobalState
 
 	// Input
 	bool isUsingGamepad = false;
+	bool padConnected = false;
+	XINPUT_GAMEPAD padState{};
+	uint32_t gfxMovieLoads = 0;
 
 	// Misc
 	bool shouldBlockBlackBar = false;

@@ -16,7 +16,7 @@ static void* __fastcall Loop_Hook(int thisp, int)
 	if (UnlockCompleteEditionDLC) RefreshDLCWeapon();
 	InputResponsiveness::Tick();
 	if (FixAspectRatio) BlackBarGuard::Tick();
-	if (RestoreMenuMouseCursor) MenuMouseCursor::Tick();
+	if (RestoreMenuMouseCursor && EnableControllerIcons) MenuMouseCursor::Tick();
 
 	if (AchievementSupport)
 	{

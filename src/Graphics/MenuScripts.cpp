@@ -327,6 +327,7 @@ static int __fastcall GFx_LoadRootMovie_Hook(uint32_t thisp, uint32_t, uint32_t 
 	}
 
 	int result = GFx_LoadRootMovie.unsafe_thiscall<int>(thisp, a2, a3);
+	g_State.gfxMovieLoads++;
 
 	// Hand the engine its own allocation back
 	if (swappedData)

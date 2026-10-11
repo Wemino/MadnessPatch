@@ -6,21 +6,38 @@ namespace MenuMouseCursor
 {
 	namespace
 	{
-		constexpr int kStickDeadzone = 12000;
-		constexpr int kTriggerDeadzone = 8000;
+		constexpr SHORT kStickDeadzone = 12000;
+		constexpr BYTE kTriggerDeadzone = 62;
 		constexpr LONG kMouseThreshold = 2;
-		constexpr ULONGLONG kReapplyIntervalMs = 250;
+		constexpr ULONGLONG kMousePollIntervalMs = 33;
 		constexpr ULONGLONG kSelfMoveIgnoreMs = 250;
+
+		struct CachedMovie
+		{
+			UGFxMovie* movie;
+			int32_t index;
+			bool isHud;
+		};
 
 		bool s_visible = true;
 		bool s_applied = false;
 		bool s_haveMousePos = false;
 		POINT s_lastMousePos{};
-		ULONGLONG s_nextReapply = 0;
+		ULONGLONG s_nextMousePoll = 0;
 
 		bool s_parked = false;
 		POINT s_parkReturn{};
 		ULONGLONG s_ignoreMouseUntil = 0;
+
+		std::vector<CachedMovie> s_movies;
+		uint32_t s_moviesBuiltAt = UINT32_MAX;
+
+		// ---- Engine helpers ----
+
+		const char* BaseName(const FName& name)
+		{
+			return name.IsValid() ? FName::Names()->at(name.GetDisplayIndex())->Name : "";
+		}
 
 		void CallNative(UObject* object, UFunction* function, void* params)
 		{
@@ -43,6 +60,31 @@ namespace MenuMouseCursor
 			params.B = value ? 1 : 0;
 			CallNative(movie, function, &params);
 		}
+
+		void RefreshMovies()
+		{
+			s_movies.clear();
+			TArray<UObject*>* objects = UObject::GObjObjects();
+			for (int32_t i = 0; i < objects->size(); i++)
+			{
+				UObject* object = objects->at(i);
+				if (!object || !object->IsA<UGFxMovie>() || object->IsDefaultObject())
+					continue;
+
+				bool isHud = object->Class && object->Class->Name.GetInstance() == 0 && strcmp(BaseName(object->Class->Name), "AliceGFxMovie_HUD") == 0;
+				s_movies.push_back({ static_cast<UGFxMovie*>(object), i, isHud });
+			}
+
+			s_moviesBuiltAt = g_State.gfxMovieLoads;
+		}
+
+		bool IsAlive(const CachedMovie& cached)
+		{
+			TArray<UObject*>* objects = UObject::GObjObjects();
+			return cached.index < objects->size() && objects->at(cached.index) == cached.movie;
+		}
+
+		// ---- OS pointer ----
 
 		void WarpPointer(POINT screenPos)
 		{
@@ -104,32 +146,24 @@ namespace MenuMouseCursor
 			if (GetCursorPos(&s_lastMousePos)) s_haveMousePos = true;
 		}
 
+		// ---- Input activity ----
+
+		// Last state the game polled through the SDL XInput hook, no SDL calls here
 		bool IsGamepadActive()
 		{
-			SDL_Gamepad* pad = ControllerHelper::s_pGamepad;
-			if (!pad) return false;
-
-			for (int button = 0; button < SDL_GAMEPAD_BUTTON_COUNT; button++)
-			{
-				// The touchpad doubles as a mouse surface, so it must not count as controller use
-				if (TouchpadEnabled && button == SDL_GAMEPAD_BUTTON_TOUCHPAD) continue;
-
-				if (SDL_GetGamepadButton(pad, (SDL_GamepadButton)button)) return true;
-			}
-
-			for (int axis = 0; axis < SDL_GAMEPAD_AXIS_COUNT; axis++)
-			{
-				bool isTrigger = (axis == SDL_GAMEPAD_AXIS_LEFT_TRIGGER || axis == SDL_GAMEPAD_AXIS_RIGHT_TRIGGER);
-				int value = SDL_GetGamepadAxis(pad, (SDL_GamepadAxis)axis);
-
-				if (std::abs(value) > (isTrigger ? kTriggerDeadzone : kStickDeadzone)) return true;
-			}
-
-			return false;
+			const XINPUT_GAMEPAD& pad = g_State.padState;
+			return pad.wButtons != 0
+				|| pad.bLeftTrigger > kTriggerDeadzone || pad.bRightTrigger > kTriggerDeadzone
+				|| std::abs(pad.sThumbLX) > kStickDeadzone || std::abs(pad.sThumbLY) > kStickDeadzone
+				|| std::abs(pad.sThumbRX) > kStickDeadzone || std::abs(pad.sThumbRY) > kStickDeadzone;
 		}
 
 		bool IsMouseActive()
 		{
+			ULONGLONG now = GetTickCount64();
+			if (now < s_nextMousePoll) return false;
+			s_nextMousePoll = now + kMousePollIntervalMs;
+
 			POINT pos{};
 			if (!GetCursorPos(&pos)) return false;
 
@@ -138,27 +172,24 @@ namespace MenuMouseCursor
 			s_lastMousePos = pos;
 			s_haveMousePos = true;
 
-			if (GetTickCount64() < s_ignoreMouseUntil) return false;
+			if (now < s_ignoreMouseUntil) return false;
 			if (moved) return true;
 
 			return ((GetAsyncKeyState(VK_LBUTTON) | GetAsyncKeyState(VK_RBUTTON) | GetAsyncKeyState(VK_MBUTTON)) & 0x8000) != 0;
 		}
 
+		// ---- Apply ----
+
 		void PushVisibility(bool visible)
 		{
 			bool menuMovieRunning = false;
 
-			for (UGFxMovie* movie : UObject::FindAllOf<UGFxMovie>())
+			for (const CachedMovie& cached : s_movies)
 			{
-				if (!movie || !movie->pMovie.Dummy) continue;
+				if (!IsAlive(cached) || !cached.movie->pMovie.Dummy) continue;
 
-				MovieSetVariableBool(movie, L"_root.cmc._visible", visible);
-
-				if (!menuMovieRunning)
-				{
-					std::string className = movie->Class ? movie->Class->GetName() : std::string();
-					menuMovieRunning = (className != "AliceGFxMovie_HUD");
-				}
+				MovieSetVariableBool(cached.movie, L"_root.cmc._visible", visible);
+				menuMovieRunning |= !cached.isHud;
 			}
 
 			if (visible)
@@ -170,13 +201,10 @@ namespace MenuMouseCursor
 				ParkCursor();
 			}
 		}
-	}
 
-	void Tick()
-	{
-		if (!EnableControllerIcons || !ControllerHelper::IsConnected())
+		void Deactivate()
 		{
-			if (s_applied && !s_visible)
+			if (!s_visible)
 			{
 				s_visible = true;
 				PushVisibility(true);
@@ -185,25 +213,42 @@ namespace MenuMouseCursor
 			UnparkCursor();
 			s_applied = false;
 			s_haveMousePos = false;
+		}
+	}
+
+	void Tick()
+	{
+		if (!g_State.padConnected)
+		{
+			if (s_applied) Deactivate();
 			return;
 		}
 
-		bool mouseActive = IsMouseActive();
-		bool gamepadActive = IsGamepadActive();
+		bool visible = s_applied && s_visible;
 
-		bool visible = s_applied ? s_visible : false;
+		if (IsGamepadActive())
+		{
+			visible = false;
+			s_haveMousePos = false;
+		}
+		else if (!visible && IsMouseActive())
+		{
+			visible = true;
+		}
 
-		if (gamepadActive) visible = false;
-		else if (mouseActive) visible = true;
+		const bool moviesLoaded = s_moviesBuiltAt != g_State.gfxMovieLoads;
+		if (moviesLoaded) RefreshMovies();
 
-		ULONGLONG now = GetTickCount64();
-		bool changed = !s_applied || visible != s_visible;
-
-		if (!changed && (visible || now < s_nextReapply)) return;
+		if (s_applied && visible == s_visible)
+		{
+			// New movies start with their cursor shown, only a hidden cursor has to reach them
+			if (moviesLoaded && !visible) PushVisibility(false);
+			return;
+		}
 
 		s_visible = visible;
 		s_applied = true;
-		s_nextReapply = now + kReapplyIntervalMs;
+		if (!visible) s_haveMousePos = false;
 		PushVisibility(visible);
 	}
 }

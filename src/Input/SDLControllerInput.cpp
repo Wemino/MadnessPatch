@@ -9,6 +9,9 @@ static DWORD WINAPI XInputGetState_Hook(DWORD dwUserIndex, XINPUT_STATE* pState)
 	if (dwUserIndex != 0) return ERROR_DEVICE_NOT_CONNECTED;
 	DWORD result = ControllerHelper::PollController(pState, InvertABXYButtons, InvertShoulderTriggers);
 
+	g_State.padConnected = (result == ERROR_SUCCESS);
+	if (g_State.padConnected && pState) g_State.padState = pState->Gamepad;
+
 	if (AchievementSupport && pState)
 	{
 		AchievementOverlay::FeedControllerState(*pState, result == ERROR_SUCCESS);
