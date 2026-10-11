@@ -144,6 +144,11 @@ enum class Addr
 	AsyncIOCacheHandles,
 	AsyncIOCacheHandlesEnd,
 
+	// FixStuckKeys
+	PlayerInputInputKey,
+	UInputInputKey,
+	PlayerInputDisabled,
+
 	// ForceMSAA
 	ActivateSystemSettings,
 
@@ -367,6 +372,11 @@ namespace Addresses
 		// FixSlowLoading
 		/* AsyncIOCacheHandles             */ { 0x4AF3FE, 0x4AF51E, 0x49D4DE },
 		/* AsyncIOCacheHandlesEnd          */ { 0x4AF477, 0x4AF597, 0x49D554 },
+
+		// FixStuckKeys
+		/* PlayerInputInputKey             */ { 0xA01890, 0xA01D40, 0x9BDBF0 },
+		/* UInputInputKey                  */ { 0xA01670, 0xA01B20, 0x9BD9D0 },
+		/* PlayerInputDisabled             */ { 0x150A020, 0x150A020, 0x1483B10 },
 
 		// ForceMSAA
 		/* ActivateSystemSettings          */ { 0x621BB0, 0x621BF0, 0x5FE060 },

@@ -38,6 +38,9 @@
     <ClCompile Include="..\src\Fixes\FixSlowLoading.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixStuckKeys.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
@@ -99,9 +102,6 @@
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\HysteriaLockOnGuard.cpp">
-      <Filter>src\MainLoop</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MainLoop\FixStuckKeys.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp">

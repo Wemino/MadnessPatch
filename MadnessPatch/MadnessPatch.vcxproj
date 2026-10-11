@@ -126,6 +126,7 @@
     <ClCompile Include="..\src\Fixes\FixCharacterLighting.cpp" />
     <ClCompile Include="..\src\Fixes\FixMSAAFog.cpp" />
     <ClCompile Include="..\src\Fixes\FixSlowLoading.cpp" />
+    <ClCompile Include="..\src\Fixes\FixStuckKeys.cpp" />
     <ClCompile Include="..\src\General\IntroSkip.cpp" />
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />
     <ClCompile Include="..\src\General\AchievementSupport.cpp" />
@@ -149,7 +150,6 @@
     <ClCompile Include="..\src\MainLoop\BlockCameraInMenu.cpp" />
     <ClCompile Include="..\src\MainLoop\MainLoop.cpp" />
     <ClCompile Include="..\src\MainLoop\HysteriaLockOnGuard.cpp" />
-    <ClCompile Include="..\src\MainLoop\FixStuckKeys.cpp" />
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp" />
     <ClCompile Include="..\src\MainLoop\FixMapProperties.cpp" />
     <ClCompile Include="..\src\MainLoop\FixHatterElevator.cpp" />

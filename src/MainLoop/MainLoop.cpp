@@ -9,7 +9,6 @@ static void* __fastcall Loop_Hook(int thisp, int)
 		g_State.isUsingGamepad = g_State.AlicePlayerController->PlayerInput->bUsingGamepad;
 
 	if (HysteriaLockOnGuardEnabled) HysteriaLockOnGuard::Tick();
-	if (FixStuckKeysEnabled) FixStuckKeys::Tick();
 	if (FixMissingMusicEnabled) FixMissingMusic::Tick();
 	if (FixMapPropertiesEnabled) FixMapProperties::Tick();
 	if (FixHatterElevatorEnabled) FixHatterElevator::Tick();
