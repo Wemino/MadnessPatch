@@ -24,18 +24,46 @@ static std::wstring ToAbs(const wchar_t* p)
 	return (len > 0 && len < 1024) ? std::wstring(buf) : std::wstring(p);
 }
 
+// FArchiveFileWriterWindows: ArIsError +0x34, Handle +0x80, Flush is vtable slot 18.
+static bool FinishWrite(void* writer)
+{
+	uint8_t* ar = reinterpret_cast<uint8_t*>(writer);
+	int32_t& arIsError = *reinterpret_cast<int32_t*>(ar + 0x34);
+	HANDLE& handle = *reinterpret_cast<HANDLE*>(ar + 0x80);
+
+	if (handle)
+	{
+		reinterpret_cast<void(__thiscall*)(void*)>((*reinterpret_cast<uintptr_t**>(writer))[18])(writer);
+		if (!CloseHandle(handle)) arIsError = 1;
+		handle = nullptr;
+	}
+
+	return arIsError == 0;
+}
+
+// Make sure the new save is on disk before it takes the old one's place
+static bool FlushToDisk(const std::wstring& path)
+{
+	HANDLE h = CreateFileW(path.c_str(), GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+	if (h == INVALID_HANDLE_VALUE) return false;
+
+	bool ok = FlushFileBuffers(h) != 0;
+	CloseHandle(h);
+	return ok;
+}
+
 static void Commit(const SavePaths& p, bool ok)
 {
-	if (!ok)
+	if (!ok || !FlushToDisk(p.tmp))
 	{
 		DeleteFileW(p.tmp.c_str()); // failed write: keep the existing good save
 		return;
 	}
-	
+
 	if (GetFileAttributesW(p.real.c_str()) != INVALID_FILE_ATTRIBUTES)
 	{
 		// atomic replace, old save rolls into .bak (fall back to a plain atomic move if ReplaceFile refuses)
-		if (!ReplaceFileW(p.real.c_str(), p.tmp.c_str(), p.bak.c_str(), REPLACEFILE_WRITE_THROUGH, nullptr, nullptr))
+		if (!ReplaceFileW(p.real.c_str(), p.tmp.c_str(), p.bak.c_str(), 0, nullptr, nullptr))
 		{
 			MoveFileExW(p.tmp.c_str(), p.real.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
 		}
@@ -50,7 +78,8 @@ static void Commit(const SavePaths& p, bool ok)
 // FArchiveFileWriter*
 static void* __fastcall FileWriterOpen_Hook(void* thisp, int, wchar_t* name, uint32_t flags, void* errDev)
 {
-	if (name && IsSaveFile(name))
+	// appending to an empty temp file would replace the save with only the appended part
+	if (name && !(flags & 0x08) && IsSaveFile(name))
 	{
 		std::wstring tmpName = std::wstring(name) + L".tmp";
 		void* writer = FileWriterOpen.unsafe_thiscall<void*>(thisp, tmpName.c_str(), flags, errDev);
@@ -74,8 +103,8 @@ static void* __fastcall FileWriterOpen_Hook(void* thisp, int, wchar_t* name, uin
 static void* __fastcall FileWriterDtor_Hook(void* thisp, int, char flag)
 {
 	SavePaths p;
-	bool pending = false, ok = false;
-	
+	bool pending = false;
+
 	EnterCriticalSection(&g_saveCs);
 	auto it = g_pendingSaves.find(thisp);
 	if (it != g_pendingSaves.end())
@@ -83,12 +112,11 @@ static void* __fastcall FileWriterDtor_Hook(void* thisp, int, char flag)
 		p = it->second;
 		g_pendingSaves.erase(it);
 		pending = true;
-		// Flush has already closed the handle and finalised ArIsError by this point
-		ok = (*(int32_t*)((uint8_t*)thisp + 0x34) == 0);
 	}
 	LeaveCriticalSection(&g_saveCs);
-	
-	void* result = FileWriterDtor.unsafe_thiscall<void*>(thisp, flag); // real dtor, file already flushed + closed
+
+	bool ok = pending && FinishWrite(thisp);
+	void* result = FileWriterDtor.unsafe_thiscall<void*>(thisp, flag); // handle is closed, the real dtor won't touch the file
 
 	if (pending) Commit(p, ok);
 	return result;
@@ -97,7 +125,7 @@ static void* __fastcall FileWriterDtor_Hook(void* thisp, int, char flag)
 void ApplyAtomicSaves()
 {
 	if (!AtomicSaves) return;
-	
+
 	InitializeCriticalSection(&g_saveCs);
 	FileWriterOpen = HookHelper::CreateHook((void*)GetAddress(Addr::FileWriterOpen), &FileWriterOpen_Hook);
 	FileWriterDtor = HookHelper::CreateHook((void*)GetAddress(Addr::FileWriterDtor), &FileWriterDtor_Hook);
