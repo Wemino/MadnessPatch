@@ -12,40 +12,98 @@ namespace FixHatterElevator
 	constexpr uint64_t RepairWindowMs = 12000;
 	constexpr float FreshActivationSeconds = 30.0f;
 
-	constexpr const char* Room = "Chapter1_W2_RR_03_S";
-	constexpr const char* StartupEvent = ".Main_Sequence.SeqEvent_LevelLoaded_0";
-
-	// The room's gates at map defaults (class default is open, the map closes 2/3/4/8)
-	struct GateDefault { const char* name; bool open; int autoCloseCount; };
-	static const GateDefault kGates[] =
+	// The room's gates at map defaults (class default is open, the map closes 2/3/4/8), indexed by name suffix
+	struct GateDefault { int index; bool open; int autoCloseCount; };
+	static constexpr GateDefault kGates[] =
 	{
-		{ ".Main_Sequence.SeqAct_Gate_0",  true,  1 },
-		{ ".Main_Sequence.SeqAct_Gate_1",  true,  1 },
-		{ ".Main_Sequence.SeqAct_Gate_2",  false, 0 },
-		{ ".Main_Sequence.SeqAct_Gate_3",  false, 0 },
-		{ ".Main_Sequence.SeqAct_Gate_4",  false, 0 },
-		{ ".Main_Sequence.SeqAct_Gate_7",  true,  0 },
-		{ ".Main_Sequence.SeqAct_Gate_8",  false, 0 },
-		{ ".Main_Sequence.SeqAct_Gate_10", true,  0 },
-		{ ".Main_Sequence.SeqAct_Gate_11", true,  1 },
-		{ ".Main_Sequence.SeqAct_Gate_12", true,  1 },
+		{ 0,  true,  1 },
+		{ 1,  true,  1 },
+		{ 2,  false, 0 },
+		{ 3,  false, 0 },
+		{ 4,  false, 0 },
+		{ 7,  true,  0 },
+		{ 8,  false, 0 },
+		{ 10, true,  0 },
+		{ 11, true,  1 },
+		{ 12, true,  1 },
 	};
 
-	// Walk triggers that only fire once
-	static const char* Touches[] =
+	// Walk triggers that only fire once (SeqEvent_Touch_1/2/3)
+	static constexpr int kTouches[] = { 1, 2, 3 };
+
+	// Camera matinees behind the one-shot gates reopened above: Gate_0 -> Interp_0 (elevator ride), Gate_12 -> Interp_3 (exit to the HUB)
+	static constexpr int kCameraInterps[] = { 0, 3 };
+
+	constexpr int MaxIndex = 13;
+
+	struct RoomOps
 	{
-		".Main_Sequence.SeqEvent_Touch_1",
-		".Main_Sequence.SeqEvent_Touch_2",
-		".Main_Sequence.SeqEvent_Touch_3",
+		USeqEvent_LevelLoaded* startup = nullptr;
+		USeqAct_Gate* gates[MaxIndex] = {};
+		USeqEvent_Touch* touches[MaxIndex] = {};
+		USeqAct_Interp* interps[MaxIndex] = {};
 	};
 
-	static bool IsRoomObject(const std::string& fullName, const char* suffix)
+	// FName base string without building a std::string ("SeqAct_Gate_8" = "SeqAct_Gate" + instance 9)
+	static const char* BaseName(const FName& name)
 	{
-		size_t len = strlen(suffix);
-		if (fullName.size() < len || memcmp(fullName.data() + fullName.size() - len, suffix, len) != 0)
-			return false;
+		return name.IsValid() ? FName::Names()->at(name.GetDisplayIndex())->Name : "";
+	}
 
-		return fullName.find(Room) != std::string::npos;
+	static bool NameIs(const FName& name, const char* base)
+	{
+		return name.GetInstance() == 0 && strcmp(BaseName(name), base) == 0;
+	}
+
+	// RR_03_S's level, null while it isn't loaded
+	static ULevel* FindRoomLevel(AWorldInfo* worldInfo)
+	{
+		for (ULevelStreaming* ls : worldInfo->StreamingLevels)
+		{
+			if (ls && ls->LoadedLevel && NameIs(ls->PackageName, "Chapter1_W2_RR_03_S"))
+				return ls->LoadedLevel;
+		}
+
+		return nullptr;
+	}
+
+	// The level's Main_Sequence, pointer and name compares only
+	static USequence* FindMainSequence(ULevel* level)
+	{
+		for (UObject* obj : *UObject::GObjObjects())
+		{
+			if (obj && obj->Outer == level && NameIs(obj->Name, "Main_Sequence"))
+				return static_cast<USequence*>(obj);
+		}
+
+		return nullptr;
+	}
+
+	// Sort the sequence's ops by class and name suffix in one pass over its ~60 objects
+	static void CollectRoomOps(USequence* sequence, RoomOps& ops)
+	{
+		for (USequenceObject* obj : sequence->SequenceObjects)
+		{
+			if (!obj || !obj->Class)
+				continue;
+
+			const char* cls = BaseName(obj->Class->Name);
+			if (strcmp(BaseName(obj->Name), cls) != 0)
+				continue;
+
+			int index = obj->Name.GetInstance() - 1;
+			if (index < 0 || index >= MaxIndex)
+				continue;
+
+			if (strcmp(cls, "SeqAct_Gate") == 0)
+				ops.gates[index] = static_cast<USeqAct_Gate*>(obj);
+			else if (strcmp(cls, "SeqEvent_Touch") == 0)
+				ops.touches[index] = static_cast<USeqEvent_Touch*>(obj);
+			else if (strcmp(cls, "SeqAct_Interp") == 0)
+				ops.interps[index] = static_cast<USeqAct_Interp*>(obj);
+			else if (index == 0 && strcmp(cls, "SeqEvent_LevelLoaded") == 0)
+				ops.startup = static_cast<USeqEvent_LevelLoaded*>(obj);
+		}
 	}
 
 	static UFunction* CheckActivateFunction()
@@ -58,72 +116,50 @@ namespace FixHatterElevator
 		return fn;
 	}
 
-	// The room's startup event, null while the level isn't loaded
-	static USeqEvent_LevelLoaded* FindStartupEvent()
-	{
-		for (USeqEvent_LevelLoaded* ev : UObject::FindAllOf<USeqEvent_LevelLoaded>(true))
-		{
-			if (ev && IsRoomObject(ev->GetFullName(), StartupEvent))
-				return ev;
-		}
-
-		return nullptr;
-	}
-
 	// A restored event still carries the ActivationTime it was saved with, one that fired during this load is seconds old
-	static bool IsStaleActivation(USeqEvent_LevelLoaded* startup)
+	static bool IsStaleActivation(USeqEvent_LevelLoaded* startup, AWorldInfo* worldInfo)
 	{
 		if (startup->TriggerCount == 0)
 			return false;
 
-		AAlicePlayerController* pc = g_State.AlicePlayerController;
-		if (!pc || !pc->WorldInfo)
-			return true; // can't tell, assume stale, repairing twice does no harm
-
-		float worldTime = pc->WorldInfo->TimeSeconds;
+		float worldTime = worldInfo->TimeSeconds;
 		float firedAt = startup->ActivationTime;
 		return firedAt > worldTime + 1.0f || (worldTime - firedAt) > FreshActivationSeconds;
 	}
 
 	// Back to map defaults, then fire the startup routing again so the room reconfigures from the
 	// live progress values, exactly what happens when the level streams in fresh
-	static void RepairRoom(USeqEvent_LevelLoaded* startup)
+	static void RepairRoom(const RoomOps& ops, AWorldInfo* worldInfo)
 	{
-		for (USeqEvent_Touch* ev : UObject::FindAllOf<USeqEvent_Touch>(true))
+		for (int index : kTouches)
 		{
-			if (!ev)
-				continue;
-
-			std::string fullName = ev->GetFullName();
-			for (const char* touch : Touches)
+			if (USeqEvent_Touch* touch = ops.touches[index])
 			{
-				if (IsRoomObject(fullName, touch))
-				{
-					ev->TriggerCount = 0;
-					ev->ActivationTime = 0.0f;
-					break;
-				}
+				touch->TriggerCount = 0;
+				touch->ActivationTime = 0.0f;
 			}
 		}
 
-		for (USeqAct_Gate* gate : UObject::FindAllOf<USeqAct_Gate>(true))
+		for (const GateDefault& gd : kGates)
 		{
-			if (!gate)
-				continue;
-
-			std::string fullName = gate->GetFullName();
-			for (const GateDefault& gd : kGates)
+			if (USeqAct_Gate* gate = ops.gates[gd.index])
 			{
-				if (IsRoomObject(fullName, gd.name))
-				{
-					gate->bOpen = gd.open;
-					gate->AutoCloseCount = gd.autoCloseCount;
-					gate->CurrentCloseCount = 0;
-					break;
-				}
+				gate->bOpen = gd.open;
+				gate->AutoCloseCount = gd.autoCloseCount;
+				gate->CurrentCloseCount = 0;
 			}
 		}
 
+		for (int index : kCameraInterps)
+		{
+			USeqAct_Interp* interp = ops.interps[index];
+			if (interp && !interp->bIsPlaying)
+			{
+				interp->Position = 0.0f;
+			}
+		}
+
+		USeqEvent_LevelLoaded* startup = ops.startup;
 		startup->TriggerCount = 0;
 		startup->MaxTriggerCount = 0;
 
@@ -132,84 +168,60 @@ namespace FixHatterElevator
 			return;
 
 		USequenceEvent_execCheckActivate_Params params{};
-		params.InOriginator = startup->Originator;
-		if (!params.InOriginator && g_State.AlicePlayerController)
-		{
-			params.InOriginator = g_State.AlicePlayerController->WorldInfo;
-		}
-
+		params.InOriginator = startup->Originator ? startup->Originator : worldInfo;
 		startup->ProcessEvent(checkActivate, &params, nullptr);
 	}
 
-	// Is RR_03_S currently loaded?
-	static bool RoomIsLoaded()
+	// True once the room has been handled for this load, false to try again on the next scan
+	static bool TryRepair()
 	{
 		AAlicePlayerController* pc = g_State.AlicePlayerController;
 		if (!pc || !pc->WorldInfo)
-		{
 			return false;
-		}
 
-		for (ULevelStreaming* ls : pc->WorldInfo->StreamingLevels)
+		ULevel* level = FindRoomLevel(pc->WorldInfo);
+		if (!level)
+			return false;
+
+		USequence* sequence = FindMainSequence(level);
+		if (!sequence)
+			return false;
+
+		RoomOps ops;
+		CollectRoomOps(sequence, ops);
+		if (!ops.startup)
+			return false;
+
+		// The actual bug: MaxTriggerCount=1 means the room only ever gets to configure itself once.
+		// Zero it so its own routing runs again on every visibility change
+		ops.startup->MaxTriggerCount = 0;
+
+		// Consumed + old = the room came back with stale state (save restore, or it stayed resident
+		// across the round trip). A fresh instance already ran its own routing and needs nothing
+		if (IsStaleActivation(ops.startup, pc->WorldInfo))
 		{
-			if (ls && ls->LoadedLevel && ls->PackageName.ToString() == Room)
-			{
-				return true;
-			}
+			RepairRoom(ops, pc->WorldInfo);
 		}
 
-		return false;
+		return true;
 	}
 
 	void Tick()
 	{
-		// Only wake up for a few seconds after a loading screen (LoadingBinkIsFinished, the same signal
-		// FixMissingMusic uses). Every path that changes section progress goes through one
-		static uint64_t lastLoadTick = 0;
-		static uint64_t windowEnd = 0;
-		static bool handled = true;
-
-		if (g_State.loadEndTick != lastLoadTick)
-		{
-			lastLoadTick = g_State.loadEndTick;
-			windowEnd = lastLoadTick + RepairWindowMs;
-			handled = false;
-		}
-
-		if (handled)
+		static uint64_t handledLoad = 0;
+		const uint64_t loadEnd = g_State.loadEndTick;
+		if (loadEnd == handledLoad)
 			return;
-
-		uint64_t now = GetTickCount64();
-		if (now > windowEnd)
-		{
-			handled = true; // room never showed up, nothing to do
-			return;
-		}
 
 		static uint64_t nextScan = 0;
+		const uint64_t now = GetTickCount64();
 		if (now < nextScan)
 			return;
 		nextScan = now + ScanIntervalMs;
 
-		// Don't walk the object list unless the room is actually loaded
-		if (!RoomIsLoaded())
-			return;
-
-		USeqEvent_LevelLoaded* startup = FindStartupEvent();
-		if (!startup)
-			return;
-
-		// The actual bug: MaxTriggerCount=1 means the room only ever gets to configure itself once.
-		// Zero it so its own routing runs again on every visibility change
-		if (startup->MaxTriggerCount != 0)
-			startup->MaxTriggerCount = 0;
-
-		// Consumed + old = the room came back with stale state (save restore, or it stayed resident
-		// across the round trip). A fresh instance already ran its own routing and needs nothing
-		handled = true;
-		if (IsStaleActivation(startup))
+		if (TryRepair() || now - loadEnd > RepairWindowMs)
 		{
-			RepairRoom(startup);
+			handledLoad = loadEnd;
 		}
 	}
 }
