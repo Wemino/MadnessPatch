@@ -12,7 +12,6 @@ static void* __fastcall Loop_Hook(int thisp, int)
 	if (FixMissingMusicEnabled) FixMissingMusic::Tick();
 	if (FixMapPropertiesEnabled) FixMapProperties::Tick();
 	if (FixHatterElevatorEnabled) FixHatterElevator::Tick();
-	if (FixFadeToBlackEnabled) FixFadeToBlack::Tick();
 	if (UnlockCompleteEditionDLC) RefreshDLCWeapon();
 	InputResponsiveness::Tick();
 	if (FixAspectRatio) BlackBarGuard::Tick();

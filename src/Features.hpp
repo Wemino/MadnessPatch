@@ -18,6 +18,7 @@ void ApplyFixCharacterLighting();
 void ApplyFixMSAAFog();
 void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
+void ApplyFixFadeToBlack();
 
 // General
 void ApplyIntroSkip();
@@ -68,7 +69,6 @@ namespace HysteriaLockOnGuard { void Tick(); }
 namespace FixMissingMusic { void Tick(); }
 namespace FixMapProperties { void Tick(); }
 namespace FixHatterElevator { void Tick(); }
-namespace FixFadeToBlack { void Tick(); }
 namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }
 namespace BlockCameraInMenu { void Tick(); }

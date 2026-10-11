@@ -65,6 +65,7 @@ static void Init()
 	ApplyFixMSAAFog();
 	ApplyFixSlowLoading();
 	ApplyFixStuckKeys();
+	ApplyFixFadeToBlack();
 
 	// General
 	ApplyIntroSkip();
