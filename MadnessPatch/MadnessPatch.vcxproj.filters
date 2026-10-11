@@ -47,6 +47,9 @@
     <ClCompile Include="..\src\Fixes\FixMapProperties.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixBlurScaling.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
@@ -69,6 +72,9 @@
       <Filter>src\Display</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Display\BorderlessFullscreen.cpp">
+      <Filter>src\Display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Display\DPIAware.cpp">
       <Filter>src\Display</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Input\SDLControllerInput.cpp">

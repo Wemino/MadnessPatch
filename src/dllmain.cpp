@@ -67,6 +67,7 @@ static void Init()
 	ApplyFixStuckKeys();
 	ApplyFixFadeToBlack();
 	ApplyFixMapProperties();
+	ApplyFixBlurScaling();
 
 	// General
 	ApplyIntroSkip();
@@ -83,6 +84,7 @@ static void Init()
 	ApplyAutoResolution();
 	ApplyBorderlessFullscreen();
 	ApplyUseWindowed();
+	ApplyDPIAware();
 
 	// Input
 	ApplyUseSDLControllerInput();

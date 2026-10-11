@@ -155,6 +155,9 @@ enum class Addr
 	// FixMapProperties
 	AddToWorld,
 
+	// FixBlurScaling
+	GaussianBlurFilterBuffer,
+
 	// ForceMSAA
 	ActivateSystemSettings,
 
@@ -389,6 +392,9 @@ namespace Addresses
 
 		// FixMapProperties
 		/* AddToWorld                      */ { 0x98F0D0, 0x98F740, 0x950400 },
+
+		// FixBlurScaling
+		/* GaussianBlurFilterBuffer        */ { 0xAECCD0, 0xAEC690, 0xAA4E00 },
 
 		// ForceMSAA
 		/* ActivateSystemSettings          */ { 0x621BB0, 0x621BF0, 0x5FE060 },

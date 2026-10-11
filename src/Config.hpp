@@ -24,6 +24,7 @@ inline bool FixMorphTargets = false;
 inline bool FixCharacterLighting = false;
 inline int FixMSAAFog = 0;
 inline bool FixSlowLoading = false;
+inline bool FixBlurScaling = false;
 inline bool FixUpgradeCursorLeak = false;
 inline bool FixTheatricalsTitles = false;
 inline bool FixPinballCannonPrompt = false;
@@ -54,6 +55,7 @@ inline float FontScalingFactor = 0;
 inline bool AutoResolution = false;
 inline bool UseWindowed = false;
 inline bool BorderlessFullscreenEnabled = false;
+inline bool DPIAware = false;
 
 // Input
 inline bool UseSDLControllerInput = false;
@@ -105,6 +107,7 @@ inline void ReadConfig()
 	FixCharacterLighting = IniHelper::ReadInteger("Fixes", "FixCharacterLighting", 1) == 1;
 	FixMSAAFog = std::clamp(IniHelper::ReadInteger("Fixes", "FixMSAAFog", 1), 0, 2);
 	FixSlowLoading = IniHelper::ReadInteger("Fixes", "FixSlowLoading", 1) == 1;
+	FixBlurScaling = IniHelper::ReadInteger("Fixes", "FixBlurScaling", 1) == 1;
 	FixUpgradeCursorLeak = IniHelper::ReadInteger("Fixes", "FixUpgradeCursorLeak", 1) == 1;
 	FixTheatricalsTitles = IniHelper::ReadInteger("Fixes", "FixTheatricalsTitles", 1) == 1;
 	FixPinballCannonPrompt = IniHelper::ReadInteger("Fixes", "FixPinballCannonPrompt", 1) == 1;
@@ -135,6 +138,7 @@ inline void ReadConfig()
 	AutoResolution = IniHelper::ReadInteger("Display", "AutoResolution", 1) == 1;
 	UseWindowed = IniHelper::ReadInteger("Display", "UseWindowed", 0) == 1;
 	BorderlessFullscreenEnabled = IniHelper::ReadInteger("Display", "BorderlessFullscreen", 0) == 1;
+	DPIAware = IniHelper::ReadInteger("Display", "DPIAware", 1) == 1;
 
 	// Input
 	UseSDLControllerInput = IniHelper::ReadInteger("Input", "UseSDLControllerInput", 1) == 1;

@@ -20,6 +20,7 @@ void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
 void ApplyFixFadeToBlack();
 void ApplyFixMapProperties();
+void ApplyFixBlurScaling();
 
 // General
 void ApplyIntroSkip();
@@ -37,6 +38,7 @@ void ApplyFontScaling();
 void ApplyAutoResolution();
 void ApplyUseWindowed();
 void ApplyBorderlessFullscreen();
+void ApplyDPIAware();
 
 // Input
 void ApplyUseSDLControllerInput();
