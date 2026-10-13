@@ -13,6 +13,8 @@ enum class Addr
 	// FixInputBinding
 	InputFix,
 	LoadStartupPackages,
+	KeyCommandsLoad,
+	KeyCommandsTable,
 
 	// FixHighFPSHairPhysics
 	HairSimulator,
@@ -251,6 +253,8 @@ namespace Addresses
 		// FixInputBinding
 		/* InputFix                        */ { 0x4815E1, 0x481371, 0x472D91 },
 		/* LoadStartupPackages             */ { 0xC90080, 0xC90690, 0xC36AE0 },
+		/* KeyCommandsLoad                 */ { 0xCFB9E0, 0xCFC050, 0xC95B20 },
+		/* KeyCommandsTable                */ { 0x151E530, 0x151E530, 0x1497460 },
 
 		// FixHighFPSHairPhysics
 		/* HairSimulator                   */ { 0xBE4860, 0xBE4A70, 0xB99320 },

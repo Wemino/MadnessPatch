@@ -170,6 +170,9 @@
     <ClCompile Include="..\src\Input\InputBinding.cpp">
       <Filter>src\Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Input\FixKeyCommands.cpp">
+      <Filter>src\Input</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Graphics\AdaptivePhysXMemory.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
@@ -290,9 +293,6 @@
     </ClInclude>
     <ClInclude Include="..\include\MFortress\Patches_Steam.hpp">
       <Filter>MFortress</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\FixIniBindings.hpp">
-      <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\include\CrashHandler.hpp">
       <Filter>include</Filter>

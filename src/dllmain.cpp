@@ -3,7 +3,6 @@
 #include "MFortress/Patches_EA.hpp"
 #include "MFortress/Patches_Steam.hpp"
 #include "CrashHandler.hpp"
-#include "FixIniBindings.hpp"
 
 #include "Features.hpp"
 
@@ -37,11 +36,6 @@ static void Init()
 {
 	ReadConfig();
 
-	if (FixInputBinding)
-	{
-		FixIniBindings::FixAll();
-	}
-
 	if (EnableCrashHandler)
 	{
 		CrashHandler::Install();
@@ -56,6 +50,7 @@ static void Init()
 	ApplyCrashFixes();
 	ApplyFixMissingMusic();
 	ApplyFixInputBinding();
+	ApplyFixKeyCommands();
 	ApplyFixWindowHandling();
 	ApplyThreadPoolClamp();
 	ApplyAtomicSaves();

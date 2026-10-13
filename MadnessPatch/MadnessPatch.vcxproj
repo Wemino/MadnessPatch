@@ -140,6 +140,7 @@
     <ClCompile Include="..\src\Display\DPIAware.cpp" />
     <ClCompile Include="..\src\Input\SDLControllerInput.cpp" />
     <ClCompile Include="..\src\Input\InputBinding.cpp" />
+    <ClCompile Include="..\src\Input\FixKeyCommands.cpp" />
     <ClCompile Include="..\src\Graphics\ImprovedTextureStreaming.cpp" />
     <ClCompile Include="..\src\Graphics\TrilinearFiltering.cpp" />
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp" />
@@ -171,7 +172,6 @@
     <ClInclude Include="..\include\AchievementOverlay.hpp" />
     <ClInclude Include="..\include\Controller.hpp" />
     <ClInclude Include="..\include\CrashHandler.hpp" />
-    <ClInclude Include="..\include\FixIniBindings.hpp" />
     <ClInclude Include="..\include\ini.hpp" />
     <ClInclude Include="..\include\MFortress\PatchEngine.hpp" />
     <ClInclude Include="..\include\MFortress\Patches_EA.hpp" />

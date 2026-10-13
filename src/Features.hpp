@@ -9,6 +9,7 @@ void ApplyFixHighFPSWalkingPhysics();
 void ApplyCrashFixes();
 void ApplyFixMissingMusic();
 void ApplyFixInputBinding();
+void ApplyFixKeyCommands();
 void ApplyFixWindowHandling();
 void ApplyThreadPoolClamp();
 void ApplyAtomicSaves();
