@@ -20,7 +20,6 @@ void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
 void ApplyFixFadeToBlack();
 void ApplyFixMapProperties();
-void ApplyFixBlurScaling();
 
 // General
 void ApplyIntroSkip();

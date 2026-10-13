@@ -322,7 +322,7 @@ static int __fastcall AddToWorld_Hook(UWorld* world, int, ULevelStreaming* strea
 
 void ApplyFixMapProperties()
 {
-	if (!FixMapPropertiesEnabled) return;
+	if (!FixMapProperties) return;
 
 	AddToWorld = HookHelper::CreateHook((void*)GetAddress(Addr::AddToWorld), &AddToWorld_Hook);
 }

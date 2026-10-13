@@ -25,7 +25,7 @@ static void OnGammaColorScale(safetyhook::Context& ctx)
 
 void ApplyFixFadeToBlack()
 {
-	if (!FixFadeToBlackEnabled) return;
+	if (!FixFadeToBlack) return;
 
 	GammaColorScaleHook = safetyhook::create_mid(GetAddress(Addr::GammaColorScale), OnGammaColorScale);
 }

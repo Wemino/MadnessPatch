@@ -67,7 +67,6 @@ static void Init()
 	ApplyFixStuckKeys();
 	ApplyFixFadeToBlack();
 	ApplyFixMapProperties();
-	ApplyFixBlurScaling();
 
 	// General
 	ApplyIntroSkip();
@@ -96,7 +95,6 @@ static void Init()
 	ApplyImprovedBinkVideo();
 	ApplyForceMSAA();
 	ApplySupersampling();
-	ApplyFixAspectRatio();
 	ApplyMenuScripts();
 	ApplyAdaptivePhysXMemory();
 	ApplyOverlapGPUPhysX();

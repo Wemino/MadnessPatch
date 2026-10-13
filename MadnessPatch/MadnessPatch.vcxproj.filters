@@ -47,9 +47,6 @@
     <ClCompile Include="..\src\Fixes\FixMapProperties.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Fixes\FixBlurScaling.cpp">
-      <Filter>src\Fixes</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\General\IntroSkip.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
