@@ -11,6 +11,9 @@ static uintptr_t HashChainEntryResume = 0;
 static uintptr_t HashChainLoopHead = 0;
 static uintptr_t HashChainNotFound = 0;
 static safetyhook::MidHook FxActorLoopGuard{};
+static safetyhook::MidHook PresentResultGuard{};
+static safetyhook::InlineHook Trail2FillIndexData{};
+static safetyhook::InlineHook TrailOfBladeFillIndexData{};
 
 static __declspec(thread) int t_hashChainBudget = 0;
 
@@ -143,6 +146,31 @@ static void OnFxActorLoop(safetyhook::Context& ctx)
 	ctx.eip = FxActorLoopExit;
 }
 
+static void OnPresentResult(safetyhook::Context& ctx)
+{
+	if (ctx.eax == 0x88760872) // MAKE_D3DHRESULT(2162)
+	{
+		ctx.eax = 0x88760868; // D3DERR_DEVICELOST
+	}
+}
+
+static bool IsTrailIndexCountValid(void* DynamicData)
+{
+	return *reinterpret_cast<uint32_t*>(reinterpret_cast<uintptr_t>(DynamicData) + 0xA4) <= 0xFFFF;
+}
+
+static int __fastcall Trail2FillIndexData_Hook(void* DynamicData, void*, void* Proxy, void* PDI, void* View, UINT DPGIndex)
+{
+	if (!IsTrailIndexCountValid(DynamicData)) return 0;
+	return Trail2FillIndexData.unsafe_thiscall<int>(DynamicData, Proxy, PDI, View, DPGIndex);
+}
+
+static int __fastcall TrailOfBladeFillIndexData_Hook(void* DynamicData, void*, void* Proxy, void* PDI, void* View, UINT DPGIndex)
+{
+	if (!IsTrailIndexCountValid(DynamicData)) return 0;
+	return TrailOfBladeFillIndexData.unsafe_thiscall<int>(DynamicData, Proxy, PDI, View, DPGIndex);
+}
+
 void ApplyCrashFixes()
 {
 	if (!CrashFixes) return;
@@ -189,4 +217,11 @@ void ApplyCrashFixes()
 
 	// PhysX fluid emptied before its release, a force field touching it in the step in between crashes with PhysX on the CPU
 	MemoryHelper::WriteMemory<uint8_t>(GetAddress(Addr::FluidRemoveAllParticles), 0xEB);
+
+	// Present error treated as a lost device
+	PresentResultGuard = safetyhook::create_mid(GetAddress(Addr::PresentResultCheck), OnPresentResult);
+
+	// Trail index overflow
+	Trail2FillIndexData = HookHelper::CreateHook((void*)GetAddress(Addr::Trail2FillIndexData), &Trail2FillIndexData_Hook);
+	TrailOfBladeFillIndexData = HookHelper::CreateHook((void*)GetAddress(Addr::TrailOfBladeFillIndexData), &TrailOfBladeFillIndexData_Hook);
 }

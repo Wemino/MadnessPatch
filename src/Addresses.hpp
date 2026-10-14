@@ -74,6 +74,13 @@ enum class Addr
 	// PhysX fluid emptied before its release
 	FluidRemoveAllParticles,
 
+	// Present error treated as a lost device
+	PresentResultCheck,
+
+	// Trail index overflow
+	Trail2FillIndexData,
+	TrailOfBladeFillIndexData,
+
 	// FixMorphTargets
 	UpdateActiveMorphs,
 	ChildFaceFXCall,
@@ -313,6 +320,13 @@ namespace Addresses
 
 		// PhysX fluid emptied before its release
 		/* FluidRemoveAllParticles         */ { 0xB76413, 0xB76613, 0xB2AA33 },
+
+		// Present error treated as a lost device
+		/* PresentResultCheck              */ { 0xC7B6A9, 0xC7BCF9, 0xC25149 },
+
+		// Trail index overflow
+		/* Trail2FillIndexData             */ { 0xBA9A80, 0xBA9AF0, 0xB5E200 },
+		/* TrailOfBladeFillIndexData       */ { 0xBA9FC0, 0xBAA030, 0xB5E740 },
 
 		// FixMorphTargets
 		/* UpdateActiveMorphs              */ { 0x90F490, 0x90FB20, 0x8D54A0 },
