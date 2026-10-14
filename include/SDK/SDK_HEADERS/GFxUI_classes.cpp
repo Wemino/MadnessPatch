@@ -22,7 +22,7 @@
 */
 
 // Function GFxUI.GFxFSCmdHandler.FSCommand
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UGFxMovie*               Movie                          (CPF_Parm)
@@ -55,7 +55,7 @@ bool UGFxFSCmdHandler::eventFSCommand(class UGFxMovie* Movie, const class FStrin
 }
 
 // Function GFxUI.GFxGameViewportClient.Init
-// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  OutError                       (CPF_Parm | CPF_OutParm | CPF_NeedCtorLink)
@@ -86,7 +86,7 @@ bool UGFxGameViewportClient::eventInit(class FString& outOutError)
 }
 
 // Function GFxUI.GFxInteraction.NotifyGameSessionEnded
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[6152])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxInteraction::NotifyGameSessionEnded()
@@ -106,15 +106,14 @@ void UGFxInteraction::NotifyGameSessionEnded()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnNotifyGameSessionEnded->iNative;
 	uFnNotifyGameSessionEnded->iNative = 0;
-	uFnNotifyGameSessionEnded->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnNotifyGameSessionEnded, &NotifyGameSessionEnded_Params, nullptr);
-	uFnNotifyGameSessionEnded->FunctionFlags |= 0x400;
-	uFnNotifyGameSessionEnded->iNative = 6152;
+	uFnNotifyGameSessionEnded->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxInteraction.GetFocusMovie
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28014])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGFxMovie*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -135,17 +134,16 @@ class UGFxMovie* UGFxInteraction::GetFocusMovie()
 		return GetFocusMovie_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetFocusMovie->iNative;
 	uFnGetFocusMovie->iNative = 0;
-	uFnGetFocusMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetFocusMovie, &GetFocusMovie_Params, nullptr);
-	uFnGetFocusMovie->FunctionFlags |= 0x400;
-	uFnGetFocusMovie->iNative = 28014;
+	uFnGetFocusMovie->iNative = nativeIndex;
 
 	return GetFocusMovie_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxInteraction.SetFocusMovie
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28114])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  MovieName                      (CPF_Parm | CPF_NeedCtorLink)
@@ -170,17 +168,16 @@ bool UGFxInteraction::SetFocusMovie(const class FString& MovieName, bool capture
 	memcpy_s(&SetFocusMovie_Params.MovieName, sizeof(SetFocusMovie_Params.MovieName), &MovieName, sizeof(MovieName));
 	SetFocusMovie_Params.captureInput = captureInput;
 
+	uint16_t nativeIndex = uFnSetFocusMovie->iNative;
 	uFnSetFocusMovie->iNative = 0;
-	uFnSetFocusMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetFocusMovie, &SetFocusMovie_Params, nullptr);
-	uFnSetFocusMovie->FunctionFlags |= 0x400;
-	uFnSetFocusMovie->iNative = 28114;
+	uFnSetFocusMovie->iNative = nativeIndex;
 
 	return SetFocusMovie_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptSetFunction
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27930])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class UGFxValue*               Obj                            (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -204,15 +201,14 @@ void UGFxMovie::ActionScriptSetFunction(class UGFxValue* Obj, const class FStrin
 	ActionScriptSetFunction_Params.Obj = Obj;
 	memcpy_s(&ActionScriptSetFunction_Params.member, sizeof(ActionScriptSetFunction_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnActionScriptSetFunction->iNative;
 	uFnActionScriptSetFunction->iNative = 0;
-	uFnActionScriptSetFunction->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptSetFunction, &ActionScriptSetFunction_Params, nullptr);
-	uFnActionScriptSetFunction->FunctionFlags |= 0x400;
-	uFnActionScriptSetFunction->iNative = 27930;
+	uFnActionScriptSetFunction->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptObject
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27929])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -235,17 +231,16 @@ class UGFxValue* UGFxMovie::ActionScriptObject(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptObject_Params.Path, sizeof(ActionScriptObject_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptObject->iNative;
 	uFnActionScriptObject->iNative = 0;
-	uFnActionScriptObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptObject, &ActionScriptObject_Params, nullptr);
-	uFnActionScriptObject->FunctionFlags |= 0x400;
-	uFnActionScriptObject->iNative = 27929;
+	uFnActionScriptObject->iNative = nativeIndex;
 
 	return ActionScriptObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptString
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27932])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -268,17 +263,16 @@ class FString UGFxMovie::ActionScriptString(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptString_Params.Path, sizeof(ActionScriptString_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptString->iNative;
 	uFnActionScriptString->iNative = 0;
-	uFnActionScriptString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptString, &ActionScriptString_Params, nullptr);
-	uFnActionScriptString->FunctionFlags |= 0x400;
-	uFnActionScriptString->iNative = 27932;
+	uFnActionScriptString->iNative = nativeIndex;
 
 	return ActionScriptString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptFloat
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27927])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -301,17 +295,16 @@ float UGFxMovie::ActionScriptFloat(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptFloat_Params.Path, sizeof(ActionScriptFloat_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptFloat->iNative;
 	uFnActionScriptFloat->iNative = 0;
-	uFnActionScriptFloat->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptFloat, &ActionScriptFloat_Params, nullptr);
-	uFnActionScriptFloat->FunctionFlags |= 0x400;
-	uFnActionScriptFloat->iNative = 27927;
+	uFnActionScriptFloat->iNative = nativeIndex;
 
 	return ActionScriptFloat_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptInt
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27928])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -334,17 +327,16 @@ int32_t UGFxMovie::ActionScriptInt(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptInt_Params.Path, sizeof(ActionScriptInt_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptInt->iNative;
 	uFnActionScriptInt->iNative = 0;
-	uFnActionScriptInt->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptInt, &ActionScriptInt_Params, nullptr);
-	uFnActionScriptInt->FunctionFlags |= 0x400;
-	uFnActionScriptInt->iNative = 27928;
+	uFnActionScriptInt->iNative = nativeIndex;
 
 	return ActionScriptInt_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.ActionScriptVoid
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27933])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 
@@ -366,15 +358,14 @@ void UGFxMovie::ActionScriptVoid(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptVoid_Params.Path, sizeof(ActionScriptVoid_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptVoid->iNative;
 	uFnActionScriptVoid->iNative = 0;
-	uFnActionScriptVoid->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptVoid, &ActionScriptVoid_Params, nullptr);
-	uFnActionScriptVoid->FunctionFlags |= 0x400;
-	uFnActionScriptVoid->iNative = 27933;
+	uFnActionScriptVoid->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.UserTick
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::eventUserTick()
@@ -398,7 +389,7 @@ void UGFxMovie::eventUserTick()
 }
 
 // Function GFxUI.GFxMovie.SetExternalInterface
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UObject*                 H                              (CPF_Parm)
 
@@ -424,7 +415,7 @@ void UGFxMovie::SetExternalInterface(class UObject* H)
 }
 
 // Function GFxUI.GFxMovie.SetFsCmdHandler
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGFxFSCmdHandler*        H                              (CPF_Parm)
 
@@ -450,7 +441,7 @@ void UGFxMovie::SetFsCmdHandler(class UGFxFSCmdHandler* H)
 }
 
 // Function GFxUI.GFxMovie.SetVariableObject
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28131])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 // class UGFxValue*               Value                          (CPF_Parm)
@@ -474,15 +465,14 @@ void UGFxMovie::SetVariableObject(const class FString& Path, class UGFxValue* Va
 	memcpy_s(&SetVariableObject_Params.Path, sizeof(SetVariableObject_Params.Path), &Path, sizeof(Path));
 	SetVariableObject_Params.Value = Value;
 
+	uint16_t nativeIndex = uFnSetVariableObject->iNative;
 	uFnSetVariableObject->iNative = 0;
-	uFnSetVariableObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableObject, &SetVariableObject_Params, nullptr);
-	uFnSetVariableObject->FunctionFlags |= 0x400;
-	uFnSetVariableObject->iNative = 28131;
+	uFnSetVariableObject->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.GetVariableObject
-// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[28025])
+// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -507,17 +497,16 @@ class UGFxValue* UGFxMovie::GetVariableObject(const class FString& Path, class U
 	memcpy_s(&GetVariableObject_Params.Path, sizeof(GetVariableObject_Params.Path), &Path, sizeof(Path));
 	GetVariableObject_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnGetVariableObject->iNative;
 	uFnGetVariableObject->iNative = 0;
-	uFnGetVariableObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableObject, &GetVariableObject_Params, nullptr);
-	uFnGetVariableObject->FunctionFlags |= 0x400;
-	uFnGetVariableObject->iNative = 28025;
+	uFnGetVariableObject->iNative = nativeIndex;
 
 	return GetVariableObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.CreateArray
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27981])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -538,17 +527,16 @@ class UGFxValue* UGFxMovie::CreateArray()
 		return CreateArray_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnCreateArray->iNative;
 	uFnCreateArray->iNative = 0;
-	uFnCreateArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCreateArray, &CreateArray_Params, nullptr);
-	uFnCreateArray->FunctionFlags |= 0x400;
-	uFnCreateArray->iNative = 27981;
+	uFnCreateArray->iNative = nativeIndex;
 
 	return CreateArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.CreateObject
-// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[27983])
+// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  ASClass                        (CPF_Parm | CPF_NeedCtorLink)
@@ -573,17 +561,16 @@ class UGFxValue* UGFxMovie::CreateObject(const class FString& ASClass, class UCl
 	memcpy_s(&CreateObject_Params.ASClass, sizeof(CreateObject_Params.ASClass), &ASClass, sizeof(ASClass));
 	CreateObject_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnCreateObject->iNative;
 	uFnCreateObject->iNative = 0;
-	uFnCreateObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCreateObject, &CreateObject_Params, nullptr);
-	uFnCreateObject->FunctionFlags |= 0x400;
-	uFnCreateObject->iNative = 27983;
+	uFnCreateObject->iNative = nativeIndex;
 
 	return CreateObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetVariableStringArray
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28133])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -610,17 +597,16 @@ bool UGFxMovie::SetVariableStringArray(const class FString& Path, int32_t Index,
 	SetVariableStringArray_Params.Index = Index;
 	memcpy_s(&SetVariableStringArray_Params.Arg, sizeof(SetVariableStringArray_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetVariableStringArray->iNative;
 	uFnSetVariableStringArray->iNative = 0;
-	uFnSetVariableStringArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableStringArray, &SetVariableStringArray_Params, nullptr);
-	uFnSetVariableStringArray->FunctionFlags |= 0x400;
-	uFnSetVariableStringArray->iNative = 28133;
+	uFnSetVariableStringArray->iNative = nativeIndex;
 
 	return SetVariableStringArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetVariableFloatArray
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28128])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -647,17 +633,16 @@ bool UGFxMovie::SetVariableFloatArray(const class FString& Path, int32_t Index, 
 	SetVariableFloatArray_Params.Index = Index;
 	memcpy_s(&SetVariableFloatArray_Params.Arg, sizeof(SetVariableFloatArray_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetVariableFloatArray->iNative;
 	uFnSetVariableFloatArray->iNative = 0;
-	uFnSetVariableFloatArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableFloatArray, &SetVariableFloatArray_Params, nullptr);
-	uFnSetVariableFloatArray->FunctionFlags |= 0x400;
-	uFnSetVariableFloatArray->iNative = 28128;
+	uFnSetVariableFloatArray->iNative = nativeIndex;
 
 	return SetVariableFloatArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetVariableIntArray
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28129])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -684,17 +669,16 @@ bool UGFxMovie::SetVariableIntArray(const class FString& Path, int32_t Index, co
 	SetVariableIntArray_Params.Index = Index;
 	memcpy_s(&SetVariableIntArray_Params.Arg, sizeof(SetVariableIntArray_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetVariableIntArray->iNative;
 	uFnSetVariableIntArray->iNative = 0;
-	uFnSetVariableIntArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableIntArray, &SetVariableIntArray_Params, nullptr);
-	uFnSetVariableIntArray->FunctionFlags |= 0x400;
-	uFnSetVariableIntArray->iNative = 28129;
+	uFnSetVariableIntArray->iNative = nativeIndex;
 
 	return SetVariableIntArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetVariableArray
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28126])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -721,17 +705,16 @@ bool UGFxMovie::SetVariableArray(const class FString& Path, int32_t Index, const
 	SetVariableArray_Params.Index = Index;
 	memcpy_s(&SetVariableArray_Params.Arg, sizeof(SetVariableArray_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetVariableArray->iNative;
 	uFnSetVariableArray->iNative = 0;
-	uFnSetVariableArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableArray, &SetVariableArray_Params, nullptr);
-	uFnSetVariableArray->FunctionFlags |= 0x400;
-	uFnSetVariableArray->iNative = 28126;
+	uFnSetVariableArray->iNative = nativeIndex;
 
 	return SetVariableArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.GetVariableStringArray
-// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28027])
+// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -758,11 +741,10 @@ bool UGFxMovie::GetVariableStringArray(const class FString& Path, int32_t Index,
 	GetVariableStringArray_Params.Index = Index;
 	memcpy_s(&GetVariableStringArray_Params.Arg, sizeof(GetVariableStringArray_Params.Arg), &outArg, sizeof(outArg));
 
+	uint16_t nativeIndex = uFnGetVariableStringArray->iNative;
 	uFnGetVariableStringArray->iNative = 0;
-	uFnGetVariableStringArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableStringArray, &GetVariableStringArray_Params, nullptr);
-	uFnGetVariableStringArray->FunctionFlags |= 0x400;
-	uFnGetVariableStringArray->iNative = 28027;
+	uFnGetVariableStringArray->iNative = nativeIndex;
 
 	memcpy_s(&outArg, sizeof(outArg), &GetVariableStringArray_Params.Arg, sizeof(GetVariableStringArray_Params.Arg));
 
@@ -770,7 +752,7 @@ bool UGFxMovie::GetVariableStringArray(const class FString& Path, int32_t Index,
 }
 
 // Function GFxUI.GFxMovie.GetVariableFloatArray
-// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28022])
+// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -797,11 +779,10 @@ bool UGFxMovie::GetVariableFloatArray(const class FString& Path, int32_t Index, 
 	GetVariableFloatArray_Params.Index = Index;
 	memcpy_s(&GetVariableFloatArray_Params.Arg, sizeof(GetVariableFloatArray_Params.Arg), &outArg, sizeof(outArg));
 
+	uint16_t nativeIndex = uFnGetVariableFloatArray->iNative;
 	uFnGetVariableFloatArray->iNative = 0;
-	uFnGetVariableFloatArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableFloatArray, &GetVariableFloatArray_Params, nullptr);
-	uFnGetVariableFloatArray->FunctionFlags |= 0x400;
-	uFnGetVariableFloatArray->iNative = 28022;
+	uFnGetVariableFloatArray->iNative = nativeIndex;
 
 	memcpy_s(&outArg, sizeof(outArg), &GetVariableFloatArray_Params.Arg, sizeof(GetVariableFloatArray_Params.Arg));
 
@@ -809,7 +790,7 @@ bool UGFxMovie::GetVariableFloatArray(const class FString& Path, int32_t Index, 
 }
 
 // Function GFxUI.GFxMovie.GetVariableIntArray
-// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28023])
+// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -836,11 +817,10 @@ bool UGFxMovie::GetVariableIntArray(const class FString& Path, int32_t Index, cl
 	GetVariableIntArray_Params.Index = Index;
 	memcpy_s(&GetVariableIntArray_Params.Arg, sizeof(GetVariableIntArray_Params.Arg), &outArg, sizeof(outArg));
 
+	uint16_t nativeIndex = uFnGetVariableIntArray->iNative;
 	uFnGetVariableIntArray->iNative = 0;
-	uFnGetVariableIntArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableIntArray, &GetVariableIntArray_Params, nullptr);
-	uFnGetVariableIntArray->FunctionFlags |= 0x400;
-	uFnGetVariableIntArray->iNative = 28023;
+	uFnGetVariableIntArray->iNative = nativeIndex;
 
 	memcpy_s(&outArg, sizeof(outArg), &GetVariableIntArray_Params.Arg, sizeof(GetVariableIntArray_Params.Arg));
 
@@ -848,7 +828,7 @@ bool UGFxMovie::GetVariableIntArray(const class FString& Path, int32_t Index, cl
 }
 
 // Function GFxUI.GFxMovie.GetVariableArray
-// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28020])
+// [0x00420400] (FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -875,11 +855,10 @@ bool UGFxMovie::GetVariableArray(const class FString& Path, int32_t Index, class
 	GetVariableArray_Params.Index = Index;
 	memcpy_s(&GetVariableArray_Params.Arg, sizeof(GetVariableArray_Params.Arg), &outArg, sizeof(outArg));
 
+	uint16_t nativeIndex = uFnGetVariableArray->iNative;
 	uFnGetVariableArray->iNative = 0;
-	uFnGetVariableArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableArray, &GetVariableArray_Params, nullptr);
-	uFnGetVariableArray->FunctionFlags |= 0x400;
-	uFnGetVariableArray->iNative = 28020;
+	uFnGetVariableArray->iNative = nativeIndex;
 
 	memcpy_s(&outArg, sizeof(outArg), &GetVariableArray_Params.Arg, sizeof(GetVariableArray_Params.Arg));
 
@@ -887,7 +866,7 @@ bool UGFxMovie::GetVariableArray(const class FString& Path, int32_t Index, class
 }
 
 // Function GFxUI.GFxMovie.SetVariableString
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28132])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 // class FString                  S                              (CPF_Parm | CPF_NeedCtorLink)
@@ -911,15 +890,14 @@ void UGFxMovie::SetVariableString(const class FString& Path, const class FString
 	memcpy_s(&SetVariableString_Params.Path, sizeof(SetVariableString_Params.Path), &Path, sizeof(Path));
 	memcpy_s(&SetVariableString_Params.S, sizeof(SetVariableString_Params.S), &S, sizeof(S));
 
+	uint16_t nativeIndex = uFnSetVariableString->iNative;
 	uFnSetVariableString->iNative = 0;
-	uFnSetVariableString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableString, &SetVariableString_Params, nullptr);
-	uFnSetVariableString->FunctionFlags |= 0x400;
-	uFnSetVariableString->iNative = 28132;
+	uFnSetVariableString->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetVariableNumber
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28130])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 // float                          F                              (CPF_Parm)
@@ -943,15 +921,14 @@ void UGFxMovie::SetVariableNumber(const class FString& Path, float F)
 	memcpy_s(&SetVariableNumber_Params.Path, sizeof(SetVariableNumber_Params.Path), &Path, sizeof(Path));
 	SetVariableNumber_Params.F = F;
 
+	uint16_t nativeIndex = uFnSetVariableNumber->iNative;
 	uFnSetVariableNumber->iNative = 0;
-	uFnSetVariableNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableNumber, &SetVariableNumber_Params, nullptr);
-	uFnSetVariableNumber->FunctionFlags |= 0x400;
-	uFnSetVariableNumber->iNative = 28130;
+	uFnSetVariableNumber->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetVariableBool
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28127])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 // uint32_t                       B                              (CPF_Parm)
@@ -975,15 +952,14 @@ void UGFxMovie::SetVariableBool(const class FString& Path, bool B)
 	memcpy_s(&SetVariableBool_Params.Path, sizeof(SetVariableBool_Params.Path), &Path, sizeof(Path));
 	SetVariableBool_Params.B = B;
 
+	uint16_t nativeIndex = uFnSetVariableBool->iNative;
 	uFnSetVariableBool->iNative = 0;
-	uFnSetVariableBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariableBool, &SetVariableBool_Params, nullptr);
-	uFnSetVariableBool->FunctionFlags |= 0x400;
-	uFnSetVariableBool->iNative = 28127;
+	uFnSetVariableBool->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetVariable
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28125])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
 // struct FASValue                Arg                            (CPF_Parm | CPF_NeedCtorLink)
@@ -1007,15 +983,14 @@ void UGFxMovie::SetVariable(const class FString& Path, const struct FASValue& Ar
 	memcpy_s(&SetVariable_Params.Path, sizeof(SetVariable_Params.Path), &Path, sizeof(Path));
 	memcpy_s(&SetVariable_Params.Arg, sizeof(SetVariable_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetVariable->iNative;
 	uFnSetVariable->iNative = 0;
-	uFnSetVariable->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVariable, &SetVariable_Params, nullptr);
-	uFnSetVariable->FunctionFlags |= 0x400;
-	uFnSetVariable->iNative = 28125;
+	uFnSetVariable->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.GetVariableString
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28026])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -1038,17 +1013,16 @@ class FString UGFxMovie::GetVariableString(const class FString& Path)
 	}
 	memcpy_s(&GetVariableString_Params.Path, sizeof(GetVariableString_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnGetVariableString->iNative;
 	uFnGetVariableString->iNative = 0;
-	uFnGetVariableString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableString, &GetVariableString_Params, nullptr);
-	uFnGetVariableString->FunctionFlags |= 0x400;
-	uFnGetVariableString->iNative = 28026;
+	uFnGetVariableString->iNative = nativeIndex;
 
 	return GetVariableString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.GetVariableNumber
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28024])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -1071,17 +1045,16 @@ float UGFxMovie::GetVariableNumber(const class FString& Path)
 	}
 	memcpy_s(&GetVariableNumber_Params.Path, sizeof(GetVariableNumber_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnGetVariableNumber->iNative;
 	uFnGetVariableNumber->iNative = 0;
-	uFnGetVariableNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableNumber, &GetVariableNumber_Params, nullptr);
-	uFnGetVariableNumber->FunctionFlags |= 0x400;
-	uFnGetVariableNumber->iNative = 28024;
+	uFnGetVariableNumber->iNative = nativeIndex;
 
 	return GetVariableNumber_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.GetVariableBool
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28021])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -1104,17 +1077,16 @@ bool UGFxMovie::GetVariableBool(const class FString& Path)
 	}
 	memcpy_s(&GetVariableBool_Params.Path, sizeof(GetVariableBool_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnGetVariableBool->iNative;
 	uFnGetVariableBool->iNative = 0;
-	uFnGetVariableBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariableBool, &GetVariableBool_Params, nullptr);
-	uFnGetVariableBool->FunctionFlags |= 0x400;
-	uFnGetVariableBool->iNative = 28021;
+	uFnGetVariableBool->iNative = nativeIndex;
 
 	return GetVariableBool_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.GetVariable
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28019])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -1137,17 +1109,16 @@ struct FASValue UGFxMovie::GetVariable(const class FString& Path)
 	}
 	memcpy_s(&GetVariable_Params.Path, sizeof(GetVariable_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnGetVariable->iNative;
 	uFnGetVariable->iNative = 0;
-	uFnGetVariable->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVariable, &GetVariable_Params, nullptr);
-	uFnGetVariable->FunctionFlags |= 0x400;
-	uFnGetVariable->iNative = 28019;
+	uFnGetVariable->iNative = nativeIndex;
 
 	return GetVariable_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.PublishDataStoreValues
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28079])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::PublishDataStoreValues()
@@ -1167,15 +1138,14 @@ void UGFxMovie::PublishDataStoreValues()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnPublishDataStoreValues->iNative;
 	uFnPublishDataStoreValues->iNative = 0;
-	uFnPublishDataStoreValues->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPublishDataStoreValues, &PublishDataStoreValues_Params, nullptr);
-	uFnPublishDataStoreValues->FunctionFlags |= 0x400;
-	uFnPublishDataStoreValues->iNative = 28079;
+	uFnPublishDataStoreValues->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.RefreshDataStoreBindings
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28083])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::RefreshDataStoreBindings()
@@ -1195,15 +1165,14 @@ void UGFxMovie::RefreshDataStoreBindings()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnRefreshDataStoreBindings->iNative;
 	uFnRefreshDataStoreBindings->iNative = 0;
-	uFnRefreshDataStoreBindings->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnRefreshDataStoreBindings, &RefreshDataStoreBindings_Params, nullptr);
-	uFnRefreshDataStoreBindings->FunctionFlags |= 0x400;
-	uFnRefreshDataStoreBindings->iNative = 28083;
+	uFnRefreshDataStoreBindings->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.Invoke
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28058])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  method                         (CPF_Parm | CPF_NeedCtorLink)
@@ -1228,17 +1197,16 @@ struct FASValue UGFxMovie::Invoke(const class FString& method, const class TArra
 	memcpy_s(&Invoke_Params.method, sizeof(Invoke_Params.method), &method, sizeof(method));
 	memcpy_s(&Invoke_Params.args, sizeof(Invoke_Params.args), &args, sizeof(args));
 
+	uint16_t nativeIndex = uFnInvoke->iNative;
 	uFnInvoke->iNative = 0;
-	uFnInvoke->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnInvoke, &Invoke_Params, nullptr);
-	uFnInvoke->FunctionFlags |= 0x400;
-	uFnInvoke->iNative = 28058;
+	uFnInvoke->iNative = nativeIndex;
 
 	return Invoke_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetTimingMode
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28124])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // EGFxTimingMode                 Mode                           (CPF_Parm)
 
@@ -1260,15 +1228,14 @@ void UGFxMovie::SetTimingMode(EGFxTimingMode Mode)
 	}
 	SetTimingMode_Params.Mode = static_cast<uint8_t>(Mode);
 
+	uint16_t nativeIndex = uFnSetTimingMode->iNative;
 	uFnSetTimingMode->iNative = 0;
-	uFnSetTimingMode->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetTimingMode, &SetTimingMode_Params, nullptr);
-	uFnSetTimingMode->FunctionFlags |= 0x400;
-	uFnSetTimingMode->iNative = 28124;
+	uFnSetTimingMode->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.Pause
-// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[19701])
+// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // uint32_t                       pauseplay                      (CPF_OptionalParm | CPF_Parm)
 
@@ -1290,15 +1257,14 @@ void UGFxMovie::Pause(bool optionalPauseplay)
 	}
 	Pause_Params.pauseplay = optionalPauseplay;
 
+	uint16_t nativeIndex = uFnPause->iNative;
 	uFnPause->iNative = 0;
-	uFnPause->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPause, &Pause_Params, nullptr);
-	uFnPause->FunctionFlags |= 0x400;
-	uFnPause->iNative = 19701;
+	uFnPause->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.Advance
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27083])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          Time                           (CPF_Parm)
 
@@ -1320,15 +1286,14 @@ void UGFxMovie::Advance(float Time)
 	}
 	Advance_Params.Time = Time;
 
+	uint16_t nativeIndex = uFnAdvance->iNative;
 	uFnAdvance->iNative = 0;
-	uFnAdvance->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAdvance, &Advance_Params, nullptr);
-	uFnAdvance->FunctionFlags |= 0x400;
-	uFnAdvance->iNative = 27083;
+	uFnAdvance->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetExternalTexture
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28113])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Resource                       (CPF_Parm | CPF_NeedCtorLink)
@@ -1353,17 +1318,16 @@ bool UGFxMovie::SetExternalTexture(const class FString& Resource, class UTexture
 	memcpy_s(&SetExternalTexture_Params.Resource, sizeof(SetExternalTexture_Params.Resource), &Resource, sizeof(Resource));
 	SetExternalTexture_Params.Texture = Texture;
 
+	uint16_t nativeIndex = uFnSetExternalTexture->iNative;
 	uFnSetExternalTexture->iNative = 0;
-	uFnSetExternalTexture->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetExternalTexture, &SetExternalTexture_Params, nullptr);
-	uFnSetExternalTexture->FunctionFlags |= 0x400;
-	uFnSetExternalTexture->iNative = 28113;
+	uFnSetExternalTexture->iNative = nativeIndex;
 
 	return SetExternalTexture_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.FlushPlayerInput
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[14775])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // uint32_t                       capturekeysonly                (CPF_Parm)
 
@@ -1385,15 +1349,14 @@ void UGFxMovie::FlushPlayerInput(bool capturekeysonly)
 	}
 	FlushPlayerInput_Params.capturekeysonly = capturekeysonly;
 
+	uint16_t nativeIndex = uFnFlushPlayerInput->iNative;
 	uFnFlushPlayerInput->iNative = 0;
-	uFnFlushPlayerInput->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnFlushPlayerInput, &FlushPlayerInput_Params, nullptr);
-	uFnFlushPlayerInput->FunctionFlags |= 0x400;
-	uFnFlushPlayerInput->iNative = 14775;
+	uFnFlushPlayerInput->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.ClearFocusIgnoreKeys
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27977])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::ClearFocusIgnoreKeys()
@@ -1413,15 +1376,14 @@ void UGFxMovie::ClearFocusIgnoreKeys()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnClearFocusIgnoreKeys->iNative;
 	uFnClearFocusIgnoreKeys->iNative = 0;
-	uFnClearFocusIgnoreKeys->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClearFocusIgnoreKeys, &ClearFocusIgnoreKeys_Params, nullptr);
-	uFnClearFocusIgnoreKeys->FunctionFlags |= 0x400;
-	uFnClearFocusIgnoreKeys->iNative = 27977;
+	uFnClearFocusIgnoreKeys->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.AddFocusIgnoreKey
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27935])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FName                    Key                            (CPF_Parm)
 
@@ -1443,15 +1405,14 @@ void UGFxMovie::AddFocusIgnoreKey(const class FName& Key)
 	}
 	memcpy_s(&AddFocusIgnoreKey_Params.Key, sizeof(AddFocusIgnoreKey_Params.Key), &Key, sizeof(Key));
 
+	uint16_t nativeIndex = uFnAddFocusIgnoreKey->iNative;
 	uFnAddFocusIgnoreKey->iNative = 0;
-	uFnAddFocusIgnoreKey->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAddFocusIgnoreKey, &AddFocusIgnoreKey_Params, nullptr);
-	uFnAddFocusIgnoreKey->FunctionFlags |= 0x400;
-	uFnAddFocusIgnoreKey->iNative = 27935;
+	uFnAddFocusIgnoreKey->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.ClearCaptureKeys
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27976])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::ClearCaptureKeys()
@@ -1471,15 +1432,14 @@ void UGFxMovie::ClearCaptureKeys()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnClearCaptureKeys->iNative;
 	uFnClearCaptureKeys->iNative = 0;
-	uFnClearCaptureKeys->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClearCaptureKeys, &ClearCaptureKeys_Params, nullptr);
-	uFnClearCaptureKeys->FunctionFlags |= 0x400;
-	uFnClearCaptureKeys->iNative = 27976;
+	uFnClearCaptureKeys->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.AddCaptureKey
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27934])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FName                    Key                            (CPF_Parm)
 
@@ -1501,15 +1461,14 @@ void UGFxMovie::AddCaptureKey(const class FName& Key)
 	}
 	memcpy_s(&AddCaptureKey_Params.Key, sizeof(AddCaptureKey_Params.Key), &Key, sizeof(Key));
 
+	uint16_t nativeIndex = uFnAddCaptureKey->iNative;
 	uFnAddCaptureKey->iNative = 0;
-	uFnAddCaptureKey->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAddCaptureKey, &AddCaptureKey_Params, nullptr);
-	uFnAddCaptureKey->FunctionFlags |= 0x400;
-	uFnAddCaptureKey->iNative = 27934;
+	uFnAddCaptureKey->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetFocus
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[22048])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // uint32_t                       captureInput                   (CPF_Parm)
 // uint32_t                       Focus                          (CPF_OptionalParm | CPF_Parm)
@@ -1533,15 +1492,14 @@ void UGFxMovie::SetFocus(bool captureInput, bool optionalFocus)
 	SetFocus_Params.captureInput = captureInput;
 	SetFocus_Params.Focus = optionalFocus;
 
+	uint16_t nativeIndex = uFnSetFocus->iNative;
 	uFnSetFocus->iNative = 0;
-	uFnSetFocus->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetFocus, &SetFocus_Params, nullptr);
-	uFnSetFocus->FunctionFlags |= 0x400;
-	uFnSetFocus->iNative = 22048;
+	uFnSetFocus->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetSceneDPG
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28121])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // ESceneDepthPriorityGroup       NewDPG                         (CPF_Parm)
 
@@ -1563,15 +1521,14 @@ void UGFxMovie::SetSceneDPG(ESceneDepthPriorityGroup NewDPG)
 	}
 	SetSceneDPG_Params.NewDPG = static_cast<uint8_t>(NewDPG);
 
+	uint16_t nativeIndex = uFnSetSceneDPG->iNative;
 	uFnSetSceneDPG->iNative = 0;
-	uFnSetSceneDPG->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetSceneDPG, &SetSceneDPG_Params, nullptr);
-	uFnSetSceneDPG->FunctionFlags |= 0x400;
-	uFnSetSceneDPG->iNative = 28121;
+	uFnSetSceneDPG->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetPerspective3D
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28120])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FMatrix                 matPersp                       (CPF_Const | CPF_Parm | CPF_OutParm)
 
@@ -1593,17 +1550,16 @@ void UGFxMovie::SetPerspective3D(struct FMatrix& outMatPersp)
 	}
 	memcpy_s(&SetPerspective3D_Params.matPersp, sizeof(SetPerspective3D_Params.matPersp), &outMatPersp, sizeof(outMatPersp));
 
+	uint16_t nativeIndex = uFnSetPerspective3D->iNative;
 	uFnSetPerspective3D->iNative = 0;
-	uFnSetPerspective3D->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetPerspective3D, &SetPerspective3D_Params, nullptr);
-	uFnSetPerspective3D->FunctionFlags |= 0x400;
-	uFnSetPerspective3D->iNative = 28120;
+	uFnSetPerspective3D->iNative = nativeIndex;
 
 	memcpy_s(&outMatPersp, sizeof(outMatPersp), &SetPerspective3D_Params.matPersp, sizeof(SetPerspective3D_Params.matPersp));
 }
 
 // Function GFxUI.GFxMovie.SetView3D
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28134])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FMatrix                 matView                        (CPF_Const | CPF_Parm | CPF_OutParm)
 
@@ -1625,17 +1581,16 @@ void UGFxMovie::SetView3D(struct FMatrix& outMatView)
 	}
 	memcpy_s(&SetView3D_Params.matView, sizeof(SetView3D_Params.matView), &outMatView, sizeof(outMatView));
 
+	uint16_t nativeIndex = uFnSetView3D->iNative;
 	uFnSetView3D->iNative = 0;
-	uFnSetView3D->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetView3D, &SetView3D_Params, nullptr);
-	uFnSetView3D->FunctionFlags |= 0x400;
-	uFnSetView3D->iNative = 28134;
+	uFnSetView3D->iNative = nativeIndex;
 
 	memcpy_s(&outMatView, sizeof(outMatView), &SetView3D_Params.matView, sizeof(SetView3D_Params.matView));
 }
 
 // Function GFxUI.GFxMovie.GetVisibleFrameRect
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[28028])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          x0                             (CPF_Parm | CPF_OutParm)
 // float                          y0                             (CPF_Parm | CPF_OutParm)
@@ -1663,11 +1618,10 @@ void UGFxMovie::GetVisibleFrameRect(float& outX0, float& outY0, float& outX1, fl
 	GetVisibleFrameRect_Params.X1 = outX1;
 	GetVisibleFrameRect_Params.Y1 = outY1;
 
+	uint16_t nativeIndex = uFnGetVisibleFrameRect->iNative;
 	uFnGetVisibleFrameRect->iNative = 0;
-	uFnGetVisibleFrameRect->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetVisibleFrameRect, &GetVisibleFrameRect_Params, nullptr);
-	uFnGetVisibleFrameRect->FunctionFlags |= 0x400;
-	uFnGetVisibleFrameRect->iNative = 28028;
+	uFnGetVisibleFrameRect->iNative = nativeIndex;
 
 	outX0 = GetVisibleFrameRect_Params.x0;
 	outY0 = GetVisibleFrameRect_Params.y0;
@@ -1676,7 +1630,7 @@ void UGFxMovie::GetVisibleFrameRect(float& outX0, float& outY0, float& outX1, fl
 }
 
 // Function GFxUI.GFxMovie.SetAlignment
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[21898])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // EGFxAlign                      A                              (CPF_Parm)
 
@@ -1698,15 +1652,14 @@ void UGFxMovie::SetAlignment(EGFxAlign A)
 	}
 	SetAlignment_Params.A = static_cast<uint8_t>(A);
 
+	uint16_t nativeIndex = uFnSetAlignment->iNative;
 	uFnSetAlignment->iNative = 0;
-	uFnSetAlignment->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetAlignment, &SetAlignment_Params, nullptr);
-	uFnSetAlignment->FunctionFlags |= 0x400;
-	uFnSetAlignment->iNative = 21898;
+	uFnSetAlignment->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetViewScaleMode
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28136])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // EGFxScaleMode                  sm                             (CPF_Parm)
 
@@ -1728,15 +1681,14 @@ void UGFxMovie::SetViewScaleMode(EGFxScaleMode sm)
 	}
 	SetViewScaleMode_Params.sm = static_cast<uint8_t>(sm);
 
+	uint16_t nativeIndex = uFnSetViewScaleMode->iNative;
 	uFnSetViewScaleMode->iNative = 0;
-	uFnSetViewScaleMode->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetViewScaleMode, &SetViewScaleMode_Params, nullptr);
-	uFnSetViewScaleMode->FunctionFlags |= 0x400;
-	uFnSetViewScaleMode->iNative = 28136;
+	uFnSetViewScaleMode->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.SetViewport
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28135])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        X                              (CPF_Parm)
 // int32_t                        Y                              (CPF_Parm)
@@ -1764,15 +1716,14 @@ void UGFxMovie::SetViewport(int32_t X, int32_t Y, int32_t Width, int32_t Height)
 	SetViewport_Params.Width = Width;
 	SetViewport_Params.Height = Height;
 
+	uint16_t nativeIndex = uFnSetViewport->iNative;
 	uFnSetViewport->iNative = 0;
-	uFnSetViewport->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetViewport, &SetViewport_Params, nullptr);
-	uFnSetViewport->FunctionFlags |= 0x400;
-	uFnSetViewport->iNative = 28135;
+	uFnSetViewport->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.GetGameViewportClient
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28015])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameViewportClient*     ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -1793,17 +1744,16 @@ class UGameViewportClient* UGFxMovie::GetGameViewportClient()
 		return GetGameViewportClient_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetGameViewportClient->iNative;
 	uFnGetGameViewportClient->iNative = 0;
-	uFnGetGameViewportClient->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetGameViewportClient, &GetGameViewportClient_Params, nullptr);
-	uFnGetGameViewportClient->FunctionFlags |= 0x400;
-	uFnGetGameViewportClient->iNative = 28015;
+	uFnGetGameViewportClient->iNative = nativeIndex;
 
 	return GetGameViewportClient_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.SetMovieInfo
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGFxMovieInfo*           Data                           (CPF_Parm)
 
@@ -1829,7 +1779,7 @@ void UGFxMovie::SetMovieInfo(class UGFxMovieInfo* Data)
 }
 
 // Function GFxUI.GFxMovie.OnClose
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGFxMovie::eventOnClose()
@@ -1853,7 +1803,7 @@ void UGFxMovie::eventOnClose()
 }
 
 // Function GFxUI.GFxMovie.Close
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[11857])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // uint32_t                       Unload                         (CPF_OptionalParm | CPF_Parm)
 
@@ -1875,15 +1825,14 @@ void UGFxMovie::Close(bool optionalUnload)
 	}
 	Close_Params.Unload = optionalUnload;
 
+	uint16_t nativeIndex = uFnClose->iNative;
 	uFnClose->iNative = 0;
-	uFnClose->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClose, &Close_Params, nullptr);
-	uFnClose->FunctionFlags |= 0x400;
-	uFnClose->iNative = 11857;
+	uFnClose->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxMovie.Start
-// [0x00024C00] (FUNC_Native | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[6493])
+// [0x00024C00] (FUNC_Native | FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // uint32_t                       StartPaused                    (CPF_OptionalParm | CPF_Parm)
@@ -1906,17 +1855,16 @@ bool UGFxMovie::eventStart(bool optionalStartPaused)
 	}
 	Start_Params.StartPaused = optionalStartPaused;
 
+	uint16_t nativeIndex = uFnStart->iNative;
 	uFnStart->iNative = 0;
-	uFnStart->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnStart, &Start_Params, nullptr);
-	uFnStart->FunctionFlags |= 0x400;
-	uFnStart->iNative = 6493;
+	uFnStart->iNative = nativeIndex;
 
 	return Start_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxMovie.HandleInputKey
-// [0x00124000] (FUNC_OptionalParm | FUNC_Public | FUNC_Delegate | FUNC_AllFlags)
+// [0x00124000] (FUNC_OptionalParm | FUNC_Public | FUNC_Delegate)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        ControllerId                   (CPF_Parm)
@@ -1953,7 +1901,7 @@ bool UGFxMovie::HandleInputKey(int32_t ControllerId, const class FName& Key, EIn
 }
 
 // Function GFxUI.GFxValue.ActionScriptSetFunctionOn
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27931])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class UGFxValue*               Target                         (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -1977,15 +1925,14 @@ void UGFxValue::ActionScriptSetFunctionOn(class UGFxValue* Target, const class F
 	ActionScriptSetFunctionOn_Params.Target = Target;
 	memcpy_s(&ActionScriptSetFunctionOn_Params.member, sizeof(ActionScriptSetFunctionOn_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnActionScriptSetFunctionOn->iNative;
 	uFnActionScriptSetFunctionOn->iNative = 0;
-	uFnActionScriptSetFunctionOn->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptSetFunctionOn, &ActionScriptSetFunctionOn_Params, nullptr);
-	uFnActionScriptSetFunctionOn->FunctionFlags |= 0x400;
-	uFnActionScriptSetFunctionOn->iNative = 27931;
+	uFnActionScriptSetFunctionOn->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.ActionScriptSetFunction
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27930])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 
@@ -2007,15 +1954,14 @@ void UGFxValue::ActionScriptSetFunction(const class FString& member)
 	}
 	memcpy_s(&ActionScriptSetFunction_Params.member, sizeof(ActionScriptSetFunction_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnActionScriptSetFunction->iNative;
 	uFnActionScriptSetFunction->iNative = 0;
-	uFnActionScriptSetFunction->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptSetFunction, &ActionScriptSetFunction_Params, nullptr);
-	uFnActionScriptSetFunction->FunctionFlags |= 0x400;
-	uFnActionScriptSetFunction->iNative = 27930;
+	uFnActionScriptSetFunction->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.ActionScriptArray
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27926])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class TArray<class UGFxValue*> ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -2038,17 +1984,16 @@ class TArray<class UGFxValue*> UGFxValue::ActionScriptArray(const class FString&
 	}
 	memcpy_s(&ActionScriptArray_Params.Path, sizeof(ActionScriptArray_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptArray->iNative;
 	uFnActionScriptArray->iNative = 0;
-	uFnActionScriptArray->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptArray, &ActionScriptArray_Params, nullptr);
-	uFnActionScriptArray->FunctionFlags |= 0x400;
-	uFnActionScriptArray->iNative = 27926;
+	uFnActionScriptArray->iNative = nativeIndex;
 
 	return ActionScriptArray_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.ActionScriptObject
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27929])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  Path                           (CPF_Parm | CPF_NeedCtorLink)
@@ -2071,17 +2016,16 @@ class UGFxValue* UGFxValue::ActionScriptObject(const class FString& Path)
 	}
 	memcpy_s(&ActionScriptObject_Params.Path, sizeof(ActionScriptObject_Params.Path), &Path, sizeof(Path));
 
+	uint16_t nativeIndex = uFnActionScriptObject->iNative;
 	uFnActionScriptObject->iNative = 0;
-	uFnActionScriptObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptObject, &ActionScriptObject_Params, nullptr);
-	uFnActionScriptObject->FunctionFlags |= 0x400;
-	uFnActionScriptObject->iNative = 27929;
+	uFnActionScriptObject->iNative = nativeIndex;
 
 	return ActionScriptObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.ActionScriptString
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27932])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  method                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2104,17 +2048,16 @@ class FString UGFxValue::ActionScriptString(const class FString& method)
 	}
 	memcpy_s(&ActionScriptString_Params.method, sizeof(ActionScriptString_Params.method), &method, sizeof(method));
 
+	uint16_t nativeIndex = uFnActionScriptString->iNative;
 	uFnActionScriptString->iNative = 0;
-	uFnActionScriptString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptString, &ActionScriptString_Params, nullptr);
-	uFnActionScriptString->FunctionFlags |= 0x400;
-	uFnActionScriptString->iNative = 27932;
+	uFnActionScriptString->iNative = nativeIndex;
 
 	return ActionScriptString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.ActionScriptFloat
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27927])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  method                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2137,17 +2080,16 @@ float UGFxValue::ActionScriptFloat(const class FString& method)
 	}
 	memcpy_s(&ActionScriptFloat_Params.method, sizeof(ActionScriptFloat_Params.method), &method, sizeof(method));
 
+	uint16_t nativeIndex = uFnActionScriptFloat->iNative;
 	uFnActionScriptFloat->iNative = 0;
-	uFnActionScriptFloat->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptFloat, &ActionScriptFloat_Params, nullptr);
-	uFnActionScriptFloat->FunctionFlags |= 0x400;
-	uFnActionScriptFloat->iNative = 27927;
+	uFnActionScriptFloat->iNative = nativeIndex;
 
 	return ActionScriptFloat_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.ActionScriptInt
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27928])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  method                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2170,17 +2112,16 @@ int32_t UGFxValue::ActionScriptInt(const class FString& method)
 	}
 	memcpy_s(&ActionScriptInt_Params.method, sizeof(ActionScriptInt_Params.method), &method, sizeof(method));
 
+	uint16_t nativeIndex = uFnActionScriptInt->iNative;
 	uFnActionScriptInt->iNative = 0;
-	uFnActionScriptInt->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptInt, &ActionScriptInt_Params, nullptr);
-	uFnActionScriptInt->FunctionFlags |= 0x400;
-	uFnActionScriptInt->iNative = 27928;
+	uFnActionScriptInt->iNative = nativeIndex;
 
 	return ActionScriptInt_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.ActionScriptVoid
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[27933])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class FString                  method                         (CPF_Parm | CPF_NeedCtorLink)
 
@@ -2202,15 +2143,14 @@ void UGFxValue::ActionScriptVoid(const class FString& method)
 	}
 	memcpy_s(&ActionScriptVoid_Params.method, sizeof(ActionScriptVoid_Params.method), &method, sizeof(method));
 
+	uint16_t nativeIndex = uFnActionScriptVoid->iNative;
 	uFnActionScriptVoid->iNative = 0;
-	uFnActionScriptVoid->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActionScriptVoid, &ActionScriptVoid_Params, nullptr);
-	uFnActionScriptVoid->FunctionFlags |= 0x400;
-	uFnActionScriptVoid->iNative = 27933;
+	uFnActionScriptVoid->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementMemberString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28106])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2236,15 +2176,14 @@ void UGFxValue::SetElementMemberString(int32_t Index, const class FString& membe
 	memcpy_s(&SetElementMemberString_Params.member, sizeof(SetElementMemberString_Params.member), &member, sizeof(member));
 	memcpy_s(&SetElementMemberString_Params.S, sizeof(SetElementMemberString_Params.S), &S, sizeof(S));
 
+	uint16_t nativeIndex = uFnSetElementMemberString->iNative;
 	uFnSetElementMemberString->iNative = 0;
-	uFnSetElementMemberString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementMemberString, &SetElementMemberString_Params, nullptr);
-	uFnSetElementMemberString->FunctionFlags |= 0x400;
-	uFnSetElementMemberString->iNative = 28106;
+	uFnSetElementMemberString->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementMemberNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28104])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2270,15 +2209,14 @@ void UGFxValue::SetElementMemberNumber(int32_t Index, const class FString& membe
 	memcpy_s(&SetElementMemberNumber_Params.member, sizeof(SetElementMemberNumber_Params.member), &member, sizeof(member));
 	SetElementMemberNumber_Params.F = F;
 
+	uint16_t nativeIndex = uFnSetElementMemberNumber->iNative;
 	uFnSetElementMemberNumber->iNative = 0;
-	uFnSetElementMemberNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementMemberNumber, &SetElementMemberNumber_Params, nullptr);
-	uFnSetElementMemberNumber->FunctionFlags |= 0x400;
-	uFnSetElementMemberNumber->iNative = 28104;
+	uFnSetElementMemberNumber->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementMemberBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28103])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2304,15 +2242,14 @@ void UGFxValue::SetElementMemberBool(int32_t Index, const class FString& member,
 	memcpy_s(&SetElementMemberBool_Params.member, sizeof(SetElementMemberBool_Params.member), &member, sizeof(member));
 	SetElementMemberBool_Params.B = B;
 
+	uint16_t nativeIndex = uFnSetElementMemberBool->iNative;
 	uFnSetElementMemberBool->iNative = 0;
-	uFnSetElementMemberBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementMemberBool, &SetElementMemberBool_Params, nullptr);
-	uFnSetElementMemberBool->FunctionFlags |= 0x400;
-	uFnSetElementMemberBool->iNative = 28103;
+	uFnSetElementMemberBool->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementMemberObject
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28105])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2338,15 +2275,14 @@ void UGFxValue::SetElementMemberObject(int32_t Index, const class FString& membe
 	memcpy_s(&SetElementMemberObject_Params.member, sizeof(SetElementMemberObject_Params.member), &member, sizeof(member));
 	SetElementMemberObject_Params.val = val;
 
+	uint16_t nativeIndex = uFnSetElementMemberObject->iNative;
 	uFnSetElementMemberObject->iNative = 0;
-	uFnSetElementMemberObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementMemberObject, &SetElementMemberObject_Params, nullptr);
-	uFnSetElementMemberObject->FunctionFlags |= 0x400;
-	uFnSetElementMemberObject->iNative = 28105;
+	uFnSetElementMemberObject->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementMember
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28102])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -2372,15 +2308,14 @@ void UGFxValue::SetElementMember(int32_t Index, const class FString& member, con
 	memcpy_s(&SetElementMember_Params.member, sizeof(SetElementMember_Params.member), &member, sizeof(member));
 	memcpy_s(&SetElementMember_Params.Arg, sizeof(SetElementMember_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetElementMember->iNative;
 	uFnSetElementMember->iNative = 0;
-	uFnSetElementMember->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementMember, &SetElementMember_Params, nullptr);
-	uFnSetElementMember->FunctionFlags |= 0x400;
-	uFnSetElementMember->iNative = 28102;
+	uFnSetElementMember->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GetElementMemberString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28010])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // int32_t                        Index                          (CPF_Parm)
@@ -2405,17 +2340,16 @@ class FString UGFxValue::GetElementMemberString(int32_t Index, const class FStri
 	GetElementMemberString_Params.Index = Index;
 	memcpy_s(&GetElementMemberString_Params.member, sizeof(GetElementMemberString_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetElementMemberString->iNative;
 	uFnGetElementMemberString->iNative = 0;
-	uFnGetElementMemberString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementMemberString, &GetElementMemberString_Params, nullptr);
-	uFnGetElementMemberString->FunctionFlags |= 0x400;
-	uFnGetElementMemberString->iNative = 28010;
+	uFnGetElementMemberString->iNative = nativeIndex;
 
 	return GetElementMemberString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementMemberNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28008])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -2440,17 +2374,16 @@ float UGFxValue::GetElementMemberNumber(int32_t Index, const class FString& memb
 	GetElementMemberNumber_Params.Index = Index;
 	memcpy_s(&GetElementMemberNumber_Params.member, sizeof(GetElementMemberNumber_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetElementMemberNumber->iNative;
 	uFnGetElementMemberNumber->iNative = 0;
-	uFnGetElementMemberNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementMemberNumber, &GetElementMemberNumber_Params, nullptr);
-	uFnGetElementMemberNumber->FunctionFlags |= 0x400;
-	uFnGetElementMemberNumber->iNative = 28008;
+	uFnGetElementMemberNumber->iNative = nativeIndex;
 
 	return GetElementMemberNumber_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementMemberBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28007])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -2475,17 +2408,16 @@ bool UGFxValue::GetElementMemberBool(int32_t Index, const class FString& member)
 	GetElementMemberBool_Params.Index = Index;
 	memcpy_s(&GetElementMemberBool_Params.member, sizeof(GetElementMemberBool_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetElementMemberBool->iNative;
 	uFnGetElementMemberBool->iNative = 0;
-	uFnGetElementMemberBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementMemberBool, &GetElementMemberBool_Params, nullptr);
-	uFnGetElementMemberBool->FunctionFlags |= 0x400;
-	uFnGetElementMemberBool->iNative = 28007;
+	uFnGetElementMemberBool->iNative = nativeIndex;
 
 	return GetElementMemberBool_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementMemberObject
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[28009])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -2512,17 +2444,16 @@ class UGFxValue* UGFxValue::GetElementMemberObject(int32_t Index, const class FS
 	memcpy_s(&GetElementMemberObject_Params.member, sizeof(GetElementMemberObject_Params.member), &member, sizeof(member));
 	GetElementMemberObject_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnGetElementMemberObject->iNative;
 	uFnGetElementMemberObject->iNative = 0;
-	uFnGetElementMemberObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementMemberObject, &GetElementMemberObject_Params, nullptr);
-	uFnGetElementMemberObject->FunctionFlags |= 0x400;
-	uFnGetElementMemberObject->iNative = 28009;
+	uFnGetElementMemberObject->iNative = nativeIndex;
 
 	return GetElementMemberObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementMember
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28006])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // int32_t                        Index                          (CPF_Parm)
@@ -2547,17 +2478,16 @@ struct FASValue UGFxValue::GetElementMember(int32_t Index, const class FString& 
 	GetElementMember_Params.Index = Index;
 	memcpy_s(&GetElementMember_Params.member, sizeof(GetElementMember_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetElementMember->iNative;
 	uFnGetElementMember->iNative = 0;
-	uFnGetElementMember->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementMember, &GetElementMember_Params, nullptr);
-	uFnGetElementMember->FunctionFlags |= 0x400;
-	uFnGetElementMember->iNative = 28006;
+	uFnGetElementMember->iNative = nativeIndex;
 
 	return GetElementMember_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.SetElementColorTransform
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28099])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // struct FASColorTransform       cxform                         (CPF_Parm)
@@ -2581,15 +2511,14 @@ void UGFxValue::SetElementColorTransform(int32_t Index, const struct FASColorTra
 	SetElementColorTransform_Params.Index = Index;
 	memcpy_s(&SetElementColorTransform_Params.cxform, sizeof(SetElementColorTransform_Params.cxform), &cxform, sizeof(cxform));
 
+	uint16_t nativeIndex = uFnSetElementColorTransform->iNative;
 	uFnSetElementColorTransform->iNative = 0;
-	uFnSetElementColorTransform->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementColorTransform, &SetElementColorTransform_Params, nullptr);
-	uFnSetElementColorTransform->FunctionFlags |= 0x400;
-	uFnSetElementColorTransform->iNative = 28099;
+	uFnSetElementColorTransform->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementPosition
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28109])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // float                          X                              (CPF_Parm)
@@ -2615,15 +2544,14 @@ void UGFxValue::SetElementPosition(int32_t Index, float X, float Y)
 	SetElementPosition_Params.X = X;
 	SetElementPosition_Params.Y = Y;
 
+	uint16_t nativeIndex = uFnSetElementPosition->iNative;
 	uFnSetElementPosition->iNative = 0;
-	uFnSetElementPosition->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementPosition, &SetElementPosition_Params, nullptr);
-	uFnSetElementPosition->FunctionFlags |= 0x400;
-	uFnSetElementPosition->iNative = 28109;
+	uFnSetElementPosition->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementVisible
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28111])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // uint32_t                       Visible                        (CPF_Parm)
@@ -2647,15 +2575,14 @@ void UGFxValue::SetElementVisible(int32_t Index, bool Visible)
 	SetElementVisible_Params.Index = Index;
 	SetElementVisible_Params.Visible = Visible;
 
+	uint16_t nativeIndex = uFnSetElementVisible->iNative;
 	uFnSetElementVisible->iNative = 0;
-	uFnSetElementVisible->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementVisible, &SetElementVisible_Params, nullptr);
-	uFnSetElementVisible->FunctionFlags |= 0x400;
-	uFnSetElementVisible->iNative = 28111;
+	uFnSetElementVisible->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementDisplayMatrix
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28101])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // struct FMatrix                 M                              (CPF_Parm)
@@ -2679,15 +2606,14 @@ void UGFxValue::SetElementDisplayMatrix(int32_t Index, const struct FMatrix& M)
 	SetElementDisplayMatrix_Params.Index = Index;
 	memcpy_s(&SetElementDisplayMatrix_Params.M, sizeof(SetElementDisplayMatrix_Params.M), &M, sizeof(M));
 
+	uint16_t nativeIndex = uFnSetElementDisplayMatrix->iNative;
 	uFnSetElementDisplayMatrix->iNative = 0;
-	uFnSetElementDisplayMatrix->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementDisplayMatrix, &SetElementDisplayMatrix_Params, nullptr);
-	uFnSetElementDisplayMatrix->FunctionFlags |= 0x400;
-	uFnSetElementDisplayMatrix->iNative = 28101;
+	uFnSetElementDisplayMatrix->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementDisplayInfo
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28100])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // struct FASDisplayInfo          D                              (CPF_Parm)
@@ -2711,15 +2637,14 @@ void UGFxValue::SetElementDisplayInfo(int32_t Index, const struct FASDisplayInfo
 	SetElementDisplayInfo_Params.Index = Index;
 	memcpy_s(&SetElementDisplayInfo_Params.D, sizeof(SetElementDisplayInfo_Params.D), &D, sizeof(D));
 
+	uint16_t nativeIndex = uFnSetElementDisplayInfo->iNative;
 	uFnSetElementDisplayInfo->iNative = 0;
-	uFnSetElementDisplayInfo->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementDisplayInfo, &SetElementDisplayInfo_Params, nullptr);
-	uFnSetElementDisplayInfo->FunctionFlags |= 0x400;
-	uFnSetElementDisplayInfo->iNative = 28100;
+	uFnSetElementDisplayInfo->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28110])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class FString                  S                              (CPF_Parm | CPF_NeedCtorLink)
@@ -2743,15 +2668,14 @@ void UGFxValue::SetElementString(int32_t Index, const class FString& S)
 	SetElementString_Params.Index = Index;
 	memcpy_s(&SetElementString_Params.S, sizeof(SetElementString_Params.S), &S, sizeof(S));
 
+	uint16_t nativeIndex = uFnSetElementString->iNative;
 	uFnSetElementString->iNative = 0;
-	uFnSetElementString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementString, &SetElementString_Params, nullptr);
-	uFnSetElementString->FunctionFlags |= 0x400;
-	uFnSetElementString->iNative = 28110;
+	uFnSetElementString->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28107])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // float                          F                              (CPF_Parm)
@@ -2775,15 +2699,14 @@ void UGFxValue::SetElementNumber(int32_t Index, float F)
 	SetElementNumber_Params.Index = Index;
 	SetElementNumber_Params.F = F;
 
+	uint16_t nativeIndex = uFnSetElementNumber->iNative;
 	uFnSetElementNumber->iNative = 0;
-	uFnSetElementNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementNumber, &SetElementNumber_Params, nullptr);
-	uFnSetElementNumber->FunctionFlags |= 0x400;
-	uFnSetElementNumber->iNative = 28107;
+	uFnSetElementNumber->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28098])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // uint32_t                       B                              (CPF_Parm)
@@ -2807,15 +2730,14 @@ void UGFxValue::SetElementBool(int32_t Index, bool B)
 	SetElementBool_Params.Index = Index;
 	SetElementBool_Params.B = B;
 
+	uint16_t nativeIndex = uFnSetElementBool->iNative;
 	uFnSetElementBool->iNative = 0;
-	uFnSetElementBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementBool, &SetElementBool_Params, nullptr);
-	uFnSetElementBool->FunctionFlags |= 0x400;
-	uFnSetElementBool->iNative = 28098;
+	uFnSetElementBool->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElementObject
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28108])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // class UGFxValue*               val                            (CPF_Parm)
@@ -2839,15 +2761,14 @@ void UGFxValue::SetElementObject(int32_t Index, class UGFxValue* val)
 	SetElementObject_Params.Index = Index;
 	SetElementObject_Params.val = val;
 
+	uint16_t nativeIndex = uFnSetElementObject->iNative;
 	uFnSetElementObject->iNative = 0;
-	uFnSetElementObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElementObject, &SetElementObject_Params, nullptr);
-	uFnSetElementObject->FunctionFlags |= 0x400;
-	uFnSetElementObject->iNative = 28108;
+	uFnSetElementObject->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetElement
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28097])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Index                          (CPF_Parm)
 // struct FASValue                Arg                            (CPF_Parm | CPF_NeedCtorLink)
@@ -2871,15 +2792,14 @@ void UGFxValue::SetElement(int32_t Index, const struct FASValue& Arg)
 	SetElement_Params.Index = Index;
 	memcpy_s(&SetElement_Params.Arg, sizeof(SetElement_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSetElement->iNative;
 	uFnSetElement->iNative = 0;
-	uFnSetElement->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetElement, &SetElement_Params, nullptr);
-	uFnSetElement->FunctionFlags |= 0x400;
-	uFnSetElement->iNative = 28097;
+	uFnSetElement->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GetElementDisplayMatrix
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28005])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FMatrix                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -2902,17 +2822,16 @@ struct FMatrix UGFxValue::GetElementDisplayMatrix(int32_t Index)
 	}
 	GetElementDisplayMatrix_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElementDisplayMatrix->iNative;
 	uFnGetElementDisplayMatrix->iNative = 0;
-	uFnGetElementDisplayMatrix->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementDisplayMatrix, &GetElementDisplayMatrix_Params, nullptr);
-	uFnGetElementDisplayMatrix->FunctionFlags |= 0x400;
-	uFnGetElementDisplayMatrix->iNative = 28005;
+	uFnGetElementDisplayMatrix->iNative = nativeIndex;
 
 	return GetElementDisplayMatrix_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementDisplayInfo
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28004])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASDisplayInfo          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -2935,17 +2854,16 @@ struct FASDisplayInfo UGFxValue::GetElementDisplayInfo(int32_t Index)
 	}
 	GetElementDisplayInfo_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElementDisplayInfo->iNative;
 	uFnGetElementDisplayInfo->iNative = 0;
-	uFnGetElementDisplayInfo->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementDisplayInfo, &GetElementDisplayInfo_Params, nullptr);
-	uFnGetElementDisplayInfo->FunctionFlags |= 0x400;
-	uFnGetElementDisplayInfo->iNative = 28004;
+	uFnGetElementDisplayInfo->iNative = nativeIndex;
 
 	return GetElementDisplayInfo_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28013])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // int32_t                        Index                          (CPF_Parm)
@@ -2968,17 +2886,16 @@ class FString UGFxValue::GetElementString(int32_t Index)
 	}
 	GetElementString_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElementString->iNative;
 	uFnGetElementString->iNative = 0;
-	uFnGetElementString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementString, &GetElementString_Params, nullptr);
-	uFnGetElementString->FunctionFlags |= 0x400;
-	uFnGetElementString->iNative = 28013;
+	uFnGetElementString->iNative = nativeIndex;
 
 	return GetElementString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28011])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -3001,17 +2918,16 @@ float UGFxValue::GetElementNumber(int32_t Index)
 	}
 	GetElementNumber_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElementNumber->iNative;
 	uFnGetElementNumber->iNative = 0;
-	uFnGetElementNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementNumber, &GetElementNumber_Params, nullptr);
-	uFnGetElementNumber->FunctionFlags |= 0x400;
-	uFnGetElementNumber->iNative = 28011;
+	uFnGetElementNumber->iNative = nativeIndex;
 
 	return GetElementNumber_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28003])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -3034,17 +2950,16 @@ bool UGFxValue::GetElementBool(int32_t Index)
 	}
 	GetElementBool_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElementBool->iNative;
 	uFnGetElementBool->iNative = 0;
-	uFnGetElementBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementBool, &GetElementBool_Params, nullptr);
-	uFnGetElementBool->FunctionFlags |= 0x400;
-	uFnGetElementBool->iNative = 28003;
+	uFnGetElementBool->iNative = nativeIndex;
 
 	return GetElementBool_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElementObject
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[28012])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        Index                          (CPF_Parm)
@@ -3069,17 +2984,16 @@ class UGFxValue* UGFxValue::GetElementObject(int32_t Index, class UClass* option
 	GetElementObject_Params.Index = Index;
 	GetElementObject_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnGetElementObject->iNative;
 	uFnGetElementObject->iNative = 0;
-	uFnGetElementObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElementObject, &GetElementObject_Params, nullptr);
-	uFnGetElementObject->FunctionFlags |= 0x400;
-	uFnGetElementObject->iNative = 28012;
+	uFnGetElementObject->iNative = nativeIndex;
 
 	return GetElementObject_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetElement
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28002])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // int32_t                        Index                          (CPF_Parm)
@@ -3102,17 +3016,16 @@ struct FASValue UGFxValue::GetElement(int32_t Index)
 	}
 	GetElement_Params.Index = Index;
 
+	uint16_t nativeIndex = uFnGetElement->iNative;
 	uFnGetElement->iNative = 0;
-	uFnGetElement->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetElement, &GetElement_Params, nullptr);
-	uFnGetElement->FunctionFlags |= 0x400;
-	uFnGetElement->iNative = 28002;
+	uFnGetElement->iNative = nativeIndex;
 
 	return GetElement_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.SetText
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28123])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  Text                           (CPF_Parm | CPF_CoerceParm | CPF_NeedCtorLink)
 
@@ -3134,15 +3047,14 @@ void UGFxValue::SetText(const class FString& Text)
 	}
 	memcpy_s(&SetText_Params.Text, sizeof(SetText_Params.Text), &Text, sizeof(Text));
 
+	uint16_t nativeIndex = uFnSetText->iNative;
 	uFnSetText->iNative = 0;
-	uFnSetText->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetText, &SetText_Params, nullptr);
-	uFnSetText->FunctionFlags |= 0x400;
-	uFnSetText->iNative = 28123;
+	uFnSetText->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GetText
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28018])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -3163,17 +3075,16 @@ class FString UGFxValue::GetText()
 		return GetText_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetText->iNative;
 	uFnGetText->iNative = 0;
-	uFnGetText->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetText, &GetText_Params, nullptr);
-	uFnGetText->FunctionFlags |= 0x400;
-	uFnGetText->iNative = 28018;
+	uFnGetText->iNative = nativeIndex;
 
 	return GetText_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.AttachMovie
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[27962])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  symbolname                     (CPF_Parm | CPF_NeedCtorLink)
@@ -3202,17 +3113,16 @@ class UGFxValue* UGFxValue::AttachMovie(const class FString& symbolname, const c
 	AttachMovie_Params.Depth = optionalDepth;
 	AttachMovie_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnAttachMovie->iNative;
 	uFnAttachMovie->iNative = 0;
-	uFnAttachMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAttachMovie, &AttachMovie_Params, nullptr);
-	uFnAttachMovie->FunctionFlags |= 0x400;
-	uFnAttachMovie->iNative = 27962;
+	uFnAttachMovie->iNative = nativeIndex;
 
 	return AttachMovie_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.CreateEmptyMovieClip
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[27982])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  instancename                   (CPF_Parm | CPF_NeedCtorLink)
@@ -3239,17 +3149,16 @@ class UGFxValue* UGFxValue::CreateEmptyMovieClip(const class FString& instancena
 	CreateEmptyMovieClip_Params.Depth = optionalDepth;
 	CreateEmptyMovieClip_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnCreateEmptyMovieClip->iNative;
 	uFnCreateEmptyMovieClip->iNative = 0;
-	uFnCreateEmptyMovieClip->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCreateEmptyMovieClip, &CreateEmptyMovieClip_Params, nullptr);
-	uFnCreateEmptyMovieClip->FunctionFlags |= 0x400;
-	uFnCreateEmptyMovieClip->iNative = 27982;
+	uFnCreateEmptyMovieClip->iNative = nativeIndex;
 
 	return CreateEmptyMovieClip_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GotoAndStopI
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28040])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        frame                          (CPF_Parm)
 
@@ -3271,15 +3180,14 @@ void UGFxValue::GotoAndStopI(int32_t frame)
 	}
 	GotoAndStopI_Params.frame = frame;
 
+	uint16_t nativeIndex = uFnGotoAndStopI->iNative;
 	uFnGotoAndStopI->iNative = 0;
-	uFnGotoAndStopI->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGotoAndStopI, &GotoAndStopI_Params, nullptr);
-	uFnGotoAndStopI->FunctionFlags |= 0x400;
-	uFnGotoAndStopI->iNative = 28040;
+	uFnGotoAndStopI->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GotoAndStop
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28039])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  frame                          (CPF_Parm | CPF_NeedCtorLink)
 
@@ -3301,15 +3209,14 @@ void UGFxValue::GotoAndStop(const class FString& frame)
 	}
 	memcpy_s(&GotoAndStop_Params.frame, sizeof(GotoAndStop_Params.frame), &frame, sizeof(frame));
 
+	uint16_t nativeIndex = uFnGotoAndStop->iNative;
 	uFnGotoAndStop->iNative = 0;
-	uFnGotoAndStop->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGotoAndStop, &GotoAndStop_Params, nullptr);
-	uFnGotoAndStop->FunctionFlags |= 0x400;
-	uFnGotoAndStop->iNative = 28039;
+	uFnGotoAndStop->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GotoAndPlayI
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28038])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        frame                          (CPF_Parm)
 
@@ -3331,15 +3238,14 @@ void UGFxValue::GotoAndPlayI(int32_t frame)
 	}
 	GotoAndPlayI_Params.frame = frame;
 
+	uint16_t nativeIndex = uFnGotoAndPlayI->iNative;
 	uFnGotoAndPlayI->iNative = 0;
-	uFnGotoAndPlayI->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGotoAndPlayI, &GotoAndPlayI_Params, nullptr);
-	uFnGotoAndPlayI->FunctionFlags |= 0x400;
-	uFnGotoAndPlayI->iNative = 28038;
+	uFnGotoAndPlayI->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GotoAndPlay
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28037])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  frame                          (CPF_Parm | CPF_NeedCtorLink)
 
@@ -3361,15 +3267,14 @@ void UGFxValue::GotoAndPlay(const class FString& frame)
 	}
 	memcpy_s(&GotoAndPlay_Params.frame, sizeof(GotoAndPlay_Params.frame), &frame, sizeof(frame));
 
+	uint16_t nativeIndex = uFnGotoAndPlay->iNative;
 	uFnGotoAndPlay->iNative = 0;
-	uFnGotoAndPlay->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGotoAndPlay, &GotoAndPlay_Params, nullptr);
-	uFnGotoAndPlay->FunctionFlags |= 0x400;
-	uFnGotoAndPlay->iNative = 28037;
+	uFnGotoAndPlay->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetColorTransform
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28093])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASColorTransform       cxform                         (CPF_Parm)
 
@@ -3391,15 +3296,14 @@ void UGFxValue::SetColorTransform(const struct FASColorTransform& cxform)
 	}
 	memcpy_s(&SetColorTransform_Params.cxform, sizeof(SetColorTransform_Params.cxform), &cxform, sizeof(cxform));
 
+	uint16_t nativeIndex = uFnSetColorTransform->iNative;
 	uFnSetColorTransform->iNative = 0;
-	uFnSetColorTransform->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetColorTransform, &SetColorTransform_Params, nullptr);
-	uFnSetColorTransform->FunctionFlags |= 0x400;
-	uFnSetColorTransform->iNative = 28093;
+	uFnSetColorTransform->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetPosition
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[22180])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          X                              (CPF_Parm)
 // float                          Y                              (CPF_Parm)
@@ -3423,15 +3327,14 @@ void UGFxValue::SetPosition(float X, float Y)
 	SetPosition_Params.X = X;
 	SetPosition_Params.Y = Y;
 
+	uint16_t nativeIndex = uFnSetPosition->iNative;
 	uFnSetPosition->iNative = 0;
-	uFnSetPosition->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetPosition, &SetPosition_Params, nullptr);
-	uFnSetPosition->FunctionFlags |= 0x400;
-	uFnSetPosition->iNative = 22180;
+	uFnSetPosition->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetVisible
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28137])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // uint32_t                       Visible                        (CPF_Parm)
 
@@ -3453,15 +3356,14 @@ void UGFxValue::SetVisible(bool Visible)
 	}
 	SetVisible_Params.Visible = Visible;
 
+	uint16_t nativeIndex = uFnSetVisible->iNative;
 	uFnSetVisible->iNative = 0;
-	uFnSetVisible->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetVisible, &SetVisible_Params, nullptr);
-	uFnSetVisible->FunctionFlags |= 0x400;
-	uFnSetVisible->iNative = 28137;
+	uFnSetVisible->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetDisplayMatrix3D
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28096])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FMatrix                 M                              (CPF_Parm)
 
@@ -3483,15 +3385,14 @@ void UGFxValue::SetDisplayMatrix3D(const struct FMatrix& M)
 	}
 	memcpy_s(&SetDisplayMatrix3D_Params.M, sizeof(SetDisplayMatrix3D_Params.M), &M, sizeof(M));
 
+	uint16_t nativeIndex = uFnSetDisplayMatrix3D->iNative;
 	uFnSetDisplayMatrix3D->iNative = 0;
-	uFnSetDisplayMatrix3D->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetDisplayMatrix3D, &SetDisplayMatrix3D_Params, nullptr);
-	uFnSetDisplayMatrix3D->FunctionFlags |= 0x400;
-	uFnSetDisplayMatrix3D->iNative = 28096;
+	uFnSetDisplayMatrix3D->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetDisplayMatrix
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28095])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FMatrix                 M                              (CPF_Parm)
 
@@ -3513,15 +3414,14 @@ void UGFxValue::SetDisplayMatrix(const struct FMatrix& M)
 	}
 	memcpy_s(&SetDisplayMatrix_Params.M, sizeof(SetDisplayMatrix_Params.M), &M, sizeof(M));
 
+	uint16_t nativeIndex = uFnSetDisplayMatrix->iNative;
 	uFnSetDisplayMatrix->iNative = 0;
-	uFnSetDisplayMatrix->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetDisplayMatrix, &SetDisplayMatrix_Params, nullptr);
-	uFnSetDisplayMatrix->FunctionFlags |= 0x400;
-	uFnSetDisplayMatrix->iNative = 28095;
+	uFnSetDisplayMatrix->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetDisplayInfo
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28094])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASDisplayInfo          D                              (CPF_Parm)
 
@@ -3543,15 +3443,14 @@ void UGFxValue::SetDisplayInfo(const struct FASDisplayInfo& D)
 	}
 	memcpy_s(&SetDisplayInfo_Params.D, sizeof(SetDisplayInfo_Params.D), &D, sizeof(D));
 
+	uint16_t nativeIndex = uFnSetDisplayInfo->iNative;
 	uFnSetDisplayInfo->iNative = 0;
-	uFnSetDisplayInfo->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetDisplayInfo, &SetDisplayInfo_Params, nullptr);
-	uFnSetDisplayInfo->FunctionFlags |= 0x400;
-	uFnSetDisplayInfo->iNative = 28094;
+	uFnSetDisplayInfo->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GetPosition
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[15594])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          X                              (CPF_Parm | CPF_OutParm)
@@ -3576,11 +3475,10 @@ bool UGFxValue::GetPosition(float& outX, float& outY)
 	GetPosition_Params.X = outX;
 	GetPosition_Params.Y = outY;
 
+	uint16_t nativeIndex = uFnGetPosition->iNative;
 	uFnGetPosition->iNative = 0;
-	uFnGetPosition->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetPosition, &GetPosition_Params, nullptr);
-	uFnGetPosition->FunctionFlags |= 0x400;
-	uFnGetPosition->iNative = 15594;
+	uFnGetPosition->iNative = nativeIndex;
 
 	outX = GetPosition_Params.X;
 	outY = GetPosition_Params.Y;
@@ -3589,7 +3487,7 @@ bool UGFxValue::GetPosition(float& outX, float& outY)
 }
 
 // Function GFxUI.GFxValue.GetColorTransform
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27999])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASColorTransform       ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3610,17 +3508,16 @@ struct FASColorTransform UGFxValue::GetColorTransform()
 		return GetColorTransform_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetColorTransform->iNative;
 	uFnGetColorTransform->iNative = 0;
-	uFnGetColorTransform->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetColorTransform, &GetColorTransform_Params, nullptr);
-	uFnGetColorTransform->FunctionFlags |= 0x400;
-	uFnGetColorTransform->iNative = 27999;
+	uFnGetColorTransform->iNative = nativeIndex;
 
 	return GetColorTransform_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetDisplayMatrix
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28001])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FMatrix                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3641,17 +3538,16 @@ struct FMatrix UGFxValue::GetDisplayMatrix()
 		return GetDisplayMatrix_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetDisplayMatrix->iNative;
 	uFnGetDisplayMatrix->iNative = 0;
-	uFnGetDisplayMatrix->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetDisplayMatrix, &GetDisplayMatrix_Params, nullptr);
-	uFnGetDisplayMatrix->FunctionFlags |= 0x400;
-	uFnGetDisplayMatrix->iNative = 28001;
+	uFnGetDisplayMatrix->iNative = nativeIndex;
 
 	return GetDisplayMatrix_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetDisplayInfo
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28000])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASDisplayInfo          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3672,17 +3568,16 @@ struct FASDisplayInfo UGFxValue::GetDisplayInfo()
 		return GetDisplayInfo_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetDisplayInfo->iNative;
 	uFnGetDisplayInfo->iNative = 0;
-	uFnGetDisplayInfo->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetDisplayInfo, &GetDisplayInfo_Params, nullptr);
-	uFnGetDisplayInfo->FunctionFlags |= 0x400;
-	uFnGetDisplayInfo->iNative = 28000;
+	uFnGetDisplayInfo->iNative = nativeIndex;
 
 	return GetDisplayInfo_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.SetString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28122])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // class FString                  S                              (CPF_Parm | CPF_NeedCtorLink)
@@ -3706,15 +3601,14 @@ void UGFxValue::SetString(const class FString& member, const class FString& S)
 	memcpy_s(&SetString_Params.member, sizeof(SetString_Params.member), &member, sizeof(member));
 	memcpy_s(&SetString_Params.S, sizeof(SetString_Params.S), &S, sizeof(S));
 
+	uint16_t nativeIndex = uFnSetString->iNative;
 	uFnSetString->iNative = 0;
-	uFnSetString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetString, &SetString_Params, nullptr);
-	uFnSetString->FunctionFlags |= 0x400;
-	uFnSetString->iNative = 28122;
+	uFnSetString->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28118])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // float                          F                              (CPF_Parm)
@@ -3738,15 +3632,14 @@ void UGFxValue::SetNumber(const class FString& member, float F)
 	memcpy_s(&SetNumber_Params.member, sizeof(SetNumber_Params.member), &member, sizeof(member));
 	SetNumber_Params.F = F;
 
+	uint16_t nativeIndex = uFnSetNumber->iNative;
 	uFnSetNumber->iNative = 0;
-	uFnSetNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetNumber, &SetNumber_Params, nullptr);
-	uFnSetNumber->FunctionFlags |= 0x400;
-	uFnSetNumber->iNative = 28118;
+	uFnSetNumber->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28092])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // uint32_t                       B                              (CPF_Parm)
@@ -3770,15 +3663,14 @@ void UGFxValue::SetBool(const class FString& member, bool B)
 	memcpy_s(&SetBool_Params.member, sizeof(SetBool_Params.member), &member, sizeof(member));
 	SetBool_Params.B = B;
 
+	uint16_t nativeIndex = uFnSetBool->iNative;
 	uFnSetBool->iNative = 0;
-	uFnSetBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetBool, &SetBool_Params, nullptr);
-	uFnSetBool->FunctionFlags |= 0x400;
-	uFnSetBool->iNative = 28092;
+	uFnSetBool->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetFunction
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28116])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // class UObject*                 context                        (CPF_Parm)
@@ -3804,15 +3696,14 @@ void UGFxValue::SetFunction(const class FString& member, class UObject* context,
 	SetFunction_Params.context = context;
 	memcpy_s(&SetFunction_Params.fname, sizeof(SetFunction_Params.fname), &fname, sizeof(fname));
 
+	uint16_t nativeIndex = uFnSetFunction->iNative;
 	uFnSetFunction->iNative = 0;
-	uFnSetFunction->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetFunction, &SetFunction_Params, nullptr);
-	uFnSetFunction->FunctionFlags |= 0x400;
-	uFnSetFunction->iNative = 28116;
+	uFnSetFunction->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.SetObject
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28119])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // class UGFxValue*               val                            (CPF_Parm)
@@ -3836,15 +3727,14 @@ void UGFxValue::SetObject(const class FString& member, class UGFxValue* val)
 	memcpy_s(&SetObject_Params.member, sizeof(SetObject_Params.member), &member, sizeof(member));
 	SetObject_Params.val = val;
 
+	uint16_t nativeIndex = uFnSetObject->iNative;
 	uFnSetObject->iNative = 0;
-	uFnSetObject->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetObject, &SetObject_Params, nullptr);
-	uFnSetObject->FunctionFlags |= 0x400;
-	uFnSetObject->iNative = 28119;
+	uFnSetObject->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.Set
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[21883])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
 // struct FASValue                Arg                            (CPF_Parm | CPF_NeedCtorLink)
@@ -3868,15 +3758,14 @@ void UGFxValue::Set(const class FString& member, const struct FASValue& Arg)
 	memcpy_s(&Set_Params.member, sizeof(Set_Params.member), &member, sizeof(member));
 	memcpy_s(&Set_Params.Arg, sizeof(Set_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnSet->iNative;
 	uFnSet->iNative = 0;
-	uFnSet->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSet, &Set_Params, nullptr);
-	uFnSet->FunctionFlags |= 0x400;
-	uFnSet->iNative = 21883;
+	uFnSet->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxValue.GetString
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[15726])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -3899,17 +3788,16 @@ class FString UGFxValue::GetString(const class FString& member)
 	}
 	memcpy_s(&GetString_Params.member, sizeof(GetString_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetString->iNative;
 	uFnGetString->iNative = 0;
-	uFnGetString->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetString, &GetString_Params, nullptr);
-	uFnGetString->FunctionFlags |= 0x400;
-	uFnGetString->iNative = 15726;
+	uFnGetString->iNative = nativeIndex;
 
 	return GetString_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetNumber
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28016])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -3932,17 +3820,16 @@ float UGFxValue::GetNumber(const class FString& member)
 	}
 	memcpy_s(&GetNumber_Params.member, sizeof(GetNumber_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetNumber->iNative;
 	uFnGetNumber->iNative = 0;
-	uFnGetNumber->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetNumber, &GetNumber_Params, nullptr);
-	uFnGetNumber->FunctionFlags |= 0x400;
-	uFnGetNumber->iNative = 28016;
+	uFnGetNumber->iNative = nativeIndex;
 
 	return GetNumber_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetBool
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27998])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -3965,17 +3852,16 @@ bool UGFxValue::GetBool(const class FString& member)
 	}
 	memcpy_s(&GetBool_Params.member, sizeof(GetBool_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGetBool->iNative;
 	uFnGetBool->iNative = 0;
-	uFnGetBool->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetBool, &GetBool_Params, nullptr);
-	uFnGetBool->FunctionFlags |= 0x400;
-	uFnGetBool->iNative = 27998;
+	uFnGetBool->iNative = nativeIndex;
 
 	return GetBool_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.GetObject
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[28017])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGFxValue*               ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -4000,17 +3886,16 @@ class UGFxValue* UGFxValue::GetObjectWin(const class FString& member, class UCla
 	memcpy_s(&GetObjectWin_Params.member, sizeof(GetObjectWin_Params.member), &member, sizeof(member));
 	GetObjectWin_Params.Type = optionalType;
 
+	uint16_t nativeIndex = uFnGetObjectWin->iNative;
 	uFnGetObjectWin->iNative = 0;
-	uFnGetObjectWin->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetObjectWin, &GetObjectWin_Params, nullptr);
-	uFnGetObjectWin->FunctionFlags |= 0x400;
-	uFnGetObjectWin->iNative = 28017;
+	uFnGetObjectWin->iNative = nativeIndex;
 
 	return GetObjectWin_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.Get
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27997])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -4033,17 +3918,16 @@ struct FASValue UGFxValue::Get(const class FString& member)
 	}
 	memcpy_s(&Get_Params.member, sizeof(Get_Params.member), &member, sizeof(member));
 
+	uint16_t nativeIndex = uFnGet->iNative;
 	uFnGet->iNative = 0;
-	uFnGet->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGet, &Get_Params, nullptr);
-	uFnGet->FunctionFlags |= 0x400;
-	uFnGet->iNative = 27997;
+	uFnGet->iNative = nativeIndex;
 
 	return Get_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxValue.Invoke
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28058])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FASValue                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // class FString                  member                         (CPF_Parm | CPF_NeedCtorLink)
@@ -4068,17 +3952,16 @@ struct FASValue UGFxValue::Invoke(const class FString& member, const class TArra
 	memcpy_s(&Invoke_Params.member, sizeof(Invoke_Params.member), &member, sizeof(member));
 	memcpy_s(&Invoke_Params.args, sizeof(Invoke_Params.args), &args, sizeof(args));
 
+	uint16_t nativeIndex = uFnInvoke->iNative;
 	uFnInvoke->iNative = 0;
-	uFnInvoke->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnInvoke, &Invoke_Params, nullptr);
-	uFnInvoke->FunctionFlags |= 0x400;
-	uFnInvoke->iNative = 28058;
+	uFnInvoke->iNative = nativeIndex;
 
 	return Invoke_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxAction_CloseMovie.IsValidLevelSequenceObject
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4105,7 +3988,7 @@ bool UGFxAction_CloseMovie::eventIsValidLevelSequenceObject()
 }
 
 // Function GFxUI.GFxAction_GetVariable.IsValidLevelSequenceObject
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4132,7 +4015,7 @@ bool UGFxAction_GetVariable::eventIsValidLevelSequenceObject()
 }
 
 // Function GFxUI.GFxAction_Invoke.IsValidLevelSequenceObject
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4159,7 +4042,7 @@ bool UGFxAction_Invoke::eventIsValidLevelSequenceObject()
 }
 
 // Function GFxUI.GFxAction_OpenMovie.IsValidLevelSequenceObject
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4186,7 +4069,7 @@ bool UGFxAction_OpenMovie::eventIsValidLevelSequenceObject()
 }
 
 // Function GFxUI.GFxAction_SetVariable.IsValidLevelSequenceObject
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4213,7 +4096,7 @@ bool UGFxAction_SetVariable::eventIsValidLevelSequenceObject()
 }
 
 // Function GFxUI.GFxFSCmdHandler_Kismet.FSCommand
-// [0x00020C00] (FUNC_Native | FUNC_Event | FUNC_Public | FUNC_AllFlags) (iNative[6491])
+// [0x00020C00] (FUNC_Native | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UGFxMovie*               Movie                          (CPF_Parm)
@@ -4240,17 +4123,16 @@ bool UGFxFSCmdHandler_Kismet::eventFSCommand(class UGFxMovie* Movie, const class
 	memcpy_s(&FSCommand_Params.Cmd, sizeof(FSCommand_Params.Cmd), &Cmd, sizeof(Cmd));
 	memcpy_s(&FSCommand_Params.Arg, sizeof(FSCommand_Params.Arg), &Arg, sizeof(Arg));
 
+	uint16_t nativeIndex = uFnFSCommand->iNative;
 	uFnFSCommand->iNative = 0;
-	uFnFSCommand->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnFSCommand, &FSCommand_Params, nullptr);
-	uFnFSCommand->FunctionFlags |= 0x400;
-	uFnFSCommand->iNative = 6491;
+	uFnFSCommand->iNative = nativeIndex;
 
 	return FSCommand_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.SaveSubscriberValue
-// [0x00424400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[21454])
+// [0x00424400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        BindingIndex                   (CPF_OptionalParm | CPF_Parm)
@@ -4275,11 +4157,10 @@ bool UGFxDataStoreSubscriber::SaveSubscriberValue(int32_t optionalBindingIndex, 
 	SaveSubscriberValue_Params.BindingIndex = optionalBindingIndex;
 	memcpy_s(&SaveSubscriberValue_Params.out_BoundDataStores, sizeof(SaveSubscriberValue_Params.out_BoundDataStores), &outOut_BoundDataStores, sizeof(outOut_BoundDataStores));
 
+	uint16_t nativeIndex = uFnSaveSubscriberValue->iNative;
 	uFnSaveSubscriberValue->iNative = 0;
-	uFnSaveSubscriberValue->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSaveSubscriberValue, &SaveSubscriberValue_Params, nullptr);
-	uFnSaveSubscriberValue->FunctionFlags |= 0x400;
-	uFnSaveSubscriberValue->iNative = 21454;
+	uFnSaveSubscriberValue->iNative = nativeIndex;
 
 	memcpy_s(&outOut_BoundDataStores, sizeof(outOut_BoundDataStores), &SaveSubscriberValue_Params.out_BoundDataStores, sizeof(SaveSubscriberValue_Params.out_BoundDataStores));
 
@@ -4287,7 +4168,7 @@ bool UGFxDataStoreSubscriber::SaveSubscriberValue(int32_t optionalBindingIndex, 
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.ClearBoundDataStores
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[11663])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxDataStoreSubscriber::ClearBoundDataStores()
@@ -4307,15 +4188,14 @@ void UGFxDataStoreSubscriber::ClearBoundDataStores()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnClearBoundDataStores->iNative;
 	uFnClearBoundDataStores->iNative = 0;
-	uFnClearBoundDataStores->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClearBoundDataStores, &ClearBoundDataStores_Params, nullptr);
-	uFnClearBoundDataStores->FunctionFlags |= 0x400;
-	uFnClearBoundDataStores->iNative = 11663;
+	uFnClearBoundDataStores->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.GetBoundDataStores
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[15281])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class TArray<class UUIDataStore*> out_BoundDataStores            (CPF_Parm | CPF_OutParm | CPF_NeedCtorLink)
 
@@ -4337,17 +4217,16 @@ void UGFxDataStoreSubscriber::GetBoundDataStores(class TArray<class UUIDataStore
 	}
 	memcpy_s(&GetBoundDataStores_Params.out_BoundDataStores, sizeof(GetBoundDataStores_Params.out_BoundDataStores), &outOut_BoundDataStores, sizeof(outOut_BoundDataStores));
 
+	uint16_t nativeIndex = uFnGetBoundDataStores->iNative;
 	uFnGetBoundDataStores->iNative = 0;
-	uFnGetBoundDataStores->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetBoundDataStores, &GetBoundDataStores_Params, nullptr);
-	uFnGetBoundDataStores->FunctionFlags |= 0x400;
-	uFnGetBoundDataStores->iNative = 15281;
+	uFnGetBoundDataStores->iNative = nativeIndex;
 
 	memcpy_s(&outOut_BoundDataStores, sizeof(outOut_BoundDataStores), &GetBoundDataStores_Params.out_BoundDataStores, sizeof(GetBoundDataStores_Params.out_BoundDataStores));
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.NotifyDataStoreValueUpdated
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[18696])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UUIDataStore*            SourceDataStore                (CPF_Parm)
 // uint32_t                       bValuesInvalidated             (CPF_Parm)
@@ -4377,15 +4256,14 @@ void UGFxDataStoreSubscriber::NotifyDataStoreValueUpdated(class UUIDataStore* So
 	NotifyDataStoreValueUpdated_Params.SourceProvider = SourceProvider;
 	NotifyDataStoreValueUpdated_Params.ArrayIndex = ArrayIndex;
 
+	uint16_t nativeIndex = uFnNotifyDataStoreValueUpdated->iNative;
 	uFnNotifyDataStoreValueUpdated->iNative = 0;
-	uFnNotifyDataStoreValueUpdated->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnNotifyDataStoreValueUpdated, &NotifyDataStoreValueUpdated_Params, nullptr);
-	uFnNotifyDataStoreValueUpdated->FunctionFlags |= 0x400;
-	uFnNotifyDataStoreValueUpdated->iNative = 18696;
+	uFnNotifyDataStoreValueUpdated->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.RefreshSubscriberValue
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[20912])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // int32_t                        BindingIndex                   (CPF_OptionalParm | CPF_Parm)
@@ -4408,17 +4286,16 @@ bool UGFxDataStoreSubscriber::RefreshSubscriberValue(int32_t optionalBindingInde
 	}
 	RefreshSubscriberValue_Params.BindingIndex = optionalBindingIndex;
 
+	uint16_t nativeIndex = uFnRefreshSubscriberValue->iNative;
 	uFnRefreshSubscriberValue->iNative = 0;
-	uFnRefreshSubscriberValue->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnRefreshSubscriberValue, &RefreshSubscriberValue_Params, nullptr);
-	uFnRefreshSubscriberValue->FunctionFlags |= 0x400;
-	uFnRefreshSubscriberValue->iNative = 20912;
+	uFnRefreshSubscriberValue->iNative = nativeIndex;
 
 	return RefreshSubscriberValue_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.GetDataStoreBinding
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[15364])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 // int32_t                        BindingIndex                   (CPF_OptionalParm | CPF_Parm)
@@ -4441,17 +4318,16 @@ class FString UGFxDataStoreSubscriber::GetDataStoreBinding(int32_t optionalBindi
 	}
 	GetDataStoreBinding_Params.BindingIndex = optionalBindingIndex;
 
+	uint16_t nativeIndex = uFnGetDataStoreBinding->iNative;
 	uFnGetDataStoreBinding->iNative = 0;
-	uFnGetDataStoreBinding->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetDataStoreBinding, &GetDataStoreBinding_Params, nullptr);
-	uFnGetDataStoreBinding->FunctionFlags |= 0x400;
-	uFnGetDataStoreBinding->iNative = 15364;
+	uFnGetDataStoreBinding->iNative = nativeIndex;
 
 	return GetDataStoreBinding_Params.ReturnValue;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.SetDataStoreBinding
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[22004])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class FString                  MarkupText                     (CPF_Parm | CPF_NeedCtorLink)
 // int32_t                        BindingIndex                   (CPF_OptionalParm | CPF_Parm)
@@ -4475,15 +4351,14 @@ void UGFxDataStoreSubscriber::SetDataStoreBinding(const class FString& MarkupTex
 	memcpy_s(&SetDataStoreBinding_Params.MarkupText, sizeof(SetDataStoreBinding_Params.MarkupText), &MarkupText, sizeof(MarkupText));
 	SetDataStoreBinding_Params.BindingIndex = optionalBindingIndex;
 
+	uint16_t nativeIndex = uFnSetDataStoreBinding->iNative;
 	uFnSetDataStoreBinding->iNative = 0;
-	uFnSetDataStoreBinding->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetDataStoreBinding, &SetDataStoreBinding_Params, nullptr);
-	uFnSetDataStoreBinding->FunctionFlags |= 0x400;
-	uFnSetDataStoreBinding->iNative = 22004;
+	uFnSetDataStoreBinding->iNative = nativeIndex;
 }
 
 // Function GFxUI.GFxDataStoreSubscriber.PublishValues
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[28080])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGFxDataStoreSubscriber::PublishValues()
@@ -4503,11 +4378,10 @@ void UGFxDataStoreSubscriber::PublishValues()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnPublishValues->iNative;
 	uFnPublishValues->iNative = 0;
-	uFnPublishValues->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPublishValues, &PublishValues_Params, nullptr);
-	uFnPublishValues->FunctionFlags |= 0x400;
-	uFnPublishValues->iNative = 28080;
+	uFnPublishValues->iNative = nativeIndex;
 }
 
 /*

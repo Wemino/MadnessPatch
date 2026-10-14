@@ -22,7 +22,7 @@
 */
 
 // Function Kynapse.KynapseAIController.OnAIFollow
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_AIFollow*        Action                         (CPF_Parm)
 
@@ -48,7 +48,7 @@ void AKynapseAIController::OnAIFollow(class USeqAct_AIFollow* Action)
 }
 
 // Function Kynapse.KynapseAIController.OnAIShoot
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_AIShoot*         Action                         (CPF_Parm)
 
@@ -74,7 +74,7 @@ void AKynapseAIController::OnAIShoot(class USeqAct_AIShoot* Action)
 }
 
 // Function Kynapse.KynapseAIController.OnAIHide
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_AIHide*          Action                         (CPF_Parm)
 
@@ -100,7 +100,7 @@ void AKynapseAIController::OnAIHide(class USeqAct_AIHide* Action)
 }
 
 // Function Kynapse.KynapseAIController.OnAIFlee
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_AIFlee*          Action                         (CPF_Parm)
 
@@ -126,7 +126,7 @@ void AKynapseAIController::OnAIFlee(class USeqAct_AIFlee* Action)
 }
 
 // Function Kynapse.KynapseAIController.OnAIWander
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_AIWander*        Action                         (CPF_Parm)
 
@@ -152,7 +152,7 @@ void AKynapseAIController::OnAIWander(class USeqAct_AIWander* Action)
 }
 
 // Function Kynapse.KynapseAIController.Possess
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class APawn*                   aPawn                          (CPF_Parm)
 // uint32_t                       bVehicleTransition             (CPF_Parm)
@@ -180,7 +180,7 @@ void AKynapseAIController::Possess(class APawn* aPawn, bool bVehicleTransition)
 }
 
 // Function Kynapse.KynapseAIController.KynapseFollow
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27579])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  TargetEntity                   (CPF_Parm)
@@ -205,17 +205,11 @@ bool AKynapseAIController::KynapseFollow(class AActor* TargetEntity, float Durat
 	KynapseFollow_Params.TargetEntity = TargetEntity;
 	KynapseFollow_Params.Duration = Duration;
 
-	uFnKynapseFollow->iNative = 0;
-	uFnKynapseFollow->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseFollow, &KynapseFollow_Params, nullptr);
-	uFnKynapseFollow->FunctionFlags |= 0x400;
-	uFnKynapseFollow->iNative = 27579;
-
 	return KynapseFollow_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.KynapseShoot
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27593])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  TargetEntity                   (CPF_Parm)
@@ -240,17 +234,11 @@ bool AKynapseAIController::KynapseShoot(class AActor* TargetEntity, float Durati
 	KynapseShoot_Params.TargetEntity = TargetEntity;
 	KynapseShoot_Params.Duration = Duration;
 
-	uFnKynapseShoot->iNative = 0;
-	uFnKynapseShoot->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseShoot, &KynapseShoot_Params, nullptr);
-	uFnKynapseShoot->FunctionFlags |= 0x400;
-	uFnKynapseShoot->iNative = 27593;
-
 	return KynapseShoot_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.KynapseHide
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27584])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          Duration                       (CPF_Parm)
@@ -273,17 +261,11 @@ bool AKynapseAIController::KynapseHide(float Duration)
 	}
 	KynapseHide_Params.Duration = Duration;
 
-	uFnKynapseHide->iNative = 0;
-	uFnKynapseHide->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseHide, &KynapseHide_Params, nullptr);
-	uFnKynapseHide->FunctionFlags |= 0x400;
-	uFnKynapseHide->iNative = 27584;
-
 	return KynapseHide_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.KynapseFlee
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27577])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          Duration                       (CPF_Parm)
@@ -306,17 +288,11 @@ bool AKynapseAIController::KynapseFlee(float Duration)
 	}
 	KynapseFlee_Params.Duration = Duration;
 
-	uFnKynapseFlee->iNative = 0;
-	uFnKynapseFlee->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseFlee, &KynapseFlee_Params, nullptr);
-	uFnKynapseFlee->FunctionFlags |= 0x400;
-	uFnKynapseFlee->iNative = 27577;
-
 	return KynapseFlee_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.KynapseWander
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27596])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          Duration                       (CPF_Parm)
@@ -339,17 +315,11 @@ bool AKynapseAIController::KynapseWander(float Duration)
 	}
 	KynapseWander_Params.Duration = Duration;
 
-	uFnKynapseWander->iNative = 0;
-	uFnKynapseWander->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseWander, &KynapseWander_Params, nullptr);
-	uFnKynapseWander->FunctionFlags |= 0x400;
-	uFnKynapseWander->iNative = 27596;
-
 	return KynapseWander_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.KynapseGoTo
-// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27582])
+// [0x00020408] (FUNC_Latent | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FVector                 KynapseDestination             (CPF_Parm)
@@ -372,17 +342,11 @@ bool AKynapseAIController::KynapseGoTo(const struct FVector& KynapseDestination)
 	}
 	memcpy_s(&KynapseGoTo_Params.KynapseDestination, sizeof(KynapseGoTo_Params.KynapseDestination), &KynapseDestination, sizeof(KynapseDestination));
 
-	uFnKynapseGoTo->iNative = 0;
-	uFnKynapseGoTo->FunctionFlags &= ~0x400;
-	this->ProcessEvent(uFnKynapseGoTo, &KynapseGoTo_Params, nullptr);
-	uFnKynapseGoTo->FunctionFlags |= 0x400;
-	uFnKynapseGoTo->iNative = 27582;
-
 	return KynapseGoTo_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.SetBrainState
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27821])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        Set                            (CPF_Parm)
 
@@ -404,15 +368,14 @@ void AKynapseAIController::SetBrainState(int32_t Set)
 	}
 	SetBrainState_Params.Set = Set;
 
+	uint16_t nativeIndex = uFnSetBrainState->iNative;
 	uFnSetBrainState->iNative = 0;
-	uFnSetBrainState->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetBrainState, &SetBrainState_Params, nullptr);
-	uFnSetBrainState->FunctionFlags |= 0x400;
-	uFnSetBrainState->iNative = 27821;
+	uFnSetBrainState->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseAIController.GetBrainState
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27521])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -433,17 +396,16 @@ int32_t AKynapseAIController::GetBrainState()
 		return GetBrainState_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetBrainState->iNative;
 	uFnGetBrainState->iNative = 0;
-	uFnGetBrainState->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetBrainState, &GetBrainState_Params, nullptr);
-	uFnGetBrainState->FunctionFlags |= 0x400;
-	uFnGetBrainState->iNative = 27521;
+	uFnGetBrainState->iNative = nativeIndex;
 
 	return GetBrainState_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.ActivateKynapseBrain
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27066])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // uint32_t                       Activate                       (CPF_Parm)
 
@@ -465,15 +427,14 @@ void AKynapseAIController::ActivateKynapseBrain(bool Activate)
 	}
 	ActivateKynapseBrain_Params.Activate = Activate;
 
+	uint16_t nativeIndex = uFnActivateKynapseBrain->iNative;
 	uFnActivateKynapseBrain->iNative = 0;
-	uFnActivateKynapseBrain->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnActivateKynapseBrain, &ActivateKynapseBrain_Params, nullptr);
-	uFnActivateKynapseBrain->FunctionFlags |= 0x400;
-	uFnActivateKynapseBrain->iNative = 27066;
+	uFnActivateKynapseBrain->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseAIController.KynapseHasArrived
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27583])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FVector                 Dest                           (CPF_Parm)
@@ -496,17 +457,16 @@ bool AKynapseAIController::KynapseHasArrived(const struct FVector& Dest)
 	}
 	memcpy_s(&KynapseHasArrived_Params.Dest, sizeof(KynapseHasArrived_Params.Dest), &Dest, sizeof(Dest));
 
+	uint16_t nativeIndex = uFnKynapseHasArrived->iNative;
 	uFnKynapseHasArrived->iNative = 0;
-	uFnKynapseHasArrived->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnKynapseHasArrived, &KynapseHasArrived_Params, nullptr);
-	uFnKynapseHasArrived->FunctionFlags |= 0x400;
-	uFnKynapseHasArrived->iNative = 27583;
+	uFnKynapseHasArrived->iNative = nativeIndex;
 
 	return KynapseHasArrived_Params.ReturnValue;
 }
 
 // Function Kynapse.KynapseAIController.HearNoise
-// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // float                          Loudness                       (CPF_Parm)
 // class AActor*                  NoiseMaker                     (CPF_Parm)
@@ -536,7 +496,7 @@ void AKynapseAIController::eventHearNoise(float Loudness, class AActor* NoiseMak
 }
 
 // Function Kynapse.KynapseExclusionVolume.StopsProjectile
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AProjectile*             P                              (CPF_Parm)
@@ -565,7 +525,7 @@ bool AKynapseExclusionVolume::StopsProjectile(class AProjectile* P)
 }
 
 // Function Kynapse.KynapseHandle.RegisterToProfile
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27802])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class FString                  ProfileName                    (CPF_Parm | CPF_CoerceParm | CPF_NeedCtorLink)
 
@@ -587,15 +547,14 @@ void UKynapseHandle::RegisterToProfile(const class FString& ProfileName)
 	}
 	memcpy_s(&RegisterToProfile_Params.ProfileName, sizeof(RegisterToProfile_Params.ProfileName), &ProfileName, sizeof(ProfileName));
 
+	uint16_t nativeIndex = uFnRegisterToProfile->iNative;
 	uFnRegisterToProfile->iNative = 0;
-	uFnRegisterToProfile->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnRegisterToProfile, &RegisterToProfile_Params, nullptr);
-	uFnRegisterToProfile->FunctionFlags |= 0x400;
-	uFnRegisterToProfile->iNative = 27802;
+	uFnRegisterToProfile->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseHandle.AddKynapseEntity
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27082])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UKynapseHandle::AddKynapseEntity()
@@ -615,15 +574,14 @@ void UKynapseHandle::AddKynapseEntity()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnAddKynapseEntity->iNative;
 	uFnAddKynapseEntity->iNative = 0;
-	uFnAddKynapseEntity->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAddKynapseEntity, &AddKynapseEntity_Params, nullptr);
-	uFnAddKynapseEntity->FunctionFlags |= 0x400;
-	uFnAddKynapseEntity->iNative = 27082;
+	uFnAddKynapseEntity->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseHandle.InitKynapseEntity
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27552])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UKynapseHandle::InitKynapseEntity()
@@ -643,15 +601,14 @@ void UKynapseHandle::InitKynapseEntity()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnInitKynapseEntity->iNative;
 	uFnInitKynapseEntity->iNative = 0;
-	uFnInitKynapseEntity->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnInitKynapseEntity, &InitKynapseEntity_Params, nullptr);
-	uFnInitKynapseEntity->FunctionFlags |= 0x400;
-	uFnInitKynapseEntity->iNative = 27552;
+	uFnInitKynapseEntity->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseLadderVolume.PostBeginPlay
-// [0x00820902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 
 void AKynapseLadderVolume::eventPostBeginPlay()
@@ -675,7 +632,7 @@ void AKynapseLadderVolume::eventPostBeginPlay()
 }
 
 // Function Kynapse.KynapseObstacleFractured.Explode
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AKynapseObstacleFractured::eventExplode()
@@ -699,7 +656,7 @@ void AKynapseObstacleFractured::eventExplode()
 }
 
 // Function Kynapse.KynapseObstacleFractured.TakeDamage
-// [0x00024902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // int32_t                        Damage                         (CPF_Parm)
 // class AController*             EventInstigator                (CPF_Parm)
@@ -737,7 +694,7 @@ void AKynapseObstacleFractured::eventTakeDamage(int32_t Damage, class AControlle
 }
 
 // Function Kynapse.KynapsePawn.OnAnimEnd
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UAnimNodeSequence*       SeqNode                        (CPF_Parm)
 // float                          PlayedTime                     (CPF_Parm)
@@ -767,7 +724,7 @@ void AKynapsePawn::eventOnAnimEnd(class UAnimNodeSequence* SeqNode, float Played
 }
 
 // Function Kynapse.KynapsePawn.Bump
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AActor*                  Other                          (CPF_Parm)
 // class UPrimitiveComponent*     OtherComp                      (CPF_Parm | CPF_EditInline)
@@ -797,7 +754,7 @@ void AKynapsePawn::eventBump(class AActor* Other, class UPrimitiveComponent* Oth
 }
 
 // Function Kynapse.KynapsePawn.SphinxAnimEnd
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27839])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UAnimNodeSequence*       SeqNode                        (CPF_Parm)
 // float                          PlayedTime                     (CPF_Parm)
@@ -823,15 +780,14 @@ void AKynapsePawn::SphinxAnimEnd(class UAnimNodeSequence* SeqNode, float PlayedT
 	SphinxAnimEnd_Params.PlayedTime = PlayedTime;
 	SphinxAnimEnd_Params.ExcessTime = ExcessTime;
 
+	uint16_t nativeIndex = uFnSphinxAnimEnd->iNative;
 	uFnSphinxAnimEnd->iNative = 0;
-	uFnSphinxAnimEnd->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSphinxAnimEnd, &SphinxAnimEnd_Params, nullptr);
-	uFnSphinxAnimEnd->FunctionFlags |= 0x400;
-	uFnSphinxAnimEnd->iNative = 27839;
+	uFnSphinxAnimEnd->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseTeamCreationData.PostInitializeTeam
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27786])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UKynapseTeamCreationData::PostInitializeTeam()
@@ -851,15 +807,14 @@ void UKynapseTeamCreationData::PostInitializeTeam()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnPostInitializeTeam->iNative;
 	uFnPostInitializeTeam->iNative = 0;
-	uFnPostInitializeTeam->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPostInitializeTeam, &PostInitializeTeam_Params, nullptr);
-	uFnPostInitializeTeam->FunctionFlags |= 0x400;
-	uFnPostInitializeTeam->iNative = 27786;
+	uFnPostInitializeTeam->iNative = nativeIndex;
 }
 
 // Function Kynapse.KynapseTeamCreationData.CreateKynapseTeam
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27221])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UKynapseTeamCreationData::CreateKynapseTeam()
@@ -879,15 +834,14 @@ void UKynapseTeamCreationData::CreateKynapseTeam()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnCreateKynapseTeam->iNative;
 	uFnCreateKynapseTeam->iNative = 0;
-	uFnCreateKynapseTeam->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCreateKynapseTeam, &CreateKynapseTeam_Params, nullptr);
-	uFnCreateKynapseTeam->FunctionFlags |= 0x400;
-	uFnCreateKynapseTeam->iNative = 27221;
+	uFnCreateKynapseTeam->iNative = nativeIndex;
 }
 
 // Function Kynapse.SphinxInterstingPoint.ShowRadius
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void ASphinxInterstingPoint::ShowRadius()
@@ -911,7 +865,7 @@ void ASphinxInterstingPoint::ShowRadius()
 }
 
 // Function Kynapse.SphinxInterstingPoint.PostBeginPlay
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void ASphinxInterstingPoint::eventPostBeginPlay()

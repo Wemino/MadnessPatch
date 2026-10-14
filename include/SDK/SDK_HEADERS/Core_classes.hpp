@@ -829,9 +829,11 @@ public:
     int32_t                             MinAlignment;           // 0x0068 (0x04)
     class UProperty*                    RefLink;                // 0x006C (0x04)
     class UProperty*                    PropertyLink;           // 0x0070 (0x04)
-    class UProperty*                    ConstructorLink;        // 0x0074 (0x04)
-    TArray<UObject*>                    ScriptRefs;             // 0x0078 (0x0C)
-    uint8_t                             UnknownData00[0x0C];    // 0x0084 (0x0C)
+    class UProperty*                    ConfigLink;             // 0x0074 (0x04)
+    class UProperty*                    ConstructorLink;        // 0x0078 (0x04)
+    class UProperty*                    ComponentPropertyLink;  // 0x007C (0x04)
+    class UProperty*                    TransientPropertyLink;  // 0x0080 (0x04)
+    TArray<UObject*>                    ScriptObjectReferences; // 0x0084 (0x0C)
 
 public:
     static UClass* StaticClass()
@@ -846,26 +848,28 @@ public:
 };
 
 // Class Core.ScriptStruct
+// (Custom Override)
+// Class Core.ScriptStruct
 // 0x001C (0x0090 - 0x00AC)
 class UScriptStruct : public UStruct
 {
 public:
-	uint8_t                                            UnknownData00[0x1C];                            // 0x0090 (0x001C) MISSED OFFSET
+    class FString                       DefaultStructPropText;  // 0x0090 (0x0C)
+    uint32_t                            StructFlags;            // 0x009C (0x04)
+    TArray<uint8_t>                     StructDefaults;         // 0x00A0 (0x0C)
 
 public:
-	static UClass* StaticClass()
-	{
-		static UClass* uClassPointer = nullptr;
-
-		if (!uClassPointer)
-		{
-			uClassPointer = UObject::FindClass("Class Core.ScriptStruct");
-		}
-
-		return uClassPointer;
-	};
-
+    static UClass* StaticClass()
+    {
+        static UClass* uClassPointer = nullptr;
+        if (!uClassPointer)
+        {
+            uClassPointer = UObject::FindClass("Class Core.ScriptStruct");
+        }
+        return uClassPointer;
+    };
 };
+
 // Class Core.Function
 // (Custom Override)
 // Class Core.Function
@@ -873,16 +877,16 @@ public:
 class UFunction : public UStruct
 {
 public:
-    uint64_t                            FunctionFlags;          // 0x0090 (0x08)
-    uint16_t                            iNative;                // 0x0098 (0x02)
-    uint16_t                            RepOffset;              // 0x009A (0x02)
-    uint8_t                             UnknownData00[0x04];    // 0x009C (0x04)
+    uint32_t                            FunctionFlags;          // 0x0090 (0x04)
+    uint16_t                            iNative;                // 0x0094 (0x02)
+    uint16_t                            RepOffset;              // 0x0096 (0x02)
+    class FName                         FriendlyName;           // 0x0098 (0x08)
     uint8_t                             OperPrecedence;         // 0x00A0 (0x01)
     uint8_t                             NumParms;               // 0x00A1 (0x01)
     uint16_t                            ParmsSize;              // 0x00A2 (0x02)
     uint16_t                            ReturnValueOffset;      // 0x00A4 (0x02)
-    uint8_t                             UnknownData01[0x02];    // 0x00A6 (0x02)
-    class UStructProperty*              StructDefaults;         // 0x00A8 (0x04)
+    uint8_t                             UnknownData00[0x02];    // 0x00A6 (0x02)
+    class UStructProperty*              FirstStructWithDefaults;// 0x00A8 (0x04)
     struct FPointer                     Func;                   // 0x00AC (0x04)
 
 public:
@@ -909,13 +913,18 @@ public:
     int32_t                             ArrayDim;               // 0x0044 (0x04)
     uint64_t                            PropertyFlags;          // 0x0048 (0x08)
     int32_t                             ElementSize;            // 0x0050 (0x04)
-    uint8_t                             UnknownData00[0x10];    // 0x0054 (0x10)
+    uint16_t                            RepOffset;              // 0x0054 (0x02)
+    uint16_t                            RepIndex;               // 0x0056 (0x02)
+    class FName                         Category;               // 0x0058 (0x08)
+    class UEnum*                        ArraySizeEnum;          // 0x0060 (0x04)
     int32_t                             Offset;                 // 0x0064 (0x04)
     class UProperty*                    PropertyLinkNext;       // 0x0068 (0x04)
-    class UEnum*                        ArraySizeEnum;          // 0x006C (0x04)
+    class UProperty*                    ConfigLinkNext;         // 0x006C (0x04)
     class UProperty*                    ConstructorLinkNext;    // 0x0070 (0x04)
     class UProperty*                    NextRef;                // 0x0074 (0x04)
-    uint8_t                             UnknownData01[0x0C];    // 0x0078 (0x0C)
+    class UProperty*                    RepOwner;               // 0x0078 (0x04)
+    class UProperty*                    ComponentPropertyLinkNext; // 0x007C (0x04)
+    class UProperty*                    TransientPropertyLinkNext; // 0x0080 (0x04)
 
 public:
     static UClass* StaticClass()
@@ -1136,26 +1145,27 @@ public:
 
 };
 // Class Core.DelegateProperty
+// (Custom Override)
+// Class Core.DelegateProperty
 // 0x0008 (0x0084 - 0x008C)
 class UDelegateProperty : public UProperty
 {
 public:
-	uint8_t                                            UnknownData00[0x8];                              // 0x0084 (0x0008) MISSED OFFSET
+    class UFunction*                    Function;               // 0x0084 (0x04)
+    class UFunction*                    SourceDelegate;         // 0x0088 (0x04)
 
 public:
-	static UClass* StaticClass()
-	{
-		static UClass* uClassPointer = nullptr;
-
-		if (!uClassPointer)
-		{
-			uClassPointer = UObject::FindClass("Class Core.DelegateProperty");
-		}
-
-		return uClassPointer;
-	};
-
+    static UClass* StaticClass()
+    {
+        static UClass* uClassPointer = nullptr;
+        if (!uClassPointer)
+        {
+            uClassPointer = UObject::FindClass("Class Core.DelegateProperty");
+        }
+        return uClassPointer;
+    };
 };
+
 // Class Core.ByteProperty
 // 0x0004 (0x0084 - 0x0088)
 class UByteProperty : public UProperty
@@ -1478,47 +1488,85 @@ public:
 
 };
 // Class Core.State
+// (Custom Override)
+// Class Core.State
 // 0x0054 (0x0090 - 0x00E4)
 class UState : public UStruct
 {
 public:
-	uint8_t                                            UnknownData00[0x54];                            // 0x0090 (0x0054) MISSED OFFSET
+    uint64_t                            ProbeMask;              // 0x0090 (0x08)
+    uint64_t                            IgnoreMask;             // 0x0098 (0x08)
+    uint32_t                            StateFlags;             // 0x00A0 (0x04)
+    uint16_t                            LabelTableOffset;       // 0x00A4 (0x02)
+    uint8_t                             UnknownData00[0x02];    // 0x00A6 (0x02)
+    struct FMap_Mirror                  FuncMap;                // 0x00A8 (0x3C)
 
 public:
-	static UClass* StaticClass()
-	{
-		static UClass* uClassPointer = nullptr;
-
-		if (!uClassPointer)
-		{
-			uClassPointer = UObject::FindClass("Class Core.State");
-		}
-
-		return uClassPointer;
-	};
-
+    static UClass* StaticClass()
+    {
+        static UClass* uClassPointer = nullptr;
+        if (!uClassPointer)
+        {
+            uClassPointer = UObject::FindClass("Class Core.State");
+        }
+        return uClassPointer;
+    };
 };
+
+// Class Core.Class
+// (Custom Override)
 // Class Core.Class
 // 0x00EC (0x00E4 - 0x01D0)
 class UClass : public UState
 {
 public:
-	uint8_t                                            UnknownData00[0xEC];                            // 0x00E4 (0x00EC) MISSED OFFSET
+    struct FRepRecord
+    {
+        class UProperty*                Property;               // 0x0000 (0x04)
+        int32_t                         Index;                  // 0x0004 (0x04)
+    };
+
+    struct FImplementedInterface
+    {
+        class UClass*                   Class;                  // 0x0000 (0x04)
+        class UProperty*                PointerProperty;        // 0x0004 (0x04)
+    };
+
+    uint32_t                            ClassFlags;             // 0x00E4 (0x04)
+    uint32_t                            ClassCastFlags;         // 0x00E8 (0x04)
+    int32_t                             ClassUnique;            // 0x00EC (0x04)
+    class UClass*                       ClassWithin;            // 0x00F0 (0x04)
+    class FName                         ClassConfigName;        // 0x00F4 (0x08)
+    TArray<FRepRecord>                  ClassReps;              // 0x00FC (0x0C)
+    TArray<class UField*>               NetFields;              // 0x0108 (0x0C)
+    TArray<class FName>                 HideCategories;         // 0x0114 (0x0C)
+    TArray<class FName>                 AutoExpandCategories;   // 0x0120 (0x0C)
+    TArray<class FName>                 AutoCollapseCategories; // 0x012C (0x0C)
+    TArray<class FName>                 DontSortCategories;     // 0x0138 (0x0C)
+    TArray<class FName>                 DependentOn;            // 0x0144 (0x0C)
+    class FString                       ClassHeaderFilename;    // 0x0150 (0x0C)
+    class UObject*                      ClassDefaultObject;     // 0x015C (0x04)
+    struct FPointer                     ClassConstructor;       // 0x0160 (0x04)
+    struct FPointer                     ClassStaticConstructor; // 0x0164 (0x04)
+    struct FPointer                     ClassStaticInitializer; // 0x0168 (0x04)
+    struct FMap_Mirror                  ComponentNameToDefaultObjectMap; // 0x016C (0x3C)
+    TArray<FImplementedInterface>       Interfaces;             // 0x01A8 (0x0C)
+    class FString                       DefaultPropText;        // 0x01B4 (0x0C)
+    uint32_t                            bNeedsPropertiesLinked; // 0x01C0 (0x04)
+    TArray<uint32_t>                    ReferenceTokenStream;   // 0x01C4 (0x0C)
 
 public:
-	static UClass* StaticClass()
-	{
-		static UClass* uClassPointer = nullptr;
-
-		if (!uClassPointer)
-		{
-			uClassPointer = UObject::FindClass("Class Core.Class");
-		}
-
-		return uClassPointer;
-	};
-
+    static UClass* StaticClass()
+    {
+        static UClass* uClassPointer = nullptr;
+        if (!uClassPointer)
+        {
+            uClassPointer = UObject::FindClass("Class Core.Class");
+        }
+        return uClassPointer;
+    };
 };
+
 /*
 # ========================================================================================= #
 #

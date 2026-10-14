@@ -258,7 +258,7 @@ struct FAnimationParaConfig
 	uint8_t                                            RootBoneTransitionOption[3];                   // 0x0025 (0x0003) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            RootBoneRotationOption[3];                     // 0x0028 (0x0003) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            FakeRootMotionMode;                            // 0x002B (0x0001) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      AnimationDescName;                             // 0x002C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      AnimationDescName;                             // 0x002C (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
 };
 
 // ScriptStruct AliceGame.AliceGamePawn.PhysicsImpactRBRemap

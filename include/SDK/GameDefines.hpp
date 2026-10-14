@@ -23,6 +23,7 @@
 #include <string.h>
 #include <math.h>
 #include <map>
+#include <unordered_map>
 
 /*
 # ========================================================================================= #
@@ -812,8 +813,33 @@ public:
 		return Name;
 	}
 
+	bool IsWide() const
+	{
+		return ((Index & 1) != 0);
+	}
+
+	const wchar_t* GetWideName() const
+	{
+		return reinterpret_cast<const wchar_t*>(Name);
+	}
+
 	std::string ToString() const
 	{
+		if (IsWide())
+		{
+			int32_t neededSize = WideCharToMultiByte(CP_UTF8, 0, GetWideName(), -1, nullptr, 0, nullptr, nullptr);
+
+			if (neededSize > 1)
+			{
+				std::string utf8Str(static_cast<size_t>(neededSize), '\0');
+				WideCharToMultiByte(CP_UTF8, 0, GetWideName(), -1, &utf8Str[0], neededSize, nullptr, nullptr);
+				utf8Str.pop_back();
+				return utf8Str;
+			}
+
+			return "";
+		}
+
 		return std::string(Name);
 	}
 };
@@ -835,31 +861,37 @@ public:
 
 	FName(ElementPointer nameToFind) : FNameEntryId(-1), InstanceNumber(0)
 	{
-		static std::vector<int32_t> nameCache{};
+		static std::unordered_map<std::string, int32_t> nameCache{};
+		static int32_t scannedNames = 0;
 
-		for (int32_t entryId : nameCache)
+		auto cachedName = nameCache.find(nameToFind);
+
+		if (cachedName != nameCache.end())
 		{
-			if (Names()->at(entryId))
+			FNameEntryId = cachedName->second;
+			return;
+		}
+
+		if (!Names())
+		{
+			return;
+		}
+
+		for (; scannedNames < Names()->size(); scannedNames++)
+		{
+			FNameEntry* nameEntry = Names()->at(scannedNames);
+
+			if (nameEntry && !nameEntry->IsWide())
 			{
-				if (strcmp(Names()->at(entryId)->Name, nameToFind) == 0)
-				{
-					FNameEntryId = entryId;
-					return;
-				}
+				nameCache.try_emplace(nameEntry->Name, scannedNames);
 			}
 		}
 
-		for (int32_t i = 0; i < Names()->size(); i++)
+		cachedName = nameCache.find(nameToFind);
+
+		if (cachedName != nameCache.end())
 		{
-			if (Names()->at(i))
-			{
-				if (strcmp(Names()->at(i)->Name, nameToFind) == 0)
-				{
-					nameCache.push_back(i);
-					FNameEntryId = i;
-					return;
-				}
-			}
+			FNameEntryId = cachedName->second;
 		}
 	}
 

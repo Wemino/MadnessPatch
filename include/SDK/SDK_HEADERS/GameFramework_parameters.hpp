@@ -91,7 +91,7 @@ struct AGameAIController_eventDestroyed_Params
 };
 
 // Function GameFramework.GameAIController.GetAICommandInStack
-// [0x00020400]  (iNative[26508])
+// [0x00020400] 
 struct AGameAIController_execGetAICommandInStack_Params
 {
 	class UClass*                                      InClass;                                          // 0x0000 (0x0004) [0x0000000000000082] (CPF_Const | CPF_Parm)
@@ -99,7 +99,7 @@ struct AGameAIController_execGetAICommandInStack_Params
 };
 
 // Function GameFramework.GameAIController.FindCommandOfClass
-// [0x00020401]  (iNative[26448])
+// [0x00020401] 
 struct AGameAIController_execFindCommandOfClass_Params
 {
 	class UClass*                                      SearchClass;                                      // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -107,26 +107,26 @@ struct AGameAIController_execFindCommandOfClass_Params
 };
 
 // Function GameFramework.GameAIController.DumpCommandStack
-// [0x00020401]  (iNative[26407])
+// [0x00020401] 
 struct AGameAIController_execDumpCommandStack_Params
 {
 };
 
 // Function GameFramework.GameAIController.CheckCommandCount
-// [0x00020401]  (iNative[26297])
+// [0x00020401] 
 struct AGameAIController_execCheckCommandCount_Params
 {
 };
 
 // Function GameFramework.GameAIController.GetActiveCommand
-// [0x00020401]  (iNative[26505])
+// [0x00020401] 
 struct AGameAIController_execGetActiveCommand_Params
 {
 	class UGameAICommand*                              ReturnValue;                                      // 0x0000 (0x0004) [0x0000000000000580] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 };
 
 // Function GameFramework.GameAIController.AbortCommand
-// [0x00024401]  (iNative[25995])
+// [0x00024401] 
 struct AGameAIController_execAbortCommand_Params
 {
 	class UGameAICommand*                              AbortCmd;                                         // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -135,14 +135,14 @@ struct AGameAIController_execAbortCommand_Params
 };
 
 // Function GameFramework.GameAIController.PopCommand
-// [0x00020401]  (iNative[26771])
+// [0x00020401] 
 struct AGameAIController_execPopCommand_Params
 {
 	class UGameAICommand*                              ToBePoppedCommand;                                // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
 };
 
 // Function GameFramework.GameAIController.PushCommand
-// [0x00020401]  (iNative[26799])
+// [0x00020401] 
 struct AGameAIController_execPushCommand_Params
 {
 	class UGameAICommand*                              NewCommand;                                       // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -234,7 +234,7 @@ struct UGameAICommand_execTick_Params
 };
 
 // Function GameFramework.GameAICommand.ShouldIgnoreNotifies
-// [0x00020401]  (iNative[26903])
+// [0x00020401] 
 struct UGameAICommand_execShouldIgnoreNotifies_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -336,7 +336,7 @@ struct AGameCrowdAgent_eventPostRenderFor_Params
 };
 
 // Function GameFramework.GameCrowdAgent.NativePostRenderFor
-// [0x00020500]  (iNative[18188])
+// [0x00020500] 
 struct AGameCrowdAgent_execNativePostRenderFor_Params
 {
 	class APlayerController*                           PC;                                               // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -389,7 +389,7 @@ struct AGameCrowdAgent_eventFireDeathEvent_Params
 };
 
 // Function GameFramework.GameCrowdAgent.PlayDeath
-// [0x00020400]  (iNative[26761])
+// [0x00020400] 
 struct AGameCrowdAgent_execPlayDeath_Params
 {
 	struct FVector                                     KillMomentum;                                     // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -416,14 +416,14 @@ struct AGameCrowdAgent_execCalcCamera_Params
 };
 
 // Function GameFramework.GameCrowdAgent.IsIdle
-// [0x00020400]  (iNative[26579])
+// [0x00020400] 
 struct AGameCrowdAgent_execIsIdle_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 };
 
 // Function GameFramework.GameCrowdAgent.SetCurrentBehavior
-// [0x00020401]  (iNative[26884])
+// [0x00020401] 
 struct AGameCrowdAgent_execSetCurrentBehavior_Params
 {
 	class UGameCrowdAgentBehavior*                     BehaviorArchetype;                                // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -625,7 +625,7 @@ struct AGameCrowdAgent_execSetPanic_Params
 };
 
 // Function GameFramework.GameCrowdAgent.IsPanicked
-// [0x00020400]  (iNative[26581])
+// [0x00020400] 
 struct AGameCrowdAgent_execIsPanicked_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -687,14 +687,14 @@ struct AGameCrowdAgentSkeletal_execOnPlayAgentAnimation_Params
 };
 
 // Function GameFramework.GameCrowdAgentSkeletal.SetRootMotion
-// [0x00020400]  (iNative[26893])
+// [0x00020400] 
 struct AGameCrowdAgentSkeletal_execSetRootMotion_Params
 {
 	uint32_t                                           bRootMotionEnabled : 1;                           // 0x0000 (0x0004) [0x0000000000000080] [0x00000001] (CPF_Parm)
 };
 
 // Function GameFramework.GameCrowdAgentSkeletal.PlayDeath
-// [0x00020400]  (iNative[26761])
+// [0x00020400] 
 struct AGameCrowdAgentSkeletal_execPlayDeath_Params
 {
 	struct FVector                                     KillMomentum;                                     // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -789,7 +789,7 @@ struct UGameCrowdAgentBehavior_execInitBehavior_Params
 };
 
 // Function GameFramework.GameCrowdAgentBehavior.HandleMovement
-// [0x00020400]  (iNative[26534])
+// [0x00020400] 
 struct UGameCrowdAgentBehavior_execHandleMovement_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -811,14 +811,14 @@ struct UGameCrowdAgentBehavior_execCanBeUsedBy_Params
 };
 
 // Function GameFramework.GameCrowdAgentBehavior.Tick
-// [0x00020400]  (iNative[336])
+// [0x00020400] 
 struct UGameCrowdAgentBehavior_execTick_Params
 {
 	float                                              DeltaTime;                                        // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
 };
 
 // Function GameFramework.GameCrowdAgentBehavior.ShouldEndIdle
-// [0x00020400]  (iNative[26900])
+// [0x00020400] 
 struct UGameCrowdAgentBehavior_execShouldEndIdle_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -857,7 +857,7 @@ struct UGameCrowdBehavior_PlayAnimation_eventOnAnimEnd_Params
 };
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.SetSequenceOutput
-// [0x00020400]  (iNative[26894])
+// [0x00020400] 
 struct UGameCrowdBehavior_PlayAnimation_execSetSequenceOutput_Params
 {
 };
@@ -939,7 +939,7 @@ struct UGameCrowdBehavior_WaitForGroup_execStopBehavior_Params
 };
 
 // Function GameFramework.GameCrowdBehavior_WaitForGroup.ShouldEndIdle
-// [0x00020400]  (iNative[26900])
+// [0x00020400] 
 struct UGameCrowdBehavior_WaitForGroup_execShouldEndIdle_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -967,7 +967,7 @@ struct UGameCrowdBehavior_WaitInQueue_execStopBehavior_Params
 };
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.ShouldEndIdle
-// [0x00020400]  (iNative[26900])
+// [0x00020400] 
 struct UGameCrowdBehavior_WaitInQueue_execShouldEndIdle_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -995,7 +995,7 @@ struct UGameCrowdBehavior_WaitInQueue_execChangingDestination_Params
 };
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.HandleMovement
-// [0x00020400]  (iNative[26534])
+// [0x00020400] 
 struct UGameCrowdBehavior_WaitInQueue_execHandleMovement_Params
 {
 	bool                                               ReturnValue : 1;                                  // 0x0000 (0x0004) [0x0000000000000580] [0x00000001] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -1111,7 +1111,7 @@ struct AGameCrowdDestination_execPostBeginPlay_Params
 };
 
 // Function GameFramework.GameCrowdDestination.ReachedByAgent
-// [0x00020500]  (iNative[26827])
+// [0x00020500] 
 struct AGameCrowdDestination_execReachedByAgent_Params
 {
 	class AGameCrowdAgent*                             Agent;                                            // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -1175,7 +1175,7 @@ struct AGameCrowdDestinationQueuePoint_execHasSpace_Params
 };
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.QueueReachedBy
-// [0x00020400]  (iNative[26810])
+// [0x00020400] 
 struct AGameCrowdDestinationQueuePoint_execQueueReachedBy_Params
 {
 	class AGameCrowdAgent*                             Agent;                                            // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -1840,7 +1840,7 @@ struct AGamePawn_execGetTargetFrictionCylinder_Params
 };
 
 // Function GameFramework.GamePawn.StopAllConfigAnim
-// [0x00024400]  (iNative[26949])
+// [0x00024400] 
 struct AGamePawn_execStopAllConfigAnim_Params
 {
 	float                                              BlendOutTime;                                     // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -1879,14 +1879,14 @@ struct AGamePlayerController_execCanUnpauseWarmup_Params
 };
 
 // Function GameFramework.GamePlayerController.GetCurrentMovie
-// [0x00420401]  (iNative[26510])
+// [0x00420401] 
 struct AGamePlayerController_execGetCurrentMovie_Params
 {
 	class FString                                      MovieName;                                        // 0x0000 (0x000C) [0x0000000000400180] (CPF_Parm | CPF_OutParm | CPF_NeedCtorLink)
 };
 
 // Function GameFramework.GamePlayerController.ClientStopMovie
-// [0x01020DC1]  (iNative[6449])
+// [0x01020DC1] 
 struct AGamePlayerController_eventClientStopMovie_Params
 {
 	float                                              DelayInSeconds;                                   // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -1898,7 +1898,7 @@ struct AGamePlayerController_eventClientStopMovie_Params
 };
 
 // Function GameFramework.GamePlayerController.ClientPlayMovie
-// [0x01024DC1]  (iNative[6448])
+// [0x01024DC1] 
 struct AGamePlayerController_eventClientPlayMovie_Params
 {
 	class FString                                      MovieName;                                        // 0x0000 (0x000C) [0x0000000000400080] (CPF_Parm | CPF_NeedCtorLink)
@@ -1907,13 +1907,13 @@ struct AGamePlayerController_eventClientPlayMovie_Params
 };
 
 // Function GameFramework.GamePlayerController.KeepPlayingLoadingMovie
-// [0x00022401]  (iNative[26585])
+// [0x00022401] 
 struct AGamePlayerController_execKeepPlayingLoadingMovie_Params
 {
 };
 
 // Function GameFramework.GamePlayerController.ShowLoadingMovie
-// [0x00026401]  (iNative[26906])
+// [0x00026401] 
 struct AGamePlayerController_execShowLoadingMovie_Params
 {
 	uint32_t                                           bShowMovie : 1;                                   // 0x0000 (0x0004) [0x0000000000000080] [0x00000001] (CPF_Parm)
@@ -1994,7 +1994,7 @@ struct AGamePlayerController_execCrowdFocus_Params
 };
 
 // Function GameFramework.GamePlayerController.GetUIPlayerIndex
-// [0x00020400]  (iNative[26523])
+// [0x00020400] 
 struct AGamePlayerController_execGetUIPlayerIndex_Params
 {
 	int32_t                                            ReturnValue;                                      // 0x0000 (0x0004) [0x0000000000000580] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
@@ -2017,7 +2017,7 @@ struct UNavMeshGoal_OutOfViewFrom_execMustBeHiddenFromThisPoint_Params
 };
 
 // Function GameFramework.NavMeshGoal_OutOfViewFrom.RecycleNative
-// [0x00020400]  (iNative[20883])
+// [0x00020400] 
 struct UNavMeshGoal_OutOfViewFrom_execRecycleNative_Params
 {
 };
@@ -2090,26 +2090,26 @@ struct USeqAct_GameCrowdSpawner_eventSpawnAgent_Params
 };
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.UpdateSpawning
-// [0x00020500]  (iNative[27004])
+// [0x00020500] 
 struct USeqAct_GameCrowdSpawner_execUpdateSpawning_Params
 {
 	float                                              DeltaSeconds;                                     // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
 };
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.KillAgents
-// [0x00020500]  (iNative[26586])
+// [0x00020500] 
 struct USeqAct_GameCrowdSpawner_execKillAgents_Params
 {
 };
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.CacheSpawnerVars
-// [0x00020500]  (iNative[26261])
+// [0x00020500] 
 struct USeqAct_GameCrowdSpawner_execCacheSpawnerVars_Params
 {
 };
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.SpawnedAgent
-// [0x00020400]  (iNative[26916])
+// [0x00020400] 
 struct USeqAct_GameCrowdSpawner_execSpawnedAgent_Params
 {
 	class AGameCrowdAgent*                             NewAgent;                                         // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -2308,7 +2308,7 @@ struct UGameThirdPersonCamera_execAdjustTurn_Params
 };
 
 // Function GameFramework.GameThirdPersonCamera.EndTurn
-// [0x00020400]  (iNative[26414])
+// [0x00020400] 
 struct UGameThirdPersonCamera_execEndTurn_Params
 {
 };
@@ -2325,7 +2325,7 @@ struct UGameThirdPersonCamera_execBeginTurn_Params
 };
 
 // Function GameFramework.GameThirdPersonCamera.PlayerUpdateCamera
-// [0x00480400]  (iNative[26763])
+// [0x00480400] 
 struct UGameThirdPersonCamera_execPlayerUpdateCamera_Params
 {
 	class APawn*                                       P;                                                // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -2374,7 +2374,7 @@ struct UGameThirdPersonCamera_execCreateCameraMode_Params
 };
 
 // Function GameFramework.GamePlayerCamera.AdjustFOVForViewport
-// [0x00080401]  (iNative[26017])
+// [0x00080401] 
 struct AGamePlayerCamera_execAdjustFOVForViewport_Params
 {
 	float                                              inHorizFOV;                                       // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -2487,7 +2487,7 @@ struct AGamePlayerCamera_execPostBeginPlay_Params
 };
 
 // Function GameFramework.GamePlayerCamera.CacheLastTargetBaseInfo
-// [0x00080400]  (iNative[26260])
+// [0x00080400] 
 struct AGamePlayerCamera_execCacheLastTargetBaseInfo_Params
 {
 	class AActor*                                      TargetBase;                                       // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -2503,7 +2503,7 @@ struct AGamePlayerCamera_execCreateCamera_Params
 };
 
 // Function GameFramework.GameThirdPersonCameraMode.SetViewOffset
-// [0x00420401]  (iNative[26895])
+// [0x00420401] 
 struct UGameThirdPersonCameraMode_execSetViewOffset_Params
 {
 	struct FViewOffsetData                             NewViewOffset;                                    // 0x0000 (0x0024) [0x0000000000000182] (CPF_Const | CPF_Parm | CPF_OutParm)
@@ -2632,7 +2632,7 @@ struct AGameDecalManager_execSpawnDecalMinimal_Params
 };
 
 // Function GameFramework.GameDecalManager.IsTooCloseToActiveDecal
-// [0x00420401]  (iNative[26583])
+// [0x00420401] 
 struct AGameDecalManager_execIsTooCloseToActiveDecal_Params
 {
 	struct FVector                                     DecalLocation;                                    // 0x0000 (0x000C) [0x0000000000000182] (CPF_Const | CPF_Parm | CPF_OutParm)
@@ -2652,7 +2652,7 @@ struct AGameParticleEventManager_eventHandleParticleModuleEventSendToGame_Params
 };
 
 // Function GameFramework.GameSpecialMove.RelativeToWorldOffset
-// [0x00020401]  (iNative[26840])
+// [0x00020401] 
 struct UGameSpecialMove_execRelativeToWorldOffset_Params
 {
 	struct FRotator                                    InRotation;                                       // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -2661,7 +2661,7 @@ struct UGameSpecialMove_execRelativeToWorldOffset_Params
 };
 
 // Function GameFramework.GameSpecialMove.WorldToRelativeOffset
-// [0x00020401]  (iNative[27025])
+// [0x00020401] 
 struct UGameSpecialMove_execWorldToRelativeOffset_Params
 {
 	struct FRotator                                    InRotation;                                       // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -2670,7 +2670,7 @@ struct UGameSpecialMove_execWorldToRelativeOffset_Params
 };
 
 // Function GameFramework.GameSpecialMove.ForcePawnRotation
-// [0x00020401]  (iNative[26474])
+// [0x00020401] 
 struct UGameSpecialMove_execForcePawnRotation_Params
 {
 	class APawn*                                       P;                                                // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -2687,7 +2687,7 @@ struct UGameSpecialMove_execMessageEvent_Params
 };
 
 // Function GameFramework.GameSpecialMove.ResetFacePreciseRotation
-// [0x00020401]  (iNative[26847])
+// [0x00020401] 
 struct UGameSpecialMove_execResetFacePreciseRotation_Params
 {
 };
@@ -2699,7 +2699,7 @@ struct UGameSpecialMove_eventReachedPrecisePosition_Params
 };
 
 // Function GameFramework.GameSpecialMove.SetFacePreciseRotation
-// [0x00020401]  (iNative[26885])
+// [0x00020401] 
 struct UGameSpecialMove_execSetFacePreciseRotation_Params
 {
 	struct FRotator                                    RotationToFace;                                   // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -2707,7 +2707,7 @@ struct UGameSpecialMove_execSetFacePreciseRotation_Params
 };
 
 // Function GameFramework.GameSpecialMove.SetReachPreciseDestination
-// [0x00024401]  (iNative[26892])
+// [0x00024401] 
 struct UGameSpecialMove_execSetReachPreciseDestination_Params
 {
 	struct FVector                                     DestinationToReach;                               // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    

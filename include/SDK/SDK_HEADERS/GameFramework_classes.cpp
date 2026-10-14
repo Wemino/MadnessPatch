@@ -22,7 +22,7 @@
 */
 
 // Function GameFramework.GameAIController.GetActionString
-// [0x00020903] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020903] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -49,7 +49,7 @@ class FString AGameAIController::eventGetActionString()
 }
 
 // Function GameFramework.GameAIController.GeneratePathToLocation
-// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FVector                 Goal                           (CPF_Parm)
@@ -82,7 +82,7 @@ bool AGameAIController::eventGeneratePathToLocation(const struct FVector& Goal, 
 }
 
 // Function GameFramework.GameAIController.GeneratePathToActor
-// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  Goal                           (CPF_Parm)
@@ -115,7 +115,7 @@ bool AGameAIController::eventGeneratePathToActor(class AActor* Goal, float optio
 }
 
 // Function GameFramework.GameAIController.SetDesiredRotation
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // struct FRotator                TargetDesiredRotation          (CPF_Parm)
 // uint32_t                       InLockDesiredRotation          (CPF_OptionalParm | CPF_Parm)
@@ -147,7 +147,7 @@ void AGameAIController::SetDesiredRotation(const struct FRotator& TargetDesiredR
 }
 
 // Function GameFramework.GameAIController.AILog_Internal
-// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class FString                  LogText                        (CPF_Parm | CPF_CoerceParm | CPF_NeedCtorLink)
 // class FName                    LogCategory                    (CPF_OptionalParm | CPF_Parm)
@@ -177,7 +177,7 @@ void AGameAIController::eventAILog_Internal(const class FString& LogText, const 
 }
 
 // Function GameFramework.GameAIController.RecordDemoAILog
-// [0x00080000] (FUNC_Protected | FUNC_AllFlags)
+// [0x00080000] (FUNC_Protected)
 // Parameter Info:
 // class FString                  LogText                        (CPF_Parm | CPF_CoerceParm | CPF_NeedCtorLink)
 
@@ -203,7 +203,7 @@ void AGameAIController::RecordDemoAILog(const class FString& LogText)
 }
 
 // Function GameFramework.GameAIController.Destroyed
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameAIController::eventDestroyed()
@@ -227,7 +227,7 @@ void AGameAIController::eventDestroyed()
 }
 
 // Function GameFramework.GameAIController.GetAICommandInStack
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26508])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UClass*                  InClass                        (CPF_Const | CPF_Parm)
@@ -250,17 +250,16 @@ class UGameAICommand* AGameAIController::GetAICommandInStack(class UClass* InCla
 	}
 	GetAICommandInStack_Params.InClass = InClass;
 
+	uint16_t nativeIndex = uFnGetAICommandInStack->iNative;
 	uFnGetAICommandInStack->iNative = 0;
-	uFnGetAICommandInStack->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetAICommandInStack, &GetAICommandInStack_Params, nullptr);
-	uFnGetAICommandInStack->FunctionFlags |= 0x400;
-	uFnGetAICommandInStack->iNative = 26508;
+	uFnGetAICommandInStack->iNative = nativeIndex;
 
 	return GetAICommandInStack_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAIController.FindCommandOfClass
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26448])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_CoerceParm)
 // class UClass*                  SearchClass                    (CPF_Parm)
@@ -283,17 +282,16 @@ class UGameAICommand* AGameAIController::FindCommandOfClass(class UClass* Search
 	}
 	FindCommandOfClass_Params.SearchClass = SearchClass;
 
+	uint16_t nativeIndex = uFnFindCommandOfClass->iNative;
 	uFnFindCommandOfClass->iNative = 0;
-	uFnFindCommandOfClass->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnFindCommandOfClass, &FindCommandOfClass_Params, nullptr);
-	uFnFindCommandOfClass->FunctionFlags |= 0x400;
-	uFnFindCommandOfClass->iNative = 26448;
+	uFnFindCommandOfClass->iNative = nativeIndex;
 
 	return FindCommandOfClass_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAIController.DumpCommandStack
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26407])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void AGameAIController::DumpCommandStack()
@@ -313,15 +311,14 @@ void AGameAIController::DumpCommandStack()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnDumpCommandStack->iNative;
 	uFnDumpCommandStack->iNative = 0;
-	uFnDumpCommandStack->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnDumpCommandStack, &DumpCommandStack_Params, nullptr);
-	uFnDumpCommandStack->FunctionFlags |= 0x400;
-	uFnDumpCommandStack->iNative = 26407;
+	uFnDumpCommandStack->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameAIController.CheckCommandCount
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26297])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void AGameAIController::CheckCommandCount()
@@ -341,15 +338,14 @@ void AGameAIController::CheckCommandCount()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnCheckCommandCount->iNative;
 	uFnCheckCommandCount->iNative = 0;
-	uFnCheckCommandCount->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCheckCommandCount, &CheckCommandCount_Params, nullptr);
-	uFnCheckCommandCount->FunctionFlags |= 0x400;
-	uFnCheckCommandCount->iNative = 26297;
+	uFnCheckCommandCount->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameAIController.GetActiveCommand
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26505])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -370,17 +366,16 @@ class UGameAICommand* AGameAIController::GetActiveCommand()
 		return GetActiveCommand_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetActiveCommand->iNative;
 	uFnGetActiveCommand->iNative = 0;
-	uFnGetActiveCommand->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetActiveCommand, &GetActiveCommand_Params, nullptr);
-	uFnGetActiveCommand->FunctionFlags |= 0x400;
-	uFnGetActiveCommand->iNative = 26505;
+	uFnGetActiveCommand->iNative = nativeIndex;
 
 	return GetActiveCommand_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAIController.AbortCommand
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[25995])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UGameAICommand*          AbortCmd                       (CPF_Parm)
@@ -405,17 +400,16 @@ bool AGameAIController::AbortCommand(class UGameAICommand* AbortCmd, class UClas
 	AbortCommand_Params.AbortCmd = AbortCmd;
 	AbortCommand_Params.AbortClass = optionalAbortClass;
 
+	uint16_t nativeIndex = uFnAbortCommand->iNative;
 	uFnAbortCommand->iNative = 0;
-	uFnAbortCommand->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAbortCommand, &AbortCommand_Params, nullptr);
-	uFnAbortCommand->FunctionFlags |= 0x400;
-	uFnAbortCommand->iNative = 25995;
+	uFnAbortCommand->iNative = nativeIndex;
 
 	return AbortCommand_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAIController.PopCommand
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26771])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          ToBePoppedCommand              (CPF_Parm)
 
@@ -437,15 +431,14 @@ void AGameAIController::PopCommand(class UGameAICommand* ToBePoppedCommand)
 	}
 	PopCommand_Params.ToBePoppedCommand = ToBePoppedCommand;
 
+	uint16_t nativeIndex = uFnPopCommand->iNative;
 	uFnPopCommand->iNative = 0;
-	uFnPopCommand->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPopCommand, &PopCommand_Params, nullptr);
-	uFnPopCommand->FunctionFlags |= 0x400;
-	uFnPopCommand->iNative = 26771;
+	uFnPopCommand->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameAIController.PushCommand
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26799])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          NewCommand                     (CPF_Parm)
 
@@ -467,15 +460,14 @@ void AGameAIController::PushCommand(class UGameAICommand* NewCommand)
 	}
 	PushCommand_Params.NewCommand = NewCommand;
 
+	uint16_t nativeIndex = uFnPushCommand->iNative;
 	uFnPushCommand->iNative = 0;
-	uFnPushCommand->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPushCommand, &PushCommand_Params, nullptr);
-	uFnPushCommand->FunctionFlags |= 0x400;
-	uFnPushCommand->iNative = 26799;
+	uFnPushCommand->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameAICommand.GetDebugOverheadText
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APlayerController*       PC                             (CPF_Parm)
 // class TArray<class FString>    OutText                        (CPF_Parm | CPF_OutParm | CPF_NeedCtorLink)
@@ -505,7 +497,7 @@ void UGameAICommand::GetDebugOverheadText(class APlayerController* PC, class TAr
 }
 
 // Function GameFramework.GameAICommand.DrawDebug
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AHUD*                    H                              (CPF_Parm)
 // class FName                    Category                       (CPF_Parm)
@@ -533,7 +525,7 @@ void UGameAICommand::eventDrawDebug(class AHUD* H, const class FName& Category)
 }
 
 // Function GameFramework.GameAICommand.GetDumpString
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -560,7 +552,7 @@ class FString UGameAICommand::eventGetDumpString()
 }
 
 // Function GameFramework.GameAICommand.Resumed
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FName                    OldCommandName                 (CPF_Parm)
 
@@ -586,7 +578,7 @@ void UGameAICommand::Resumed(const class FName& OldCommandName)
 }
 
 // Function GameFramework.GameAICommand.Paused
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          NewCommand                     (CPF_Parm)
 
@@ -612,7 +604,7 @@ void UGameAICommand::Paused(class UGameAICommand* NewCommand)
 }
 
 // Function GameFramework.GameAICommand.Popped
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameAICommand::Popped()
@@ -636,7 +628,7 @@ void UGameAICommand::Popped()
 }
 
 // Function GameFramework.GameAICommand.Pushed
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameAICommand::Pushed()
@@ -660,7 +652,7 @@ void UGameAICommand::Pushed()
 }
 
 // Function GameFramework.GameAICommand.PostPopped
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void UGameAICommand::PostPopped()
@@ -684,7 +676,7 @@ void UGameAICommand::PostPopped()
 }
 
 // Function GameFramework.GameAICommand.PrePushed
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class AGameAIController*       AI                             (CPF_Parm)
 
@@ -710,7 +702,7 @@ void UGameAICommand::PrePushed(class AGameAIController* AI)
 }
 
 // Function GameFramework.GameAICommand.AllowStateTransitionTo
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    StateName                      (CPF_Parm)
@@ -739,7 +731,7 @@ bool UGameAICommand::AllowStateTransitionTo(const class FName& StateName)
 }
 
 // Function GameFramework.GameAICommand.AllowTransitionTo
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UClass*                  AttemptCommand                 (CPF_Parm)
@@ -768,7 +760,7 @@ bool UGameAICommand::AllowTransitionTo(class UClass* AttemptCommand)
 }
 
 // Function GameFramework.GameAICommand.Tick
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -794,7 +786,7 @@ void UGameAICommand::Tick(float DeltaTime)
 }
 
 // Function GameFramework.GameAICommand.ShouldIgnoreNotifies
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26903])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -815,17 +807,16 @@ bool UGameAICommand::ShouldIgnoreNotifies()
 		return ShouldIgnoreNotifies_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnShouldIgnoreNotifies->iNative;
 	uFnShouldIgnoreNotifies->iNative = 0;
-	uFnShouldIgnoreNotifies->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnShouldIgnoreNotifies, &ShouldIgnoreNotifies_Params, nullptr);
-	uFnShouldIgnoreNotifies->FunctionFlags |= 0x400;
-	uFnShouldIgnoreNotifies->iNative = 26903;
+	uFnShouldIgnoreNotifies->iNative = nativeIndex;
 
 	return ShouldIgnoreNotifies_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAICommand.InternalTick
-// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -851,7 +842,7 @@ void UGameAICommand::eventInternalTick(float DeltaTime)
 }
 
 // Function GameFramework.GameAICommand.InternalResumed
-// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class FName                    OldCommandName                 (CPF_Parm)
 
@@ -877,7 +868,7 @@ void UGameAICommand::eventInternalResumed(const class FName& OldCommandName)
 }
 
 // Function GameFramework.GameAICommand.InternalPaused
-// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UGameAICommand*          NewCommand                     (CPF_Parm)
 
@@ -903,7 +894,7 @@ void UGameAICommand::eventInternalPaused(class UGameAICommand* NewCommand)
 }
 
 // Function GameFramework.GameAICommand.InternalPopped
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGameAICommand::eventInternalPopped()
@@ -927,7 +918,7 @@ void UGameAICommand::eventInternalPopped()
 }
 
 // Function GameFramework.GameAICommand.InternalPushed
-// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGameAICommand::eventInternalPushed()
@@ -951,7 +942,7 @@ void UGameAICommand::eventInternalPushed()
 }
 
 // Function GameFramework.GameAICommand.InternalPrePushed
-// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020803] (FUNC_Final | FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameAIController*       AI                             (CPF_Parm)
 
@@ -977,7 +968,7 @@ void UGameAICommand::eventInternalPrePushed(class AGameAIController* AI)
 }
 
 // Function GameFramework.GameAICommand.InitCommand
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameAIController*       AI                             (CPF_Parm)
@@ -1000,13 +991,13 @@ bool UGameAICommand::InitCommand(class AGameAIController* AI)
 	}
 	InitCommand_Params.AI = AI;
 
-	UGameAICommand::StaticClass()->ProcessEvent(uFnInitCommand, &InitCommand_Params, nullptr);
+	UGameAICommand::StaticClass()->ClassDefaultObject->ProcessEvent(uFnInitCommand, &InitCommand_Params, nullptr);
 
 	return InitCommand_Params.ReturnValue;
 }
 
 // Function GameFramework.GameAICommand.InitCommandUserActor
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameAIController*       AI                             (CPF_Parm)
@@ -1031,13 +1022,13 @@ bool UGameAICommand::InitCommandUserActor(class AGameAIController* AI, class AAc
 	InitCommandUserActor_Params.AI = AI;
 	InitCommandUserActor_Params.UserActor = UserActor;
 
-	UGameAICommand::StaticClass()->ProcessEvent(uFnInitCommandUserActor, &InitCommandUserActor_Params, nullptr);
+	UGameAICommand::StaticClass()->ClassDefaultObject->ProcessEvent(uFnInitCommandUserActor, &InitCommandUserActor_Params, nullptr);
 
 	return InitCommandUserActor_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdAgent.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -1064,7 +1055,7 @@ class FString AGameCrowdAgent::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdAgent.GetDestString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -1091,7 +1082,7 @@ class FString AGameCrowdAgent::GetDestString()
 }
 
 // Function GameFramework.GameCrowdAgent.PostRenderFor
-// [0x00820902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class APlayerController*       PC                             (CPF_Parm)
 // class UCanvas*                 Canvas                         (CPF_Parm)
@@ -1123,7 +1114,7 @@ void AGameCrowdAgent::eventPostRenderFor(class APlayerController* PC, class UCan
 }
 
 // Function GameFramework.GameCrowdAgent.NativePostRenderFor
-// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[18188])
+// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class APlayerController*       PC                             (CPF_Parm)
 // class UCanvas*                 Canvas                         (CPF_Parm)
@@ -1151,15 +1142,14 @@ void AGameCrowdAgent::NativePostRenderFor(class APlayerController* PC, class UCa
 	memcpy_s(&NativePostRenderFor_Params.CameraPosition, sizeof(NativePostRenderFor_Params.CameraPosition), &CameraPosition, sizeof(CameraPosition));
 	memcpy_s(&NativePostRenderFor_Params.CameraDir, sizeof(NativePostRenderFor_Params.CameraDir), &CameraDir, sizeof(CameraDir));
 
+	uint16_t nativeIndex = uFnNativePostRenderFor->iNative;
 	uFnNativePostRenderFor->iNative = 0;
-	uFnNativePostRenderFor->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnNativePostRenderFor, &NativePostRenderFor_Params, nullptr);
-	uFnNativePostRenderFor->FunctionFlags |= 0x400;
-	uFnNativePostRenderFor->iNative = 18188;
+	uFnNativePostRenderFor->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgent.GeneratePathToActor
-// [0x00824802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00824802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  Goal                           (CPF_Parm)
@@ -1192,7 +1182,7 @@ struct FVector AGameCrowdAgent::eventGeneratePathToActor(class AActor* Goal, flo
 }
 
 // Function GameFramework.GameCrowdAgent.InitNavigationHandle
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventInitNavigationHandle()
@@ -1216,7 +1206,7 @@ void AGameCrowdAgent::eventInitNavigationHandle()
 }
 
 // Function GameFramework.GameCrowdAgent.OverlappedActorEvent
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AActor*                  A                              (CPF_Parm)
 
@@ -1242,7 +1232,7 @@ void AGameCrowdAgent::eventOverlappedActorEvent(class AActor* A)
 }
 
 // Function GameFramework.GameCrowdAgent.TakeDamage
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // int32_t                        DamageAmount                   (CPF_Parm)
 // class AController*             EventInstigator                (CPF_Parm)
@@ -1280,7 +1270,7 @@ void AGameCrowdAgent::TakeDamage(int32_t DamageAmount, class AController* EventI
 }
 
 // Function GameFramework.GameCrowdAgent.FireDeathEvent
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventFireDeathEvent()
@@ -1304,7 +1294,7 @@ void AGameCrowdAgent::eventFireDeathEvent()
 }
 
 // Function GameFramework.GameCrowdAgent.PlayDeath
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26761])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FVector                 KillMomentum                   (CPF_Parm)
 
@@ -1326,15 +1316,14 @@ void AGameCrowdAgent::PlayDeath(const struct FVector& KillMomentum)
 	}
 	memcpy_s(&PlayDeath_Params.KillMomentum, sizeof(PlayDeath_Params.KillMomentum), &KillMomentum, sizeof(KillMomentum));
 
+	uint16_t nativeIndex = uFnPlayDeath->iNative;
 	uFnPlayDeath->iNative = 0;
-	uFnPlayDeath->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPlayDeath, &PlayDeath_Params, nullptr);
-	uFnPlayDeath->FunctionFlags |= 0x400;
-	uFnPlayDeath->iNative = 26761;
+	uFnPlayDeath->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgent.UpdateIntermediatePoint
-// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024802] (FUNC_Defined | FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class AActor*                  DestinationActor               (CPF_OptionalParm | CPF_Parm)
 
@@ -1360,7 +1349,7 @@ void AGameCrowdAgent::eventUpdateIntermediatePoint(class AActor* optionalDestina
 }
 
 // Function GameFramework.GameCrowdAgent.CalcCamera
-// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          fDeltaTime                     (CPF_Parm)
@@ -1399,7 +1388,7 @@ bool AGameCrowdAgent::CalcCamera(float fDeltaTime, struct FVector& outOut_CamLoc
 }
 
 // Function GameFramework.GameCrowdAgent.IsIdle
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26579])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -1420,17 +1409,16 @@ bool AGameCrowdAgent::IsIdle()
 		return IsIdle_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnIsIdle->iNative;
 	uFnIsIdle->iNative = 0;
-	uFnIsIdle->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnIsIdle, &IsIdle_Params, nullptr);
-	uFnIsIdle->FunctionFlags |= 0x400;
-	uFnIsIdle->iNative = 26579;
+	uFnIsIdle->iNative = nativeIndex;
 
 	return IsIdle_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdAgent.SetCurrentBehavior
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26884])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class UGameCrowdAgentBehavior* BehaviorArchetype              (CPF_Parm)
 
@@ -1452,15 +1440,14 @@ void AGameCrowdAgent::SetCurrentBehavior(class UGameCrowdAgentBehavior* Behavior
 	}
 	SetCurrentBehavior_Params.BehaviorArchetype = BehaviorArchetype;
 
+	uint16_t nativeIndex = uFnSetCurrentBehavior->iNative;
 	uFnSetCurrentBehavior->iNative = 0;
-	uFnSetCurrentBehavior->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetCurrentBehavior, &SetCurrentBehavior_Params, nullptr);
-	uFnSetCurrentBehavior->FunctionFlags |= 0x400;
-	uFnSetCurrentBehavior->iNative = 26884;
+	uFnSetCurrentBehavior->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgent.StopBehavior
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventStopBehavior()
@@ -1484,7 +1471,7 @@ void AGameCrowdAgent::eventStopBehavior()
 }
 
 // Function GameFramework.GameCrowdAgent.ActivateInstancedBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameCrowdAgentBehavior* NewBehaviorObject              (CPF_Parm)
 
@@ -1510,7 +1497,7 @@ void AGameCrowdAgent::ActivateInstancedBehavior(class UGameCrowdAgentBehavior* N
 }
 
 // Function GameFramework.GameCrowdAgent.ActivateBehavior
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UGameCrowdAgentBehavior* NewBehaviorArchetype           (CPF_Parm)
 
@@ -1536,7 +1523,7 @@ void AGameCrowdAgent::eventActivateBehavior(class UGameCrowdAgentBehavior* NewBe
 }
 
 // Function GameFramework.GameCrowdAgent.ResetSeePlayer
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::ResetSeePlayer()
@@ -1560,7 +1547,7 @@ void AGameCrowdAgent::ResetSeePlayer()
 }
 
 // Function GameFramework.GameCrowdAgent.TryRandomBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::TryRandomBehavior()
@@ -1584,7 +1571,7 @@ void AGameCrowdAgent::TryRandomBehavior()
 }
 
 // Function GameFramework.GameCrowdAgent.NotifySeePlayer
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class APlayerController*       PC                             (CPF_Parm)
 
@@ -1610,7 +1597,7 @@ void AGameCrowdAgent::eventNotifySeePlayer(class APlayerController* PC)
 }
 
 // Function GameFramework.GameCrowdAgent.PlaySpawnBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::PlaySpawnBehavior()
@@ -1634,7 +1621,7 @@ void AGameCrowdAgent::PlaySpawnBehavior()
 }
 
 // Function GameFramework.GameCrowdAgent.HandlePotentialAgentEncounter
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventHandlePotentialAgentEncounter()
@@ -1658,7 +1645,7 @@ void AGameCrowdAgent::eventHandlePotentialAgentEncounter()
 }
 
 // Function GameFramework.GameCrowdAgent.StopIdleAnimation
-// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventStopIdleAnimation()
@@ -1682,7 +1669,7 @@ void AGameCrowdAgent::eventStopIdleAnimation()
 }
 
 // Function GameFramework.GameCrowdAgent.PlayIdleAnimation
-// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventPlayIdleAnimation()
@@ -1706,7 +1693,7 @@ void AGameCrowdAgent::eventPlayIdleAnimation()
 }
 
 // Function GameFramework.GameCrowdAgent.OnPlayAgentAnimation
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class USeqAct_PlayAgentAnimation* Action                         (CPF_Parm)
 
@@ -1732,7 +1719,7 @@ void AGameCrowdAgent::OnPlayAgentAnimation(class USeqAct_PlayAgentAnimation* Act
 }
 
 // Function GameFramework.GameCrowdAgent.InitializeAgent
-// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class AActor*                  SpawnLoc                       (CPF_Parm)
 // class AGameCrowdAgent*         AgentTemplate                  (CPF_Parm)
@@ -1768,7 +1755,7 @@ void AGameCrowdAgent::InitializeAgent(class AActor* SpawnLoc, class AGameCrowdAg
 }
 
 // Function GameFramework.GameCrowdAgent.SetLighting
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bEnableLightEnvironment        (CPF_Parm)
 // struct FLightingChannelContainer AgentLightingChannel           (CPF_Parm)
@@ -1798,7 +1785,7 @@ void AGameCrowdAgent::SetLighting(bool bEnableLightEnvironment, const struct FLi
 }
 
 // Function GameFramework.GameCrowdAgent.DisplayDebug
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class AHUD*                    HUD                            (CPF_Parm)
 // float                          out_YL                         (CPF_Parm | CPF_OutParm)
@@ -1831,7 +1818,7 @@ void AGameCrowdAgent::DisplayDebug(class AHUD* HUD, float& outOut_YL, float& out
 }
 
 // Function GameFramework.GameCrowdAgent.Destroyed
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::Destroyed()
@@ -1855,7 +1842,7 @@ void AGameCrowdAgent::Destroyed()
 }
 
 // Function GameFramework.GameCrowdAgent.ResetPooledAgent
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::ResetPooledAgent()
@@ -1879,7 +1866,7 @@ void AGameCrowdAgent::ResetPooledAgent()
 }
 
 // Function GameFramework.GameCrowdAgent.KillAgent
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventKillAgent()
@@ -1903,7 +1890,7 @@ void AGameCrowdAgent::eventKillAgent()
 }
 
 // Function GameFramework.GameCrowdAgent.PostBeginPlay
-// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 
 void AGameCrowdAgent::PostBeginPlay()
@@ -1927,7 +1914,7 @@ void AGameCrowdAgent::PostBeginPlay()
 }
 
 // Function GameFramework.GameCrowdAgent.SetMaxSpeed
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::SetMaxSpeed()
@@ -1951,7 +1938,7 @@ void AGameCrowdAgent::SetMaxSpeed()
 }
 
 // Function GameFramework.GameCrowdAgent.SetCurrentDestination
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   NewDest                        (CPF_Parm)
 
@@ -1977,7 +1964,7 @@ void AGameCrowdAgent::eventSetCurrentDestination(class AGameCrowdDestination* Ne
 }
 
 // Function GameFramework.GameCrowdAgent.WaitForGroupMembers
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgent::eventWaitForGroupMembers()
@@ -2001,7 +1988,7 @@ void AGameCrowdAgent::eventWaitForGroupMembers()
 }
 
 // Function GameFramework.GameCrowdAgent.PickBehaviorFrom
-// [0x00824002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00824002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class TArray<struct FBehaviorEntry> BehaviorList                   (CPF_Parm | CPF_NeedCtorLink)
@@ -2032,7 +2019,7 @@ bool AGameCrowdAgent::PickBehaviorFrom(const class TArray<struct FBehaviorEntry>
 }
 
 // Function GameFramework.GameCrowdAgent.SetPanic
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  PanicActor                     (CPF_Parm)
 // uint32_t                       bNewPanic                      (CPF_Parm)
@@ -2060,7 +2047,7 @@ void AGameCrowdAgent::SetPanic(class AActor* PanicActor, bool bNewPanic)
 }
 
 // Function GameFramework.GameCrowdAgent.IsPanicked
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26581])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -2081,17 +2068,16 @@ bool AGameCrowdAgent::IsPanicked()
 		return IsPanicked_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnIsPanicked->iNative;
 	uFnIsPanicked->iNative = 0;
-	uFnIsPanicked->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnIsPanicked, &IsPanicked_Params, nullptr);
-	uFnIsPanicked->FunctionFlags |= 0x400;
-	uFnIsPanicked->iNative = 26581;
+	uFnIsPanicked->iNative = nativeIndex;
 
 	return IsPanicked_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdAgent.FellOutOfWorld
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UClass*                  dmgType                        (CPF_Parm)
 
@@ -2117,7 +2103,7 @@ void AGameCrowdAgent::eventFellOutOfWorld(class UClass* dmgType)
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.CreateAttachments
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgentSkeletal::CreateAttachments()
@@ -2141,7 +2127,7 @@ void AGameCrowdAgentSkeletal::CreateAttachments()
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.OnAnimEnd
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UAnimNodeSequence*       SeqNode                        (CPF_Parm)
 // float                          PlayedTime                     (CPF_Parm)
@@ -2171,7 +2157,7 @@ void AGameCrowdAgentSkeletal::eventOnAnimEnd(class UAnimNodeSequence* SeqNode, f
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.StopIdleAnimation
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgentSkeletal::eventStopIdleAnimation()
@@ -2195,7 +2181,7 @@ void AGameCrowdAgentSkeletal::eventStopIdleAnimation()
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.PlayIdleAnimation
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgentSkeletal::eventPlayIdleAnimation()
@@ -2219,7 +2205,7 @@ void AGameCrowdAgentSkeletal::eventPlayIdleAnimation()
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.ClearLatentAnimation
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgentSkeletal::eventClearLatentAnimation()
@@ -2243,7 +2229,7 @@ void AGameCrowdAgentSkeletal::eventClearLatentAnimation()
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.OnPlayAgentAnimation
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class USeqAct_PlayAgentAnimation* Action                         (CPF_Parm)
 
@@ -2269,7 +2255,7 @@ void AGameCrowdAgentSkeletal::OnPlayAgentAnimation(class USeqAct_PlayAgentAnimat
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.SetRootMotion
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26893])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bRootMotionEnabled             (CPF_Parm)
 
@@ -2291,15 +2277,14 @@ void AGameCrowdAgentSkeletal::SetRootMotion(bool bRootMotionEnabled)
 	}
 	SetRootMotion_Params.bRootMotionEnabled = bRootMotionEnabled;
 
+	uint16_t nativeIndex = uFnSetRootMotion->iNative;
 	uFnSetRootMotion->iNative = 0;
-	uFnSetRootMotion->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetRootMotion, &SetRootMotion_Params, nullptr);
-	uFnSetRootMotion->FunctionFlags |= 0x400;
-	uFnSetRootMotion->iNative = 26893;
+	uFnSetRootMotion->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.PlayDeath
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26761])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FVector                 KillMomentum                   (CPF_Parm)
 
@@ -2321,15 +2306,14 @@ void AGameCrowdAgentSkeletal::PlayDeath(const struct FVector& KillMomentum)
 	}
 	memcpy_s(&PlayDeath_Params.KillMomentum, sizeof(PlayDeath_Params.KillMomentum), &KillMomentum, sizeof(KillMomentum));
 
+	uint16_t nativeIndex = uFnPlayDeath->iNative;
 	uFnPlayDeath->iNative = 0;
-	uFnPlayDeath->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPlayDeath, &PlayDeath_Params, nullptr);
-	uFnPlayDeath->FunctionFlags |= 0x400;
-	uFnPlayDeath->iNative = 26761;
+	uFnPlayDeath->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.SetLighting
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bEnableLightEnvironment        (CPF_Parm)
 // struct FLightingChannelContainer AgentLightingChannel           (CPF_Parm)
@@ -2359,7 +2343,7 @@ void AGameCrowdAgentSkeletal::SetLighting(bool bEnableLightEnvironment, const st
 }
 
 // Function GameFramework.GameCrowdAgentSkeletal.PostBeginPlay
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdAgentSkeletal::PostBeginPlay()
@@ -2383,7 +2367,7 @@ void AGameCrowdAgentSkeletal::PostBeginPlay()
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.AllowBehaviorAt
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   Destination                    (CPF_Parm)
@@ -2412,7 +2396,7 @@ bool UGameCrowdAgentBehavior::AllowBehaviorAt(class AGameCrowdDestination* Desti
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.AllowThisDestination
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   Destination                    (CPF_Parm)
@@ -2441,7 +2425,7 @@ bool UGameCrowdAgentBehavior::AllowThisDestination(class AGameCrowdDestination* 
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.PropagateViralBehaviorTo
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         OtherAgent                     (CPF_Parm)
 
@@ -2467,7 +2451,7 @@ void UGameCrowdAgentBehavior::eventPropagateViralBehaviorTo(class AGameCrowdAgen
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.ActivatedBy
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  NewActionTarget                (CPF_Parm)
 
@@ -2493,7 +2477,7 @@ void UGameCrowdAgentBehavior::ActivatedBy(class AActor* NewActionTarget)
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.GetDestinationActor
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -2520,7 +2504,7 @@ class AActor* UGameCrowdAgentBehavior::GetDestinationActor()
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.ChangingDestination
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   NewDest                        (CPF_Parm)
 
@@ -2546,7 +2530,7 @@ void UGameCrowdAgentBehavior::ChangingDestination(class AGameCrowdDestination* N
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -2573,7 +2557,7 @@ class FString UGameCrowdAgentBehavior::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.OnAnimEnd
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UAnimNodeSequence*       SeqNode                        (CPF_Parm)
 // float                          PlayedTime                     (CPF_Parm)
@@ -2603,7 +2587,7 @@ void UGameCrowdAgentBehavior::eventOnAnimEnd(class UAnimNodeSequence* SeqNode, f
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.StopBehavior
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdAgentBehavior::StopBehavior()
@@ -2627,7 +2611,7 @@ void UGameCrowdAgentBehavior::StopBehavior()
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.InitBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -2653,7 +2637,7 @@ void UGameCrowdAgentBehavior::InitBehavior(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.HandleMovement
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26534])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -2674,17 +2658,16 @@ bool UGameCrowdAgentBehavior::HandleMovement()
 		return HandleMovement_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnHandleMovement->iNative;
 	uFnHandleMovement->iNative = 0;
-	uFnHandleMovement->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnHandleMovement, &HandleMovement_Params, nullptr);
-	uFnHandleMovement->FunctionFlags |= 0x400;
-	uFnHandleMovement->iNative = 26534;
+	uFnHandleMovement->iNative = nativeIndex;
 
 	return HandleMovement_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.FinishedTargetRotation
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdAgentBehavior::eventFinishedTargetRotation()
@@ -2708,7 +2691,7 @@ void UGameCrowdAgentBehavior::eventFinishedTargetRotation()
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.CanBeUsedBy
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -2739,7 +2722,7 @@ bool UGameCrowdAgentBehavior::CanBeUsedBy(class AGameCrowdAgent* Agent, const st
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.Tick
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[336])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -2761,15 +2744,14 @@ void UGameCrowdAgentBehavior::Tick(float DeltaTime)
 	}
 	Tick_Params.DeltaTime = DeltaTime;
 
+	uint16_t nativeIndex = uFnTick->iNative;
 	uFnTick->iNative = 0;
-	uFnTick->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnTick, &Tick_Params, nullptr);
-	uFnTick->FunctionFlags |= 0x400;
-	uFnTick->iNative = 336;
+	uFnTick->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdAgentBehavior.ShouldEndIdle
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26900])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -2790,17 +2772,16 @@ bool UGameCrowdAgentBehavior::ShouldEndIdle()
 		return ShouldEndIdle_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnShouldEndIdle->iNative;
 	uFnShouldEndIdle->iNative = 0;
-	uFnShouldEndIdle->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnShouldEndIdle, &ShouldEndIdle_Params, nullptr);
-	uFnShouldEndIdle->FunctionFlags |= 0x400;
-	uFnShouldEndIdle->iNative = 26900;
+	uFnShouldEndIdle->iNative = nativeIndex;
 
 	return ShouldEndIdle_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -2827,7 +2808,7 @@ class FString UGameCrowdBehavior_PlayAnimation::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.StopBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_PlayAnimation::StopBehavior()
@@ -2851,7 +2832,7 @@ void UGameCrowdBehavior_PlayAnimation::StopBehavior()
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.PlayAgentAnimationNow
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_PlayAnimation::PlayAgentAnimationNow()
@@ -2875,7 +2856,7 @@ void UGameCrowdBehavior_PlayAnimation::PlayAgentAnimationNow()
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.OnAnimEnd
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UAnimNodeSequence*       SeqNode                        (CPF_Parm)
 // float                          PlayedTime                     (CPF_Parm)
@@ -2905,7 +2886,7 @@ void UGameCrowdBehavior_PlayAnimation::eventOnAnimEnd(class UAnimNodeSequence* S
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.SetSequenceOutput
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26894])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_PlayAnimation::SetSequenceOutput()
@@ -2925,15 +2906,14 @@ void UGameCrowdBehavior_PlayAnimation::SetSequenceOutput()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnSetSequenceOutput->iNative;
 	uFnSetSequenceOutput->iNative = 0;
-	uFnSetSequenceOutput->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetSequenceOutput, &SetSequenceOutput_Params, nullptr);
-	uFnSetSequenceOutput->FunctionFlags |= 0x400;
-	uFnSetSequenceOutput->iNative = 26894;
+	uFnSetSequenceOutput->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.FinishedTargetRotation
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_PlayAnimation::eventFinishedTargetRotation()
@@ -2957,7 +2937,7 @@ void UGameCrowdBehavior_PlayAnimation::eventFinishedTargetRotation()
 }
 
 // Function GameFramework.GameCrowdBehavior_PlayAnimation.InitBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -2983,7 +2963,7 @@ void UGameCrowdBehavior_PlayAnimation::InitBehavior(class AGameCrowdAgent* Agent
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -3010,7 +2990,7 @@ class FString UGameCrowdBehavior_RunFromPanic::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.AllowBehaviorAt
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   Destination                    (CPF_Parm)
@@ -3039,7 +3019,7 @@ bool UGameCrowdBehavior_RunFromPanic::AllowBehaviorAt(class AGameCrowdDestinatio
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.AllowThisDestination
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   Destination                    (CPF_Parm)
@@ -3068,7 +3048,7 @@ bool UGameCrowdBehavior_RunFromPanic::AllowThisDestination(class AGameCrowdDesti
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.PropagateViralBehaviorTo
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         OtherAgent                     (CPF_Parm)
 
@@ -3094,7 +3074,7 @@ void UGameCrowdBehavior_RunFromPanic::eventPropagateViralBehaviorTo(class AGameC
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.StopBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_RunFromPanic::StopBehavior()
@@ -3118,7 +3098,7 @@ void UGameCrowdBehavior_RunFromPanic::StopBehavior()
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.InitBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3144,7 +3124,7 @@ void UGameCrowdBehavior_RunFromPanic::InitBehavior(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdBehavior_RunFromPanic.ActivatedBy
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  NewActionTarget                (CPF_Parm)
 
@@ -3170,7 +3150,7 @@ void UGameCrowdBehavior_RunFromPanic::ActivatedBy(class AActor* NewActionTarget)
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitForGroup.StopBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_WaitForGroup::StopBehavior()
@@ -3194,7 +3174,7 @@ void UGameCrowdBehavior_WaitForGroup::StopBehavior()
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitForGroup.ShouldEndIdle
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26900])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3215,17 +3195,16 @@ bool UGameCrowdBehavior_WaitForGroup::ShouldEndIdle()
 		return ShouldEndIdle_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnShouldEndIdle->iNative;
 	uFnShouldEndIdle->iNative = 0;
-	uFnShouldEndIdle->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnShouldEndIdle, &ShouldEndIdle_Params, nullptr);
-	uFnShouldEndIdle->FunctionFlags |= 0x400;
-	uFnShouldEndIdle->iNative = 26900;
+	uFnShouldEndIdle->iNative = nativeIndex;
 
 	return ShouldEndIdle_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitForGroup.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -3252,7 +3231,7 @@ class FString UGameCrowdBehavior_WaitForGroup::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitForGroup.InitBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3278,7 +3257,7 @@ void UGameCrowdBehavior_WaitForGroup::InitBehavior(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.StopBehavior
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCrowdBehavior_WaitInQueue::StopBehavior()
@@ -3302,7 +3281,7 @@ void UGameCrowdBehavior_WaitInQueue::StopBehavior()
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.ShouldEndIdle
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26900])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3323,17 +3302,16 @@ bool UGameCrowdBehavior_WaitInQueue::ShouldEndIdle()
 		return ShouldEndIdle_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnShouldEndIdle->iNative;
 	uFnShouldEndIdle->iNative = 0;
-	uFnShouldEndIdle->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnShouldEndIdle, &ShouldEndIdle_Params, nullptr);
-	uFnShouldEndIdle->FunctionFlags |= 0x400;
-	uFnShouldEndIdle->iNative = 26900;
+	uFnShouldEndIdle->iNative = nativeIndex;
 
 	return ShouldEndIdle_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.GetBehaviorString
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class FString                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_NeedCtorLink)
 
@@ -3360,7 +3338,7 @@ class FString UGameCrowdBehavior_WaitInQueue::GetBehaviorString()
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.GetDestinationActor
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3387,7 +3365,7 @@ class AActor* UGameCrowdBehavior_WaitInQueue::GetDestinationActor()
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.ChangingDestination
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   NewDest                        (CPF_Parm)
 
@@ -3413,7 +3391,7 @@ void UGameCrowdBehavior_WaitInQueue::ChangingDestination(class AGameCrowdDestina
 }
 
 // Function GameFramework.GameCrowdBehavior_WaitInQueue.HandleMovement
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26534])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3434,17 +3412,16 @@ bool UGameCrowdBehavior_WaitInQueue::HandleMovement()
 		return HandleMovement_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnHandleMovement->iNative;
 	uFnHandleMovement->iNative = 0;
-	uFnHandleMovement->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnHandleMovement, &HandleMovement_Params, nullptr);
-	uFnHandleMovement->FunctionFlags |= 0x400;
-	uFnHandleMovement->iNative = 26534;
+	uFnHandleMovement->iNative = nativeIndex;
 
 	return HandleMovement_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdGroup.UpdateDestinations
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   NewDestination                 (CPF_Parm)
 
@@ -3470,7 +3447,7 @@ void UGameCrowdGroup::UpdateDestinations(class AGameCrowdDestination* NewDestina
 }
 
 // Function GameFramework.GameCrowdGroup.RemoveMember
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3496,7 +3473,7 @@ void UGameCrowdGroup::RemoveMember(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdGroup.AddMember
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3522,7 +3499,7 @@ void UGameCrowdGroup::AddMember(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdInteractionPoint.OnToggle
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_Toggle*          Action                         (CPF_Parm)
 
@@ -3548,7 +3525,7 @@ void AGameCrowdInteractionPoint::OnToggle(class USeqAct_Toggle* Action)
 }
 
 // Function GameFramework.GameCrowdDestination.GetSpawnPosition
-// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // class USeqAct_GameCrowdSpawner* Spawner                        (CPF_Parm)
 // struct FVector                 SpawnPos                       (CPF_Parm | CPF_OutParm)
@@ -3581,7 +3558,7 @@ void AGameCrowdDestination::GetSpawnPosition(class USeqAct_GameCrowdSpawner* Spa
 }
 
 // Function GameFramework.GameCrowdDestination.AllowableDestinationFor
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -3610,7 +3587,7 @@ bool AGameCrowdDestination::eventAllowableDestinationFor(class AGameCrowdAgent* 
 }
 
 // Function GameFramework.GameCrowdDestination.AtCapacity
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3637,7 +3614,7 @@ bool AGameCrowdDestination::AtCapacity()
 }
 
 // Function GameFramework.GameCrowdDestination.IncrementCustomerCount
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         ArrivingAgent                  (CPF_Parm)
 
@@ -3663,7 +3640,7 @@ void AGameCrowdDestination::eventIncrementCustomerCount(class AGameCrowdAgent* A
 }
 
 // Function GameFramework.GameCrowdDestination.DecrementCustomerCount
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         DepartingAgent                 (CPF_Parm)
 
@@ -3689,7 +3666,7 @@ void AGameCrowdDestination::eventDecrementCustomerCount(class AGameCrowdAgent* D
 }
 
 // Function GameFramework.GameCrowdDestination.PickNewDestinationFor
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 // uint32_t                       bIgnoreRestrictions            (CPF_Parm)
@@ -3717,7 +3694,7 @@ void AGameCrowdDestination::PickNewDestinationFor(class AGameCrowdAgent* Agent, 
 }
 
 // Function GameFramework.GameCrowdDestination.ReachedDestination
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3743,7 +3720,7 @@ void AGameCrowdDestination::eventReachedDestination(class AGameCrowdAgent* Agent
 }
 
 // Function GameFramework.GameCrowdDestination.Destroyed
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdDestination::Destroyed()
@@ -3767,7 +3744,7 @@ void AGameCrowdDestination::Destroyed()
 }
 
 // Function GameFramework.GameCrowdDestination.PostBeginPlay
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdDestination::PostBeginPlay()
@@ -3791,7 +3768,7 @@ void AGameCrowdDestination::PostBeginPlay()
 }
 
 // Function GameFramework.GameCrowdDestination.ReachedByAgent
-// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26827])
+// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -3818,17 +3795,16 @@ bool AGameCrowdDestination::ReachedByAgent(class AGameCrowdAgent* Agent, const s
 	memcpy_s(&ReachedByAgent_Params.TestPosition, sizeof(ReachedByAgent_Params.TestPosition), &TestPosition, sizeof(TestPosition));
 	ReachedByAgent_Params.bTestExactly = bTestExactly;
 
+	uint16_t nativeIndex = uFnReachedByAgent->iNative;
 	uFnReachedByAgent->iNative = 0;
-	uFnReachedByAgent->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnReachedByAgent, &ReachedByAgent_Params, nullptr);
-	uFnReachedByAgent->FunctionFlags |= 0x400;
-	uFnReachedByAgent->iNative = 26827;
+	uFnReachedByAgent->iNative = nativeIndex;
 
 	return ReachedByAgent_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.HasCustomer
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -3855,7 +3831,7 @@ bool AGameCrowdDestinationQueuePoint::HasCustomer()
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.ClearQueue
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         OldCustomer                    (CPF_Parm)
 
@@ -3881,7 +3857,7 @@ void AGameCrowdDestinationQueuePoint::ClearQueue(class AGameCrowdAgent* OldCusto
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.AddCustomer
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         NewCustomer                    (CPF_Parm)
 // class AGameCrowdInteractionPoint* PreviousPosition               (CPF_Parm)
@@ -3909,7 +3885,7 @@ void AGameCrowdDestinationQueuePoint::AddCustomer(class AGameCrowdAgent* NewCust
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.ActuallyAdvance
-// [0x00040103] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Private | FUNC_AllFlags)
+// [0x00040103] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Private)
 // Parameter Info:
 
 void AGameCrowdDestinationQueuePoint::ActuallyAdvance()
@@ -3933,7 +3909,7 @@ void AGameCrowdDestinationQueuePoint::ActuallyAdvance()
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.AdvanceCustomerTo
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdInteractionPoint* FrontPosition                  (CPF_Parm)
 
@@ -3959,7 +3935,7 @@ void AGameCrowdDestinationQueuePoint::AdvanceCustomerTo(class AGameCrowdInteract
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.ReachedDestination
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -3985,7 +3961,7 @@ void AGameCrowdDestinationQueuePoint::eventReachedDestination(class AGameCrowdAg
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.HasSpace
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4012,7 +3988,7 @@ bool AGameCrowdDestinationQueuePoint::HasSpace()
 }
 
 // Function GameFramework.GameCrowdDestinationQueuePoint.QueueReachedBy
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26810])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -4037,17 +4013,16 @@ bool AGameCrowdDestinationQueuePoint::QueueReachedBy(class AGameCrowdAgent* Agen
 	QueueReachedBy_Params.Agent = Agent;
 	memcpy_s(&QueueReachedBy_Params.TestPosition, sizeof(QueueReachedBy_Params.TestPosition), &TestPosition, sizeof(TestPosition));
 
+	uint16_t nativeIndex = uFnQueueReachedBy->iNative;
 	uFnQueueReachedBy->iNative = 0;
-	uFnQueueReachedBy->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnQueueReachedBy, &QueueReachedBy_Params, nullptr);
-	uFnQueueReachedBy->FunctionFlags |= 0x400;
-	uFnQueueReachedBy->iNative = 26810;
+	uFnQueueReachedBy->iNative = nativeIndex;
 
 	return QueueReachedBy_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCrowdForcePoint.AppliedForce
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -4076,7 +4051,7 @@ struct FVector AGameCrowdForcePoint::eventAppliedForce(class AGameCrowdAgent* Ag
 }
 
 // Function GameFramework.GameCrowdForcePoint.UnTouch
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AActor*                  Other                          (CPF_Parm)
 
@@ -4102,7 +4077,7 @@ void AGameCrowdForcePoint::eventUnTouch(class AActor* Other)
 }
 
 // Function GameFramework.GameCrowdForcePoint.Touch
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AActor*                  Other                          (CPF_Parm)
 // class UPrimitiveComponent*     OtherComp                      (CPF_Parm | CPF_EditInline)
@@ -4134,7 +4109,7 @@ void AGameCrowdForcePoint::eventTouch(class AActor* Other, class UPrimitiveCompo
 }
 
 // Function GameFramework.GameCrowdAttractor.AppliedForce
-// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -4163,7 +4138,7 @@ struct FVector AGameCrowdAttractor::eventAppliedForce(class AGameCrowdAgent* Age
 }
 
 // Function GameFramework.GameCrowdRepulsor.AppliedForce
-// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -4192,7 +4167,7 @@ struct FVector AGameCrowdRepulsor::eventAppliedForce(class AGameCrowdAgent* Agen
 }
 
 // Function GameFramework.GameCrowdPopulationManager.CreateNewAgent
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class AGameCrowdAgent*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   SpawnLoc                       (CPF_Parm)
@@ -4225,7 +4200,7 @@ class AGameCrowdAgent* AGameCrowdPopulationManager::CreateNewAgent(class AGameCr
 }
 
 // Function GameFramework.GameCrowdPopulationManager.SpawnAgent
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   SpawnLoc                       (CPF_Parm)
@@ -4254,7 +4229,7 @@ class AGameCrowdAgent* AGameCrowdPopulationManager::eventSpawnAgent(class AGameC
 }
 
 // Function GameFramework.GameCrowdPopulationManager.ValidateSpawnAt
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdDestination*   Candidate                      (CPF_Parm)
@@ -4283,7 +4258,7 @@ bool AGameCrowdPopulationManager::ValidateSpawnAt(class AGameCrowdDestination* C
 }
 
 // Function GameFramework.GameCrowdPopulationManager.AddPrioritizedSpawnPoint
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   GCD                            (CPF_Parm)
 // struct FVector                 ViewLocation                   (CPF_Parm)
@@ -4311,7 +4286,7 @@ void AGameCrowdPopulationManager::AddPrioritizedSpawnPoint(class AGameCrowdDesti
 }
 
 // Function GameFramework.GameCrowdPopulationManager.AnalyzeSpawnPoints
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // int32_t                        StartIndex                     (CPF_Parm)
 // int32_t                        StopIndex                      (CPF_Parm)
@@ -4343,7 +4318,7 @@ void AGameCrowdPopulationManager::AnalyzeSpawnPoints(int32_t StartIndex, int32_t
 }
 
 // Function GameFramework.GameCrowdPopulationManager.PrioritizeSpawnPoints
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // float                          DeltaSeconds                   (CPF_Parm)
 
@@ -4369,7 +4344,7 @@ void AGameCrowdPopulationManager::PrioritizeSpawnPoints(float DeltaSeconds)
 }
 
 // Function GameFramework.GameCrowdPopulationManager.PickSpawnPoint
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4396,7 +4371,7 @@ class AGameCrowdDestination* AGameCrowdPopulationManager::PickSpawnPoint()
 }
 
 // Function GameFramework.GameCrowdPopulationManager.Tick
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // float                          DeltaSeconds                   (CPF_Parm)
 
@@ -4422,7 +4397,7 @@ void AGameCrowdPopulationManager::Tick(float DeltaSeconds)
 }
 
 // Function GameFramework.GameCrowdPopulationManager.DisplayDebug
-// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // class AHUD*                    HUD                            (CPF_Parm)
 // float                          out_YL                         (CPF_Parm | CPF_OutParm)
@@ -4455,7 +4430,7 @@ void AGameCrowdPopulationManager::DisplayDebug(class AHUD* HUD, float& outOut_YL
 }
 
 // Function GameFramework.GameCrowdPopulationManager.AddToAgentPool
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -4484,7 +4459,7 @@ bool AGameCrowdPopulationManager::AddToAgentPool(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdPopulationManager.AgentDestroyed
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -4510,7 +4485,7 @@ void AGameCrowdPopulationManager::AgentDestroyed(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdPopulationManager.OnGameCrowdPopulationManagerToggle
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class USeqAct_GameCrowdPopulationManagerToggle* inAction                       (CPF_Parm)
 
@@ -4536,7 +4511,7 @@ void AGameCrowdPopulationManager::OnGameCrowdPopulationManagerToggle(class USeqA
 }
 
 // Function GameFramework.GameCrowdPopulationManager.RemoveSpawnPoint
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdDestination*   GCD                            (CPF_Parm)
 
@@ -4562,7 +4537,7 @@ void AGameCrowdPopulationManager::RemoveSpawnPoint(class AGameCrowdDestination* 
 }
 
 // Function GameFramework.GameCrowdPopulationManager.AddSpawnPoint
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class AGameCrowdDestination*   GCD                            (CPF_Parm)
 
@@ -4588,7 +4563,7 @@ void AGameCrowdPopulationManager::AddSpawnPoint(class AGameCrowdDestination* GCD
 }
 
 // Function GameFramework.GameCrowdPopulationManager.GetMaxSpawnDist
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4615,7 +4590,7 @@ float AGameCrowdPopulationManager::GetMaxSpawnDist()
 }
 
 // Function GameFramework.GameCrowdPopulationManager.NotifyPathChanged
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdPopulationManager::eventNotifyPathChanged()
@@ -4639,7 +4614,7 @@ void AGameCrowdPopulationManager::eventNotifyPathChanged()
 }
 
 // Function GameFramework.GameCrowdPopulationManager.PostBeginPlay
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGameCrowdPopulationManager::PostBeginPlay()
@@ -4663,7 +4638,7 @@ void AGameCrowdPopulationManager::PostBeginPlay()
 }
 
 // Function GameFramework.GameCrowdReplicationActor.ReplicatedEvent
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class FName                    VarName                        (CPF_Parm)
 
@@ -4689,7 +4664,7 @@ void AGameCrowdReplicationActor::eventReplicatedEvent(const class FName& VarName
 }
 
 // Function GameFramework.GameDamageType.HandleDamageFX
-// [0x00422000] (FUNC_Static | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00422000] (FUNC_Static | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class AGamePawn*               DamagedPawn                    (CPF_Parm)
 // struct FTakeHitInfo            HitInfo                        (CPF_Const | CPF_Parm | CPF_OutParm)
@@ -4713,13 +4688,13 @@ void UGameDamageType::HandleDamageFX(class AGamePawn* DamagedPawn, struct FTakeH
 	HandleDamageFX_Params.DamagedPawn = DamagedPawn;
 	memcpy_s(&HandleDamageFX_Params.HitInfo, sizeof(HandleDamageFX_Params.HitInfo), &outHitInfo, sizeof(outHitInfo));
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnHandleDamageFX, &HandleDamageFX_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnHandleDamageFX, &HandleDamageFX_Params, nullptr);
 
 	memcpy_s(&outHitInfo, sizeof(outHitInfo), &HandleDamageFX_Params.HitInfo, sizeof(HandleDamageFX_Params.HitInfo));
 }
 
 // Function GameFramework.GameDamageType.ShouldHeadShotGib
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   TestPawn                       (CPF_Parm)
@@ -4744,13 +4719,13 @@ bool UGameDamageType::ShouldHeadShotGib(class APawn* TestPawn, class APawn* Inst
 	ShouldHeadShotGib_Params.TestPawn = TestPawn;
 	ShouldHeadShotGib_Params.Instigator = Instigator;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnShouldHeadShotGib, &ShouldHeadShotGib_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnShouldHeadShotGib, &ShouldHeadShotGib_Params, nullptr);
 
 	return ShouldHeadShotGib_Params.ReturnValue;
 }
 
 // Function GameFramework.GameDamageType.PlayExtraDamageSound
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // class APawn*                   VictimPawn                     (CPF_Parm)
 
@@ -4772,11 +4747,11 @@ void UGameDamageType::PlayExtraDamageSound(class APawn* VictimPawn)
 	}
 	PlayExtraDamageSound_Params.VictimPawn = VictimPawn;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnPlayExtraDamageSound, &PlayExtraDamageSound_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnPlayExtraDamageSound, &PlayExtraDamageSound_Params, nullptr);
 }
 
 // Function GameFramework.GameDamageType.IsScriptedDamageType
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -4797,13 +4772,13 @@ bool UGameDamageType::IsScriptedDamageType()
 		return IsScriptedDamageType_Params.ReturnValue;
 	}
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnIsScriptedDamageType, &IsScriptedDamageType_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnIsScriptedDamageType, &IsScriptedDamageType_Params, nullptr);
 
 	return IsScriptedDamageType_Params.ReturnValue;
 }
 
 // Function GameFramework.GameDamageType.ShouldPlayForceFeedback
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   DamagedPawn                    (CPF_Parm)
@@ -4826,13 +4801,13 @@ bool UGameDamageType::ShouldPlayForceFeedback(class APawn* DamagedPawn)
 	}
 	ShouldPlayForceFeedback_Params.DamagedPawn = DamagedPawn;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnShouldPlayForceFeedback, &ShouldPlayForceFeedback_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnShouldPlayForceFeedback, &ShouldPlayForceFeedback_Params, nullptr);
 
 	return ShouldPlayForceFeedback_Params.ReturnValue;
 }
 
 // Function GameFramework.GameDamageType.HandleDeadPlayer
-// [0x00022000] (FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022000] (FUNC_Static | FUNC_Public)
 // Parameter Info:
 // class AGamePlayerController*   Player                         (CPF_Parm)
 
@@ -4854,11 +4829,11 @@ void UGameDamageType::HandleDeadPlayer(class AGamePlayerController* Player)
 	}
 	HandleDeadPlayer_Params.Player = Player;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnHandleDeadPlayer, &HandleDeadPlayer_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnHandleDeadPlayer, &HandleDeadPlayer_Params, nullptr);
 }
 
 // Function GameFramework.GameDamageType.HandleKilledPawn
-// [0x00022000] (FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022000] (FUNC_Static | FUNC_Public)
 // Parameter Info:
 // class APawn*                   KilledPawn                     (CPF_Parm)
 // class APawn*                   Instigator                     (CPF_Parm)
@@ -4882,11 +4857,11 @@ void UGameDamageType::HandleKilledPawn(class APawn* KilledPawn, class APawn* Ins
 	HandleKilledPawn_Params.KilledPawn = KilledPawn;
 	HandleKilledPawn_Params.Instigator = Instigator;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnHandleKilledPawn, &HandleKilledPawn_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnHandleKilledPawn, &HandleKilledPawn_Params, nullptr);
 }
 
 // Function GameFramework.GameDamageType.HandleDamagedPawn
-// [0x00022000] (FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022000] (FUNC_Static | FUNC_Public)
 // Parameter Info:
 // class APawn*                   DamagedPawn                    (CPF_Parm)
 // class APawn*                   Instigator                     (CPF_Parm)
@@ -4914,11 +4889,11 @@ void UGameDamageType::HandleDamagedPawn(class APawn* DamagedPawn, class APawn* I
 	HandleDamagedPawn_Params.DamageAmt = DamageAmt;
 	memcpy_s(&HandleDamagedPawn_Params.Momentum, sizeof(HandleDamagedPawn_Params.Momentum), &Momentum, sizeof(Momentum));
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnHandleDamagedPawn, &HandleDamagedPawn_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnHandleDamagedPawn, &HandleDamagedPawn_Params, nullptr);
 }
 
 // Function GameFramework.GameDamageType.ModifyDamage
-// [0x00422000] (FUNC_Static | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00422000] (FUNC_Static | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   Victim                         (CPF_Parm)
 // class AController*             InstigatedBy                   (CPF_Parm)
@@ -4950,14 +4925,14 @@ void UGameDamageType::ModifyDamage(class APawn* Victim, class AController* Insti
 	ModifyDamage_Params.out_Damage = outOut_Damage;
 	memcpy_s(&ModifyDamage_Params.out_Momentum, sizeof(ModifyDamage_Params.out_Momentum), &outOut_Momentum, sizeof(outOut_Momentum));
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnModifyDamage, &ModifyDamage_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnModifyDamage, &ModifyDamage_Params, nullptr);
 
 	outOut_Damage = ModifyDamage_Params.out_Damage;
 	memcpy_s(&outOut_Momentum, sizeof(outOut_Momentum), &ModifyDamage_Params.out_Momentum, sizeof(ModifyDamage_Params.out_Momentum));
 }
 
 // Function GameFramework.GameDamageType.ShouldGib
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   TestPawn                       (CPF_Parm)
@@ -4982,13 +4957,13 @@ bool UGameDamageType::ShouldGib(class APawn* TestPawn, class APawn* Instigator)
 	ShouldGib_Params.TestPawn = TestPawn;
 	ShouldGib_Params.Instigator = Instigator;
 
-	UGameDamageType::StaticClass()->ProcessEvent(uFnShouldGib, &ShouldGib_Params, nullptr);
+	UGameDamageType::StaticClass()->ClassDefaultObject->ProcessEvent(uFnShouldGib, &ShouldGib_Params, nullptr);
 
 	return ShouldGib_Params.ReturnValue;
 }
 
 // Function GameFramework.GameExplosionActor.ChooseCameraShake
-// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults)
 // Parameter Info:
 // class UCameraShake*            ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FVector                 Epicenter                      (CPF_Parm)
@@ -5019,7 +4994,7 @@ class UCameraShake* AGameExplosionActor::ChooseCameraShake(const struct FVector&
 }
 
 // Function GameFramework.GameExplosionActor.SpawnCameraLensEffects
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::SpawnCameraLensEffects()
@@ -5043,7 +5018,7 @@ void AGameExplosionActor::SpawnCameraLensEffects()
 }
 
 // Function GameFramework.GameExplosionActor.DoExplosionCameraEffects
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::DoExplosionCameraEffects()
@@ -5067,7 +5042,7 @@ void AGameExplosionActor::DoExplosionCameraEffects()
 }
 
 // Function GameFramework.GameExplosionActor.Tick
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -5093,7 +5068,7 @@ void AGameExplosionActor::Tick(float DeltaTime)
 }
 
 // Function GameFramework.GameExplosionActor.DoExplosionDamage
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::DoExplosionDamage()
@@ -5117,7 +5092,7 @@ void AGameExplosionActor::DoExplosionDamage()
 }
 
 // Function GameFramework.GameExplosionActor.DrawDebug
-// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 
 void AGameExplosionActor::DrawDebug()
@@ -5141,7 +5116,7 @@ void AGameExplosionActor::DrawDebug()
 }
 
 // Function GameFramework.GameExplosionActor.Explode
-// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class UGameExplosion*          NewExplosionTemplate           (CPF_Parm)
 // struct FVector                 Direction                      (CPF_OptionalParm | CPF_Parm)
@@ -5169,7 +5144,7 @@ void AGameExplosionActor::Explode(class UGameExplosion* NewExplosionTemplate, co
 }
 
 // Function GameFramework.GameExplosionActor.SpawnExplosionFogVolume
-// [0x00020100] (FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020100] (FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::SpawnExplosionFogVolume()
@@ -5193,7 +5168,7 @@ void AGameExplosionActor::SpawnExplosionFogVolume()
 }
 
 // Function GameFramework.GameExplosionActor.SpawnExplosionDecal
-// [0x00020100] (FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020100] (FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::SpawnExplosionDecal()
@@ -5217,7 +5192,7 @@ void AGameExplosionActor::SpawnExplosionDecal()
 }
 
 // Function GameFramework.GameExplosionActor.SpawnExplosionParticleSystem
-// [0x00020100] (FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020100] (FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class UParticleSystem*         Template                       (CPF_Parm)
 
@@ -5243,7 +5218,7 @@ void AGameExplosionActor::SpawnExplosionParticleSystem(class UParticleSystem* Te
 }
 
 // Function GameFramework.GameExplosionActor.UpdateExplosionTemplateWithPerMaterialFX
-// [0x00080100] (FUNC_Simulated | FUNC_Protected | FUNC_AllFlags)
+// [0x00080100] (FUNC_Simulated | FUNC_Protected)
 // Parameter Info:
 // class UPhysicalMaterial*       PhysMaterial                   (CPF_Parm)
 
@@ -5269,7 +5244,7 @@ void AGameExplosionActor::UpdateExplosionTemplateWithPerMaterialFX(class UPhysic
 }
 
 // Function GameFramework.GameExplosionActor.KnockdownPawn
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class AGamePawn*               Victim                         (CPF_Parm)
 // float                          DistFromExplosion              (CPF_Parm)
@@ -5297,7 +5272,7 @@ void AGameExplosionActor::KnockdownPawn(class AGamePawn* Victim, float DistFromE
 }
 
 // Function GameFramework.GameExplosionActor.CringePawn
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class AGamePawn*               Victim                         (CPF_Parm)
 // float                          DistFromExplosion              (CPF_Parm)
@@ -5325,7 +5300,7 @@ void AGameExplosionActor::CringePawn(class AGamePawn* Victim, float DistFromExpl
 }
 
 // Function GameFramework.GameExplosionActor.DoCringesAndKnockdowns
-// [0x00880002] (FUNC_Defined | FUNC_Protected | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00880002] (FUNC_Defined | FUNC_Protected | FUNC_HasDefaults)
 // Parameter Info:
 
 void AGameExplosionActor::DoCringesAndKnockdowns()
@@ -5349,7 +5324,7 @@ void AGameExplosionActor::DoCringesAndKnockdowns()
 }
 
 // Function GameFramework.GameExplosionActor.ShouldDoCringeFor
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGamePawn*               Victim                         (CPF_Parm)
@@ -5378,7 +5353,7 @@ bool AGameExplosionActor::ShouldDoCringeFor(class AGamePawn* Victim)
 }
 
 // Function GameFramework.GameExplosionActor.DoBreakFracturedMeshes
-// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_AllFlags)
+// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected)
 // Parameter Info:
 // struct FVector                 ExploOrigin                    (CPF_Parm)
 // float                          DamageRadius                   (CPF_Parm)
@@ -5410,7 +5385,7 @@ void AGameExplosionActor::DoBreakFracturedMeshes(const struct FVector& ExploOrig
 }
 
 // Function GameFramework.GameExplosionActor.HurtExplosion
-// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults)
 // Parameter Info:
 // float                          BaseDamage                     (CPF_Parm)
 // float                          DamageRadius                   (CPF_Parm)
@@ -5454,7 +5429,7 @@ void AGameExplosionActor::HurtExplosion(float BaseDamage, float DamageRadius, fl
 }
 
 // Function GameFramework.GameExplosionActor.IsBehindExplosion
-// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_AllFlags)
+// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  A                              (CPF_Parm)
@@ -5483,7 +5458,7 @@ bool AGameExplosionActor::IsBehindExplosion(class AActor* A)
 }
 
 // Function GameFramework.GameExplosionActor.DoFullDamageToActor
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  Victim                         (CPF_Parm)
@@ -5512,7 +5487,7 @@ bool AGameExplosionActor::DoFullDamageToActor(class AActor* Victim)
 }
 
 // Function GameFramework.GameExplosionActor.GetPhysicalMaterial
-// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults)
 // Parameter Info:
 // class UPhysicalMaterial*       ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -5539,7 +5514,7 @@ class UPhysicalMaterial* AGameExplosionActor::GetPhysicalMaterial()
 }
 
 // Function GameFramework.GameExplosionActor.PreBeginPlay
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameExplosionActor::eventPreBeginPlay()
@@ -5563,7 +5538,7 @@ void AGameExplosionActor::eventPreBeginPlay()
 }
 
 // Function GameFramework.MobileHUD.ResetMobileInputConfig
-// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public | FUNC_AllFlags)
+// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public)
 // Parameter Info:
 
 void AMobileHUD::ResetMobileInputConfig()
@@ -5587,7 +5562,7 @@ void AMobileHUD::ResetMobileInputConfig()
 }
 
 // Function GameFramework.MobileHUD.NextMobileInputConfig
-// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public | FUNC_AllFlags)
+// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public)
 // Parameter Info:
 
 void AMobileHUD::NextMobileInputConfig()
@@ -5611,7 +5586,7 @@ void AMobileHUD::NextMobileInputConfig()
 }
 
 // Function GameFramework.MobileHUD.DrawInputOverlays
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 
 void AMobileHUD::DrawInputOverlays()
@@ -5635,7 +5610,7 @@ void AMobileHUD::DrawInputOverlays()
 }
 
 // Function GameFramework.MobileHUD.PostRender
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AMobileHUD::PostRender()
@@ -5659,7 +5634,7 @@ void AMobileHUD::PostRender()
 }
 
 // Function GameFramework.MobileHUD.PostBeginPlay
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AMobileHUD::PostBeginPlay()
@@ -5683,7 +5658,7 @@ void AMobileHUD::PostBeginPlay()
 }
 
 // Function GameFramework.GamePawn.SphinxNotifyDestory
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGamePawn::eventSphinxNotifyDestory()
@@ -5707,7 +5682,7 @@ void AGamePawn::eventSphinxNotifyDestory()
 }
 
 // Function GameFramework.GamePawn.PlayCustomParticleOnSocket
-// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class UParticleSystem*         PS                             (CPF_Parm)
 // class FName                    Socket                         (CPF_Parm)
@@ -5735,7 +5710,7 @@ void AGamePawn::eventPlayCustomParticleOnSocket(class UParticleSystem* PS, const
 }
 
 // Function GameFramework.GamePawn.ReattachMeshWithoutBeingSeen
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGamePawn::ReattachMeshWithoutBeingSeen()
@@ -5759,7 +5734,7 @@ void AGamePawn::ReattachMeshWithoutBeingSeen()
 }
 
 // Function GameFramework.GamePawn.ReattachMesh
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGamePawn::ReattachMesh()
@@ -5783,7 +5758,7 @@ void AGamePawn::ReattachMesh()
 }
 
 // Function GameFramework.GamePawn.UpdateShadowSettings
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bInWantShadow                  (CPF_Parm)
 
@@ -5809,7 +5784,7 @@ void AGamePawn::eventUpdateShadowSettings(bool bInWantShadow)
 }
 
 // Function GameFramework.GamePawn.Cringe
-// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024800] (FUNC_Event | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // float                          Duration                       (CPF_OptionalParm | CPF_Parm)
 
@@ -5835,7 +5810,7 @@ void AGamePawn::eventCringe(float optionalDuration)
 }
 
 // Function GameFramework.GamePawn.ServerKnockdown
-// [0x002240C0] (FUNC_Net | FUNC_NetReliable | FUNC_OptionalParm | FUNC_Public | FUNC_NetServer | FUNC_AllFlags)
+// [0x002240C0] (FUNC_Net | FUNC_NetReliable | FUNC_OptionalParm | FUNC_Public | FUNC_NetServer)
 // Parameter Info:
 // struct FVector                 RBLinearVelocity               (CPF_OptionalParm | CPF_Parm)
 // struct FVector                 RBAngularVelocity              (CPF_OptionalParm | CPF_Parm)
@@ -5875,7 +5850,7 @@ void AGamePawn::ServerKnockdown(const struct FVector& optionalRBLinearVelocity, 
 }
 
 // Function GameFramework.GamePawn.GetTargetFrictionCylinder
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          CylinderRadius                 (CPF_Parm | CPF_OutParm)
 // float                          CylinderHeight                 (CPF_Parm | CPF_OutParm)
@@ -5906,7 +5881,7 @@ void AGamePawn::GetTargetFrictionCylinder(float& outCylinderRadius, float& outCy
 }
 
 // Function GameFramework.GamePawn.StopAllConfigAnim
-// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[26949])
+// [0x00024400] (FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // float                          BlendOutTime                   (CPF_Parm)
 // uint32_t                       bForceStop                     (CPF_OptionalParm | CPF_Parm)
@@ -5934,15 +5909,14 @@ void AGamePawn::StopAllConfigAnim(float BlendOutTime, bool optionalBForceStop, b
 	StopAllConfigAnim_Params.bForceAnimNotify = optionalBForceAnimNotify;
 	StopAllConfigAnim_Params.bForceAnimEnd = optionalBForceAnimEnd;
 
+	uint16_t nativeIndex = uFnStopAllConfigAnim->iNative;
 	uFnStopAllConfigAnim->iNative = 0;
-	uFnStopAllConfigAnim->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnStopAllConfigAnim, &StopAllConfigAnim_Params, nullptr);
-	uFnStopAllConfigAnim->FunctionFlags |= 0x400;
-	uFnStopAllConfigAnim->iNative = 26949;
+	uFnStopAllConfigAnim->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerController.ClientColorFade
-// [0x010201C0] (FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Public | FUNC_NetClient | FUNC_AllFlags)
+// [0x010201C0] (FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Public | FUNC_NetClient)
 // Parameter Info:
 // struct FColor                  FadeColor                      (CPF_Parm)
 // uint8_t                        FromAlpha                      (CPF_Parm)
@@ -5974,7 +5948,7 @@ void AGamePlayerController::ClientColorFade(const struct FColor& FadeColor, uint
 }
 
 // Function GameFramework.GamePlayerController.WarmupPause
-// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // uint32_t                       bDesiredPauseState             (CPF_Parm)
 
@@ -6000,7 +5974,7 @@ void AGamePlayerController::eventWarmupPause(bool bDesiredPauseState)
 }
 
 // Function GameFramework.GamePlayerController.CanUnpauseWarmup
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6027,7 +6001,7 @@ bool AGamePlayerController::CanUnpauseWarmup()
 }
 
 // Function GameFramework.GamePlayerController.GetCurrentMovie
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[26510])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class FString                  MovieName                      (CPF_Parm | CPF_OutParm | CPF_NeedCtorLink)
 
@@ -6049,17 +6023,16 @@ void AGamePlayerController::GetCurrentMovie(class FString& outMovieName)
 	}
 	memcpy_s(&GetCurrentMovie_Params.MovieName, sizeof(GetCurrentMovie_Params.MovieName), &outMovieName, sizeof(outMovieName));
 
+	uint16_t nativeIndex = uFnGetCurrentMovie->iNative;
 	uFnGetCurrentMovie->iNative = 0;
-	uFnGetCurrentMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetCurrentMovie, &GetCurrentMovie_Params, nullptr);
-	uFnGetCurrentMovie->FunctionFlags |= 0x400;
-	uFnGetCurrentMovie->iNative = 26510;
+	uFnGetCurrentMovie->iNative = nativeIndex;
 
 	memcpy_s(&outMovieName, sizeof(outMovieName), &GetCurrentMovie_Params.MovieName, sizeof(GetCurrentMovie_Params.MovieName));
 }
 
 // Function GameFramework.GamePlayerController.ClientStopMovie
-// [0x01020DC1] (FUNC_Final | FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Native | FUNC_Event | FUNC_Public | FUNC_NetClient | FUNC_AllFlags) (iNative[6449])
+// [0x01020DC1] (FUNC_Final | FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Native | FUNC_Event | FUNC_Public | FUNC_NetClient)
 // Parameter Info:
 // float                          DelayInSeconds                 (CPF_Parm)
 // uint32_t                       bAllowMovieToFinish            (CPF_Parm)
@@ -6087,15 +6060,14 @@ void AGamePlayerController::eventClientStopMovie(float DelayInSeconds, bool bAll
 	ClientStopMovie_Params.bForceStopNonSkippable = bForceStopNonSkippable;
 	ClientStopMovie_Params.bForceStopLoadingMovie = bForceStopLoadingMovie;
 
+	uint16_t nativeIndex = uFnClientStopMovie->iNative;
 	uFnClientStopMovie->iNative = 0;
-	uFnClientStopMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClientStopMovie, &ClientStopMovie_Params, nullptr);
-	uFnClientStopMovie->FunctionFlags |= 0x400;
-	uFnClientStopMovie->iNative = 6449;
+	uFnClientStopMovie->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerController.ClientPlayMovie
-// [0x01024DC1] (FUNC_Final | FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Native | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_NetClient | FUNC_AllFlags) (iNative[6448])
+// [0x01024DC1] (FUNC_Final | FUNC_Net | FUNC_NetReliable | FUNC_Simulated | FUNC_Native | FUNC_Event | FUNC_OptionalParm | FUNC_Public | FUNC_NetClient)
 // Parameter Info:
 // class FString                  MovieName                      (CPF_Parm | CPF_NeedCtorLink)
 // int32_t                        InStartOfRenderingMovieFrame   (CPF_OptionalParm | CPF_Parm)
@@ -6121,15 +6093,14 @@ void AGamePlayerController::eventClientPlayMovie(const class FString& MovieName,
 	ClientPlayMovie_Params.InStartOfRenderingMovieFrame = optionalInStartOfRenderingMovieFrame;
 	ClientPlayMovie_Params.InEndOfRenderingMovieFrame = optionalInEndOfRenderingMovieFrame;
 
+	uint16_t nativeIndex = uFnClientPlayMovie->iNative;
 	uFnClientPlayMovie->iNative = 0;
-	uFnClientPlayMovie->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnClientPlayMovie, &ClientPlayMovie_Params, nullptr);
-	uFnClientPlayMovie->FunctionFlags |= 0x400;
-	uFnClientPlayMovie->iNative = 6448;
+	uFnClientPlayMovie->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerController.KeepPlayingLoadingMovie
-// [0x00022401] (FUNC_Final | FUNC_Native | FUNC_Static | FUNC_Public | FUNC_AllFlags) (iNative[26585])
+// [0x00022401] (FUNC_Final | FUNC_Native | FUNC_Static | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerController::KeepPlayingLoadingMovie()
@@ -6149,15 +6120,14 @@ void AGamePlayerController::KeepPlayingLoadingMovie()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnKeepPlayingLoadingMovie->iNative;
 	uFnKeepPlayingLoadingMovie->iNative = 0;
-	uFnKeepPlayingLoadingMovie->FunctionFlags &= ~0x400;
-	AGamePlayerController::StaticClass()->ProcessEvent(uFnKeepPlayingLoadingMovie, &KeepPlayingLoadingMovie_Params, nullptr);
-	uFnKeepPlayingLoadingMovie->FunctionFlags |= 0x400;
-	uFnKeepPlayingLoadingMovie->iNative = 26585;
+	AGamePlayerController::StaticClass()->ClassDefaultObject->ProcessEvent(uFnKeepPlayingLoadingMovie, &KeepPlayingLoadingMovie_Params, nullptr);
+	uFnKeepPlayingLoadingMovie->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerController.ShowLoadingMovie
-// [0x00026401] (FUNC_Final | FUNC_Native | FUNC_Static | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[26906])
+// [0x00026401] (FUNC_Final | FUNC_Native | FUNC_Static | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bShowMovie                     (CPF_Parm)
 // uint32_t                       bPauseAfterHide                (CPF_OptionalParm | CPF_Parm)
@@ -6187,15 +6157,14 @@ void AGamePlayerController::ShowLoadingMovie(bool bShowMovie, bool optionalBPaus
 	ShowLoadingMovie_Params.KeepPlayingDuration = optionalKeepPlayingDuration;
 	ShowLoadingMovie_Params.bOverridePreviousDelays = optionalBOverridePreviousDelays;
 
+	uint16_t nativeIndex = uFnShowLoadingMovie->iNative;
 	uFnShowLoadingMovie->iNative = 0;
-	uFnShowLoadingMovie->FunctionFlags &= ~0x400;
-	AGamePlayerController::StaticClass()->ProcessEvent(uFnShowLoadingMovie, &ShowLoadingMovie_Params, nullptr);
-	uFnShowLoadingMovie->FunctionFlags |= 0x400;
-	uFnShowLoadingMovie->iNative = 26906;
+	AGamePlayerController::StaticClass()->ClassDefaultObject->ProcessEvent(uFnShowLoadingMovie, &ShowLoadingMovie_Params, nullptr);
+	uFnShowLoadingMovie->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerController.GetCurrentSoundMode
-// [0x00020103] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020103] (FUNC_Final | FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // class FName                    ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6222,7 +6191,7 @@ class FName AGamePlayerController::GetCurrentSoundMode()
 }
 
 // Function GameFramework.GamePlayerController.SetSoundMode
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    InSoundModeName                (CPF_Parm)
@@ -6251,7 +6220,7 @@ bool AGamePlayerController::SetSoundMode(const class FName& InSoundModeName)
 }
 
 // Function GameFramework.GamePlayerController.DoForceFeedbackForScreenShake
-// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_AllFlags)
+// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected)
 // Parameter Info:
 // class UCameraShake*            ShakeData                      (CPF_Parm)
 // float                          Scale                          (CPF_Parm)
@@ -6279,7 +6248,7 @@ void AGamePlayerController::DoForceFeedbackForScreenShake(class UCameraShake* Sh
 }
 
 // Function GameFramework.GamePlayerController.NotifyCrowdAgentInRadius
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -6305,7 +6274,7 @@ void AGamePlayerController::eventNotifyCrowdAgentInRadius(class AGameCrowdAgent*
 }
 
 // Function GameFramework.GamePlayerController.NotifyCrowdAgentRefresh
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerController::eventNotifyCrowdAgentRefresh()
@@ -6329,7 +6298,7 @@ void AGamePlayerController::eventNotifyCrowdAgentRefresh()
 }
 
 // Function GameFramework.GamePlayerController.CrowdDebug
-// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public | FUNC_AllFlags)
+// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bEnabled                       (CPF_Parm)
 
@@ -6355,7 +6324,7 @@ void AGamePlayerController::CrowdDebug(bool bEnabled)
 }
 
 // Function GameFramework.GamePlayerController.CrowdToggle
-// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public | FUNC_AllFlags)
+// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerController::CrowdToggle()
@@ -6379,7 +6348,7 @@ void AGamePlayerController::CrowdToggle()
 }
 
 // Function GameFramework.GamePlayerController.CrowdFocus
-// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public | FUNC_AllFlags)
+// [0x00020202] (FUNC_Defined | FUNC_Exec | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerController::CrowdFocus()
@@ -6403,7 +6372,7 @@ void AGamePlayerController::CrowdFocus()
 }
 
 // Function GameFramework.GamePlayerController.GetUIPlayerIndex
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26523])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6424,17 +6393,16 @@ int32_t AGamePlayerController::GetUIPlayerIndex()
 		return GetUIPlayerIndex_Params.ReturnValue;
 	}
 
+	uint16_t nativeIndex = uFnGetUIPlayerIndex->iNative;
 	uFnGetUIPlayerIndex->iNative = 0;
-	uFnGetUIPlayerIndex->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnGetUIPlayerIndex, &GetUIPlayerIndex_Params, nullptr);
-	uFnGetUIPlayerIndex->FunctionFlags |= 0x400;
-	uFnGetUIPlayerIndex->iNative = 26523;
+	uFnGetUIPlayerIndex->iNative = nativeIndex;
 
 	return GetUIPlayerIndex_Params.ReturnValue;
 }
 
 // Function GameFramework.NavMeshGoal_OutOfViewFrom.Recycle
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UNavMeshGoal_OutOfViewFrom::Recycle()
@@ -6458,7 +6426,7 @@ void UNavMeshGoal_OutOfViewFrom::Recycle()
 }
 
 // Function GameFramework.NavMeshGoal_OutOfViewFrom.MustBeHiddenFromThisPoint
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UNavigationHandle*       NavHandle                      (CPF_Parm)
@@ -6483,13 +6451,13 @@ bool UNavMeshGoal_OutOfViewFrom::MustBeHiddenFromThisPoint(class UNavigationHand
 	MustBeHiddenFromThisPoint_Params.NavHandle = NavHandle;
 	memcpy_s(&MustBeHiddenFromThisPoint_Params.InOutOfViewLocation, sizeof(MustBeHiddenFromThisPoint_Params.InOutOfViewLocation), &InOutOfViewLocation, sizeof(InOutOfViewLocation));
 
-	UNavMeshGoal_OutOfViewFrom::StaticClass()->ProcessEvent(uFnMustBeHiddenFromThisPoint, &MustBeHiddenFromThisPoint_Params, nullptr);
+	UNavMeshGoal_OutOfViewFrom::StaticClass()->ClassDefaultObject->ProcessEvent(uFnMustBeHiddenFromThisPoint, &MustBeHiddenFromThisPoint_Params, nullptr);
 
 	return MustBeHiddenFromThisPoint_Params.ReturnValue;
 }
 
 // Function GameFramework.NavMeshGoal_OutOfViewFrom.RecycleNative
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[20883])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UNavMeshGoal_OutOfViewFrom::RecycleNative()
@@ -6509,15 +6477,14 @@ void UNavMeshGoal_OutOfViewFrom::RecycleNative()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnRecycleNative->iNative;
 	uFnRecycleNative->iNative = 0;
-	uFnRecycleNative->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnRecycleNative, &RecycleNative_Params, nullptr);
-	uFnRecycleNative->FunctionFlags |= 0x400;
-	uFnRecycleNative->iNative = 20883;
+	uFnRecycleNative->iNative = nativeIndex;
 }
 
 // Function GameFramework.NavMeshPath_BiasAgainstPolysWithinDistanceOfLocations.Recycle
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UNavMeshPath_BiasAgainstPolysWithinDistanceOfLocations::Recycle()
@@ -6541,7 +6508,7 @@ void UNavMeshPath_BiasAgainstPolysWithinDistanceOfLocations::Recycle()
 }
 
 // Function GameFramework.NavMeshPath_BiasAgainstPolysWithinDistanceOfLocations.BiasAgainstPolysWithinDistanceOfLocations
-// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022002] (FUNC_Defined | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UNavigationHandle*       NavHandle                      (CPF_Parm)
@@ -6572,13 +6539,13 @@ bool UNavMeshPath_BiasAgainstPolysWithinDistanceOfLocations::BiasAgainstPolysWit
 	BiasAgainstPolysWithinDistanceOfLocations_Params.InDistanceToCheck = InDistanceToCheck;
 	memcpy_s(&BiasAgainstPolysWithinDistanceOfLocations_Params.InLocationsToCheck, sizeof(BiasAgainstPolysWithinDistanceOfLocations_Params.InLocationsToCheck), &InLocationsToCheck, sizeof(InLocationsToCheck));
 
-	UNavMeshPath_BiasAgainstPolysWithinDistanceOfLocations::StaticClass()->ProcessEvent(uFnBiasAgainstPolysWithinDistanceOfLocations, &BiasAgainstPolysWithinDistanceOfLocations_Params, nullptr);
+	UNavMeshPath_BiasAgainstPolysWithinDistanceOfLocations::StaticClass()->ClassDefaultObject->ProcessEvent(uFnBiasAgainstPolysWithinDistanceOfLocations, &BiasAgainstPolysWithinDistanceOfLocations_Params, nullptr);
 
 	return BiasAgainstPolysWithinDistanceOfLocations_Params.ReturnValue;
 }
 
 // Function GameFramework.SeqAct_GameCrowdPopulationManagerToggle.GetObjClassVersion
-// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6599,13 +6566,13 @@ int32_t USeqAct_GameCrowdPopulationManagerToggle::eventGetObjClassVersion()
 		return GetObjClassVersion_Params.ReturnValue;
 	}
 
-	USeqAct_GameCrowdPopulationManagerToggle::StaticClass()->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
+	USeqAct_GameCrowdPopulationManagerToggle::StaticClass()->ClassDefaultObject->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
 
 	return GetObjClassVersion_Params.ReturnValue;
 }
 
 // Function GameFramework.SeqAct_GameCrowdPopulationManagerToggle.FindPopMgrTarget
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void USeqAct_GameCrowdPopulationManagerToggle::eventFindPopMgrTarget()
@@ -6629,7 +6596,7 @@ void USeqAct_GameCrowdPopulationManagerToggle::eventFindPopMgrTarget()
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.GetObjClassVersion
-// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6650,13 +6617,13 @@ int32_t USeqAct_GameCrowdSpawner::eventGetObjClassVersion()
 		return GetObjClassVersion_Params.ReturnValue;
 	}
 
-	USeqAct_GameCrowdSpawner::StaticClass()->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
+	USeqAct_GameCrowdSpawner::StaticClass()->ClassDefaultObject->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
 
 	return GetObjClassVersion_Params.ReturnValue;
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.CreateNewAgent
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // class AGameCrowdAgent*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  SpawnLoc                       (CPF_Parm)
@@ -6689,7 +6656,7 @@ class AGameCrowdAgent* USeqAct_GameCrowdSpawner::CreateNewAgent(class AActor* Sp
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.SpawnAgent
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  SpawnLoc                       (CPF_Parm)
@@ -6718,7 +6685,7 @@ class AGameCrowdAgent* USeqAct_GameCrowdSpawner::eventSpawnAgent(class AActor* S
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.UpdateSpawning
-// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27004])
+// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // float                          DeltaSeconds                   (CPF_Parm)
 
@@ -6740,15 +6707,14 @@ void USeqAct_GameCrowdSpawner::UpdateSpawning(float DeltaSeconds)
 	}
 	UpdateSpawning_Params.DeltaSeconds = DeltaSeconds;
 
+	uint16_t nativeIndex = uFnUpdateSpawning->iNative;
 	uFnUpdateSpawning->iNative = 0;
-	uFnUpdateSpawning->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnUpdateSpawning, &UpdateSpawning_Params, nullptr);
-	uFnUpdateSpawning->FunctionFlags |= 0x400;
-	uFnUpdateSpawning->iNative = 27004;
+	uFnUpdateSpawning->iNative = nativeIndex;
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.KillAgents
-// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26586])
+// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void USeqAct_GameCrowdSpawner::KillAgents()
@@ -6768,15 +6734,14 @@ void USeqAct_GameCrowdSpawner::KillAgents()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnKillAgents->iNative;
 	uFnKillAgents->iNative = 0;
-	uFnKillAgents->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnKillAgents, &KillAgents_Params, nullptr);
-	uFnKillAgents->FunctionFlags |= 0x400;
-	uFnKillAgents->iNative = 26586;
+	uFnKillAgents->iNative = nativeIndex;
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.CacheSpawnerVars
-// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26261])
+// [0x00020500] (FUNC_Simulated | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void USeqAct_GameCrowdSpawner::CacheSpawnerVars()
@@ -6796,15 +6761,14 @@ void USeqAct_GameCrowdSpawner::CacheSpawnerVars()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnCacheSpawnerVars->iNative;
 	uFnCacheSpawnerVars->iNative = 0;
-	uFnCacheSpawnerVars->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCacheSpawnerVars, &CacheSpawnerVars_Params, nullptr);
-	uFnCacheSpawnerVars->FunctionFlags |= 0x400;
-	uFnCacheSpawnerVars->iNative = 26261;
+	uFnCacheSpawnerVars->iNative = nativeIndex;
 }
 
 // Function GameFramework.SeqAct_GameCrowdSpawner.SpawnedAgent
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26916])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         NewAgent                       (CPF_Parm)
 
@@ -6826,15 +6790,14 @@ void USeqAct_GameCrowdSpawner::SpawnedAgent(class AGameCrowdAgent* NewAgent)
 	}
 	SpawnedAgent_Params.NewAgent = NewAgent;
 
+	uint16_t nativeIndex = uFnSpawnedAgent->iNative;
 	uFnSpawnedAgent->iNative = 0;
-	uFnSpawnedAgent->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSpawnedAgent, &SpawnedAgent_Params, nullptr);
-	uFnSpawnedAgent->FunctionFlags |= 0x400;
-	uFnSpawnedAgent->iNative = 26916;
+	uFnSpawnedAgent->iNative = nativeIndex;
 }
 
 // Function GameFramework.SeqAct_PlayAgentAnimation.SetCurrentAnimationActionFor
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgentSkeletal* Agent                          (CPF_Parm)
 
@@ -6860,7 +6823,7 @@ void USeqAct_PlayAgentAnimation::SetCurrentAnimationActionFor(class AGameCrowdAg
 }
 
 // Function GameFramework.SeqAct_PlayAgentAnimation.GetObjClassVersion
-// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public | FUNC_AllFlags)
+// [0x00022802] (FUNC_Defined | FUNC_Event | FUNC_Static | FUNC_Public)
 // Parameter Info:
 // int32_t                        ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -6881,13 +6844,13 @@ int32_t USeqAct_PlayAgentAnimation::eventGetObjClassVersion()
 		return GetObjClassVersion_Params.ReturnValue;
 	}
 
-	USeqAct_PlayAgentAnimation::StaticClass()->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
+	USeqAct_PlayAgentAnimation::StaticClass()->ClassDefaultObject->ProcessEvent(uFnGetObjClassVersion, &GetObjClassVersion_Params, nullptr);
 
 	return GetObjClassVersion_Params.ReturnValue;
 }
 
 // Function GameFramework.GameCameraBase.ModifyPostProcessSettings
-// [0x00420800] (FUNC_Event | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420800] (FUNC_Event | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FPostProcessSettings    PP                             (CPF_Parm | CPF_OutParm)
 
@@ -6915,7 +6878,7 @@ void UGameCameraBase::eventModifyPostProcessSettings(struct FPostProcessSettings
 }
 
 // Function GameFramework.GameCameraBase.Init
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void UGameCameraBase::Init()
@@ -6939,7 +6902,7 @@ void UGameCameraBase::Init()
 }
 
 // Function GameFramework.GameCameraBase.ProcessViewRotation
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // class AActor*                  ViewTarget                     (CPF_Parm)
@@ -6974,7 +6937,7 @@ void UGameCameraBase::ProcessViewRotation(float DeltaTime, class AActor* ViewTar
 }
 
 // Function GameFramework.GameCameraBase.UpdateCamera
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // class AGamePlayerCamera*       CameraActor                    (CPF_Parm)
@@ -7008,7 +6971,7 @@ void UGameCameraBase::UpdateCamera(class APawn* P, class AGamePlayerCamera* Came
 }
 
 // Function GameFramework.GameCameraBase.ResetInterpolation
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameCameraBase::ResetInterpolation()
@@ -7032,7 +6995,7 @@ void UGameCameraBase::ResetInterpolation()
 }
 
 // Function GameFramework.GameCameraBase.OnBecomeInActive
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class UGameCameraBase*         NewCamera                      (CPF_Parm)
 
@@ -7058,7 +7021,7 @@ void UGameCameraBase::OnBecomeInActive(class UGameCameraBase* NewCamera)
 }
 
 // Function GameFramework.GameCameraBase.OnBecomeActive
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class UGameCameraBase*         OldCamera                      (CPF_Parm)
 
@@ -7084,7 +7047,7 @@ void UGameCameraBase::OnBecomeActive(class UGameCameraBase* OldCamera)
 }
 
 // Function GameFramework.GameThirdPersonCamera.ResetInterpolation
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameThirdPersonCamera::ResetInterpolation()
@@ -7108,7 +7071,7 @@ void UGameThirdPersonCamera::ResetInterpolation()
 }
 
 // Function GameFramework.GameThirdPersonCamera.ModifyPostProcessSettings
-// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FPostProcessSettings    PP                             (CPF_Parm | CPF_OutParm)
 
@@ -7136,7 +7099,7 @@ void UGameThirdPersonCamera::eventModifyPostProcessSettings(struct FPostProcessS
 }
 
 // Function GameFramework.GameThirdPersonCamera.OnBecomeActive
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameCameraBase*         OldCamera                      (CPF_Parm)
 
@@ -7162,7 +7125,7 @@ void UGameThirdPersonCamera::OnBecomeActive(class UGameCameraBase* OldCamera)
 }
 
 // Function GameFramework.GameThirdPersonCamera.ProcessViewRotation
-// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // class AActor*                  ViewTarget                     (CPF_Parm)
@@ -7197,7 +7160,7 @@ void UGameThirdPersonCamera::ProcessViewRotation(float DeltaTime, class AActor* 
 }
 
 // Function GameFramework.GameThirdPersonCamera.UpdateCameraMode
-// [0x00080003] (FUNC_Final | FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080003] (FUNC_Final | FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 
@@ -7223,7 +7186,7 @@ void UGameThirdPersonCamera::UpdateCameraMode(class APawn* P)
 }
 
 // Function GameFramework.GameThirdPersonCamera.FindBestCameraMode
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameThirdPersonCameraMode* ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   P                              (CPF_Parm)
@@ -7252,7 +7215,7 @@ class UGameThirdPersonCameraMode* UGameThirdPersonCamera::FindBestCameraMode(cla
 }
 
 // Function GameFramework.GameThirdPersonCamera.AdjustFocusPointInterpolation
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // struct FRotator                Delta                          (CPF_Parm)
 
@@ -7278,7 +7241,7 @@ void UGameThirdPersonCamera::AdjustFocusPointInterpolation(const struct FRotator
 }
 
 // Function GameFramework.GameThirdPersonCamera.GetActualFocusLocation
-// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00820002] (FUNC_Defined | FUNC_Public | FUNC_HasDefaults)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -7305,7 +7268,7 @@ struct FVector UGameThirdPersonCamera::GetActualFocusLocation()
 }
 
 // Function GameFramework.GameThirdPersonCamera.UpdateFocusPoint
-// [0x00080802] (FUNC_Defined | FUNC_Event | FUNC_Protected | FUNC_AllFlags)
+// [0x00080802] (FUNC_Defined | FUNC_Event | FUNC_Protected)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 
@@ -7331,7 +7294,7 @@ void UGameThirdPersonCamera::eventUpdateFocusPoint(class APawn* P)
 }
 
 // Function GameFramework.GameThirdPersonCamera.ClearFocusPoint
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // uint32_t                       bLeaveCameraRotation           (CPF_OptionalParm | CPF_Parm)
 
@@ -7357,7 +7320,7 @@ void UGameThirdPersonCamera::ClearFocusPoint(bool optionalBLeaveCameraRotation)
 }
 
 // Function GameFramework.GameThirdPersonCamera.GetFocusActor
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AActor*                  ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -7384,7 +7347,7 @@ class AActor* UGameThirdPersonCamera::GetFocusActor()
 }
 
 // Function GameFramework.GameThirdPersonCamera.SetFocusOnActor
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // class AActor*                  FocusActor                     (CPF_Parm)
 // class FName                    FocusBoneName                  (CPF_Parm)
@@ -7426,7 +7389,7 @@ void UGameThirdPersonCamera::SetFocusOnActor(class AActor* FocusActor, const cla
 }
 
 // Function GameFramework.GameThirdPersonCamera.SetFocusOnLoc
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // struct FVector                 FocusWorldLoc                  (CPF_Parm)
 // struct FVector2D               InterpSpeedRange               (CPF_Parm)
@@ -7466,7 +7429,7 @@ void UGameThirdPersonCamera::SetFocusOnLoc(const struct FVector& FocusWorldLoc, 
 }
 
 // Function GameFramework.GameThirdPersonCamera.AdjustTurn
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // int32_t                        AngleOffset                    (CPF_Parm)
 
@@ -7492,7 +7455,7 @@ void UGameThirdPersonCamera::AdjustTurn(int32_t AngleOffset)
 }
 
 // Function GameFramework.GameThirdPersonCamera.EndTurn
-// [0x00020400] (FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26414])
+// [0x00020400] (FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGameThirdPersonCamera::EndTurn()
@@ -7512,15 +7475,14 @@ void UGameThirdPersonCamera::EndTurn()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnEndTurn->iNative;
 	uFnEndTurn->iNative = 0;
-	uFnEndTurn->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnEndTurn, &EndTurn_Params, nullptr);
-	uFnEndTurn->FunctionFlags |= 0x400;
-	uFnEndTurn->iNative = 26414;
+	uFnEndTurn->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameThirdPersonCamera.BeginTurn
-// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024002] (FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // int32_t                        StartAngle                     (CPF_Parm)
 // int32_t                        EndAngle                       (CPF_Parm)
@@ -7554,7 +7516,7 @@ void UGameThirdPersonCamera::BeginTurn(int32_t StartAngle, int32_t EndAngle, flo
 }
 
 // Function GameFramework.GameThirdPersonCamera.PlayerUpdateCamera
-// [0x00480400] (FUNC_Native | FUNC_Protected | FUNC_HasOutParms | FUNC_AllFlags) (iNative[26763])
+// [0x00480400] (FUNC_Native | FUNC_Protected | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // class AGamePlayerCamera*       CameraActor                    (CPF_Parm)
@@ -7582,17 +7544,16 @@ void UGameThirdPersonCamera::PlayerUpdateCamera(class APawn* P, class AGamePlaye
 	PlayerUpdateCamera_Params.DeltaTime = DeltaTime;
 	memcpy_s(&PlayerUpdateCamera_Params.OutVT, sizeof(PlayerUpdateCamera_Params.OutVT), &outOutVT, sizeof(outOutVT));
 
+	uint16_t nativeIndex = uFnPlayerUpdateCamera->iNative;
 	uFnPlayerUpdateCamera->iNative = 0;
-	uFnPlayerUpdateCamera->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnPlayerUpdateCamera, &PlayerUpdateCamera_Params, nullptr);
-	uFnPlayerUpdateCamera->FunctionFlags |= 0x400;
-	uFnPlayerUpdateCamera->iNative = 26763;
+	uFnPlayerUpdateCamera->iNative = nativeIndex;
 
 	memcpy_s(&outOutVT, sizeof(outOutVT), &PlayerUpdateCamera_Params.OutVT, sizeof(PlayerUpdateCamera_Params.OutVT));
 }
 
 // Function GameFramework.GameThirdPersonCamera.UpdateCamera
-// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // class AGamePlayerCamera*       CameraActor                    (CPF_Parm)
@@ -7626,7 +7587,7 @@ void UGameThirdPersonCamera::UpdateCamera(class APawn* P, class AGamePlayerCamer
 }
 
 // Function GameFramework.GameThirdPersonCamera.GetDesiredFOV
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   ViewedPawn                     (CPF_Parm)
@@ -7655,7 +7616,7 @@ float UGameThirdPersonCamera::eventGetDesiredFOV(class APawn* ViewedPawn)
 }
 
 // Function GameFramework.GameThirdPersonCamera.Init
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameThirdPersonCamera::Init()
@@ -7679,7 +7640,7 @@ void UGameThirdPersonCamera::Init()
 }
 
 // Function GameFramework.GameThirdPersonCamera.Reset
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void UGameThirdPersonCamera::Reset()
@@ -7703,7 +7664,7 @@ void UGameThirdPersonCamera::Reset()
 }
 
 // Function GameFramework.GameThirdPersonCamera.CreateCameraMode
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class UGameThirdPersonCameraMode* ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UClass*                  ModeClass                      (CPF_Parm)
@@ -7732,7 +7693,7 @@ class UGameThirdPersonCameraMode* UGameThirdPersonCamera::CreateCameraMode(class
 }
 
 // Function GameFramework.GamePlayerCamera.AdjustFOVForViewport
-// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[26017])
+// [0x00080401] (FUNC_Final | FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          inHorizFOV                     (CPF_Parm)
@@ -7757,17 +7718,16 @@ float AGamePlayerCamera::AdjustFOVForViewport(float inHorizFOV, class APawn* Cam
 	AdjustFOVForViewport_Params.inHorizFOV = inHorizFOV;
 	AdjustFOVForViewport_Params.CameraTargetPawn = CameraTargetPawn;
 
+	uint16_t nativeIndex = uFnAdjustFOVForViewport->iNative;
 	uFnAdjustFOVForViewport->iNative = 0;
-	uFnAdjustFOVForViewport->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnAdjustFOVForViewport, &AdjustFOVForViewport_Params, nullptr);
-	uFnAdjustFOVForViewport->FunctionFlags |= 0x400;
-	uFnAdjustFOVForViewport->iNative = 26017;
+	uFnAdjustFOVForViewport->iNative = nativeIndex;
 
 	return AdjustFOVForViewport_Params.ReturnValue;
 }
 
 // Function GameFramework.GamePlayerCamera.GetActualLookatLocation
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  FocusActor                     (CPF_Parm)
@@ -7800,7 +7760,7 @@ bool AGamePlayerCamera::GetActualLookatLocation(class AActor* FocusActor, struct
 }
 
 // Function GameFramework.GamePlayerCamera.ClearFocusActor
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerCamera::ClearFocusActor()
@@ -7824,7 +7784,7 @@ void AGamePlayerCamera::ClearFocusActor()
 }
 
 // Function GameFramework.GamePlayerCamera.ProcessViewRotation
-// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // struct FRotator                out_ViewRotation               (CPF_Parm | CPF_OutParm)
@@ -7857,7 +7817,7 @@ void AGamePlayerCamera::ProcessViewRotation(float DeltaTime, struct FRotator& ou
 }
 
 // Function GameFramework.GamePlayerCamera.ResetInterpolation
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerCamera::ResetInterpolation()
@@ -7881,7 +7841,7 @@ void AGamePlayerCamera::ResetInterpolation()
 }
 
 // Function GameFramework.GamePlayerCamera.SetColorScale
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // struct FVector                 NewColorScale                  (CPF_Parm)
 
@@ -7907,7 +7867,7 @@ void AGamePlayerCamera::SetColorScale(const struct FVector& NewColorScale)
 }
 
 // Function GameFramework.GamePlayerCamera.DisplayDebug
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class AHUD*                    HUD                            (CPF_Parm)
 // float                          out_YL                         (CPF_Parm | CPF_OutParm)
@@ -7940,7 +7900,7 @@ void AGamePlayerCamera::DisplayDebug(class AHUD* HUD, float& outOut_YL, float& o
 }
 
 // Function GameFramework.GamePlayerCamera.ExecCameraLensEffects
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          CamFOVDeg                      (CPF_Parm)
 // struct FVector                 CamLoc                         (CPF_Parm | CPF_OutParm)
@@ -7973,7 +7933,7 @@ void AGamePlayerCamera::ExecCameraLensEffects(float CamFOVDeg, struct FVector& o
 }
 
 // Function GameFramework.GamePlayerCamera.UpdateCameraLensEffects
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FTViewTarget            OutVT                          (CPF_Const | CPF_Parm | CPF_OutParm)
 
@@ -8001,7 +7961,7 @@ void AGamePlayerCamera::UpdateCameraLensEffects(struct FTViewTarget& outOutVT)
 }
 
 // Function GameFramework.GamePlayerCamera.UpdateViewTarget
-// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // struct FTViewTarget            OutVT                          (CPF_Parm | CPF_OutParm)
@@ -8031,7 +7991,7 @@ void AGamePlayerCamera::UpdateViewTarget(float DeltaTime, struct FTViewTarget& o
 }
 
 // Function GameFramework.GamePlayerCamera.ShouldConstrainAspectRatio
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -8058,7 +8018,7 @@ bool AGamePlayerCamera::ShouldConstrainAspectRatio()
 }
 
 // Function GameFramework.GamePlayerCamera.FindBestCameraType
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class UGameCameraBase*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  CameraTarget                   (CPF_Parm)
@@ -8087,7 +8047,7 @@ class UGameCameraBase* AGamePlayerCamera::FindBestCameraType(class AActor* Camer
 }
 
 // Function GameFramework.GamePlayerCamera.Reset
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerCamera::Reset()
@@ -8111,7 +8071,7 @@ void AGamePlayerCamera::Reset()
 }
 
 // Function GameFramework.GamePlayerCamera.PostBeginPlay
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 
 void AGamePlayerCamera::PostBeginPlay()
@@ -8135,7 +8095,7 @@ void AGamePlayerCamera::PostBeginPlay()
 }
 
 // Function GameFramework.GamePlayerCamera.CacheLastTargetBaseInfo
-// [0x00080400] (FUNC_Native | FUNC_Protected | FUNC_AllFlags) (iNative[26260])
+// [0x00080400] (FUNC_Native | FUNC_Protected)
 // Parameter Info:
 // class AActor*                  TargetBase                     (CPF_Parm)
 
@@ -8157,15 +8117,14 @@ void AGamePlayerCamera::CacheLastTargetBaseInfo(class AActor* TargetBase)
 	}
 	CacheLastTargetBaseInfo_Params.TargetBase = TargetBase;
 
+	uint16_t nativeIndex = uFnCacheLastTargetBaseInfo->iNative;
 	uFnCacheLastTargetBaseInfo->iNative = 0;
-	uFnCacheLastTargetBaseInfo->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnCacheLastTargetBaseInfo, &CacheLastTargetBaseInfo_Params, nullptr);
-	uFnCacheLastTargetBaseInfo->FunctionFlags |= 0x400;
-	uFnCacheLastTargetBaseInfo->iNative = 26260;
+	uFnCacheLastTargetBaseInfo->iNative = nativeIndex;
 }
 
 // Function GameFramework.GamePlayerCamera.CreateCamera
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // class UGameCameraBase*         ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UClass*                  CameraClass                    (CPF_Parm)
@@ -8194,7 +8153,7 @@ class UGameCameraBase* AGamePlayerCamera::CreateCamera(class UClass* CameraClass
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.SetViewOffset
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[26895])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FViewOffsetData         NewViewOffset                  (CPF_Const | CPF_Parm | CPF_OutParm)
 
@@ -8216,17 +8175,16 @@ void UGameThirdPersonCameraMode::SetViewOffset(struct FViewOffsetData& outNewVie
 	}
 	memcpy_s(&SetViewOffset_Params.NewViewOffset, sizeof(SetViewOffset_Params.NewViewOffset), &outNewViewOffset, sizeof(outNewViewOffset));
 
+	uint16_t nativeIndex = uFnSetViewOffset->iNative;
 	uFnSetViewOffset->iNative = 0;
-	uFnSetViewOffset->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetViewOffset, &SetViewOffset_Params, nullptr);
-	uFnSetViewOffset->FunctionFlags |= 0x400;
-	uFnSetViewOffset->iNative = 26895;
+	uFnSetViewOffset->iNative = nativeIndex;
 
 	memcpy_s(&outNewViewOffset, sizeof(outNewViewOffset), &SetViewOffset_Params.NewViewOffset, sizeof(SetViewOffset_Params.NewViewOffset));
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.ModifyPostProcessSettings
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // struct FPostProcessSettings    PP                             (CPF_Parm | CPF_OutParm)
 
@@ -8254,7 +8212,7 @@ void UGameThirdPersonCameraMode::ModifyPostProcessSettings(struct FPostProcessSe
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.UpdatePostProcess
-// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // struct FTViewTarget            VT                             (CPF_Const | CPF_Parm | CPF_OutParm)
@@ -8284,7 +8242,7 @@ void UGameThirdPersonCameraMode::UpdatePostProcess(float DeltaTime, struct FTVie
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.DOFTrace
-// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00880102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_HasDefaults)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  TraceOwner                     (CPF_Parm)
@@ -8317,7 +8275,7 @@ struct FVector UGameThirdPersonCameraMode::DOFTrace(class AActor* TraceOwner, co
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.GetDOFFocusLoc
-// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected | FUNC_AllFlags)
+// [0x00080102] (FUNC_Defined | FUNC_Simulated | FUNC_Protected)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AActor*                  TraceOwner                     (CPF_Parm)
@@ -8350,7 +8308,7 @@ struct FVector UGameThirdPersonCameraMode::GetDOFFocusLoc(class AActor* TraceOwn
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.ProcessViewRotation
-// [0x00420100] (FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420100] (FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // class AActor*                  ViewTarget                     (CPF_Parm)
@@ -8385,7 +8343,7 @@ void UGameThirdPersonCameraMode::ProcessViewRotation(float DeltaTime, class AAct
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.SetFocusPoint
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   ViewedPawn                     (CPF_Parm)
@@ -8414,7 +8372,7 @@ bool UGameThirdPersonCameraMode::SetFocusPoint(class APawn* ViewedPawn)
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.GetCameraWorstCaseLoc
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   TargetPawn                     (CPF_Parm)
@@ -8443,7 +8401,7 @@ struct FVector UGameThirdPersonCameraMode::eventGetCameraWorstCaseLoc(class APaw
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.GetDesiredFOV
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   ViewedPawn                     (CPF_Parm)
@@ -8472,7 +8430,7 @@ float UGameThirdPersonCameraMode::GetDesiredFOV(class APawn* ViewedPawn)
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.AdjustViewOffset
-// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020802] (FUNC_Defined | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class APawn*                   P                              (CPF_Parm)
@@ -8503,7 +8461,7 @@ struct FVector UGameThirdPersonCameraMode::eventAdjustViewOffset(class APawn* P,
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.OnBecomeInActive
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class APawn*                   TargetPawn                     (CPF_Parm)
 // class UGameThirdPersonCameraMode* NewMode                        (CPF_Parm)
@@ -8531,7 +8489,7 @@ void UGameThirdPersonCameraMode::OnBecomeInActive(class APawn* TargetPawn, class
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.OnBecomeActive
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class APawn*                   TargetPawn                     (CPF_Parm)
 // class UGameThirdPersonCameraMode* PrevMode                       (CPF_Parm)
@@ -8559,7 +8517,7 @@ void UGameThirdPersonCameraMode::OnBecomeActive(class APawn* TargetPawn, class U
 }
 
 // Function GameFramework.GameThirdPersonCameraMode.Init
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void UGameThirdPersonCameraMode::Init()
@@ -8583,7 +8541,7 @@ void UGameThirdPersonCameraMode::Init()
 }
 
 // Function GameFramework.GameDecalManager.SpawnDecalMinimal
-// [0x00C20003] (FUNC_Final | FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20003] (FUNC_Final | FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // class UGameDecal*              ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm | CPF_EditInline)
 // float                          InDecalLifeSpan                (CPF_Const | CPF_Parm)
@@ -8618,7 +8576,7 @@ class UGameDecal* AGameDecalManager::SpawnDecalMinimal(float InDecalLifeSpan, fl
 }
 
 // Function GameFramework.GameDecalManager.IsTooCloseToActiveDecal
-// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags) (iNative[26583])
+// [0x00420401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          InCanSpawnDistance             (CPF_Const | CPF_Parm)
@@ -8643,11 +8601,10 @@ bool AGameDecalManager::IsTooCloseToActiveDecal(float InCanSpawnDistance, struct
 	IsTooCloseToActiveDecal_Params.InCanSpawnDistance = InCanSpawnDistance;
 	memcpy_s(&IsTooCloseToActiveDecal_Params.DecalLocation, sizeof(IsTooCloseToActiveDecal_Params.DecalLocation), &outDecalLocation, sizeof(outDecalLocation));
 
+	uint16_t nativeIndex = uFnIsTooCloseToActiveDecal->iNative;
 	uFnIsTooCloseToActiveDecal->iNative = 0;
-	uFnIsTooCloseToActiveDecal->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnIsTooCloseToActiveDecal, &IsTooCloseToActiveDecal_Params, nullptr);
-	uFnIsTooCloseToActiveDecal->FunctionFlags |= 0x400;
-	uFnIsTooCloseToActiveDecal->iNative = 26583;
+	uFnIsTooCloseToActiveDecal->iNative = nativeIndex;
 
 	memcpy_s(&outDecalLocation, sizeof(outDecalLocation), &IsTooCloseToActiveDecal_Params.DecalLocation, sizeof(IsTooCloseToActiveDecal_Params.DecalLocation));
 
@@ -8655,7 +8612,7 @@ bool AGameDecalManager::IsTooCloseToActiveDecal(float InCanSpawnDistance, struct
 }
 
 // Function GameFramework.GameParticleEventManager.HandleParticleModuleEventSendToGame
-// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420802] (FUNC_Defined | FUNC_Event | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class UParticleModuleEventSendToGame* InEvent                        (CPF_Parm)
 // struct FVector                 InCollideDirection             (CPF_Const | CPF_Parm | CPF_OutParm)
@@ -8694,7 +8651,7 @@ void AGameParticleEventManager::eventHandleParticleModuleEventSendToGame(class U
 }
 
 // Function GameFramework.GameSpecialMove.RelativeToWorldOffset
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26840])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FRotator                InRotation                     (CPF_Parm)
@@ -8719,17 +8676,16 @@ struct FVector UGameSpecialMove::RelativeToWorldOffset(const struct FRotator& In
 	memcpy_s(&RelativeToWorldOffset_Params.InRotation, sizeof(RelativeToWorldOffset_Params.InRotation), &InRotation, sizeof(InRotation));
 	memcpy_s(&RelativeToWorldOffset_Params.RelativeSpaceOffset, sizeof(RelativeToWorldOffset_Params.RelativeSpaceOffset), &RelativeSpaceOffset, sizeof(RelativeSpaceOffset));
 
+	uint16_t nativeIndex = uFnRelativeToWorldOffset->iNative;
 	uFnRelativeToWorldOffset->iNative = 0;
-	uFnRelativeToWorldOffset->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnRelativeToWorldOffset, &RelativeToWorldOffset_Params, nullptr);
-	uFnRelativeToWorldOffset->FunctionFlags |= 0x400;
-	uFnRelativeToWorldOffset->iNative = 26840;
+	uFnRelativeToWorldOffset->iNative = nativeIndex;
 
 	return RelativeToWorldOffset_Params.ReturnValue;
 }
 
 // Function GameFramework.GameSpecialMove.WorldToRelativeOffset
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[27025])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FVector                 ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FRotator                InRotation                     (CPF_Parm)
@@ -8754,17 +8710,16 @@ struct FVector UGameSpecialMove::WorldToRelativeOffset(const struct FRotator& In
 	memcpy_s(&WorldToRelativeOffset_Params.InRotation, sizeof(WorldToRelativeOffset_Params.InRotation), &InRotation, sizeof(InRotation));
 	memcpy_s(&WorldToRelativeOffset_Params.WorldSpaceOffset, sizeof(WorldToRelativeOffset_Params.WorldSpaceOffset), &WorldSpaceOffset, sizeof(WorldSpaceOffset));
 
+	uint16_t nativeIndex = uFnWorldToRelativeOffset->iNative;
 	uFnWorldToRelativeOffset->iNative = 0;
-	uFnWorldToRelativeOffset->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnWorldToRelativeOffset, &WorldToRelativeOffset_Params, nullptr);
-	uFnWorldToRelativeOffset->FunctionFlags |= 0x400;
-	uFnWorldToRelativeOffset->iNative = 27025;
+	uFnWorldToRelativeOffset->iNative = nativeIndex;
 
 	return WorldToRelativeOffset_Params.ReturnValue;
 }
 
 // Function GameFramework.GameSpecialMove.ForcePawnRotation
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26474])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // struct FRotator                NewRotation                    (CPF_Parm)
@@ -8788,15 +8743,14 @@ void UGameSpecialMove::ForcePawnRotation(class APawn* P, const struct FRotator& 
 	ForcePawnRotation_Params.P = P;
 	memcpy_s(&ForcePawnRotation_Params.NewRotation, sizeof(ForcePawnRotation_Params.NewRotation), &NewRotation, sizeof(NewRotation));
 
+	uint16_t nativeIndex = uFnForcePawnRotation->iNative;
 	uFnForcePawnRotation->iNative = 0;
-	uFnForcePawnRotation->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnForcePawnRotation, &ForcePawnRotation_Params, nullptr);
-	uFnForcePawnRotation->FunctionFlags |= 0x400;
-	uFnForcePawnRotation->iNative = 26474;
+	uFnForcePawnRotation->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameSpecialMove.MessageEvent
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    EventName                      (CPF_Parm)
@@ -8827,7 +8781,7 @@ bool UGameSpecialMove::MessageEvent(const class FName& EventName, class UObject*
 }
 
 // Function GameFramework.GameSpecialMove.ResetFacePreciseRotation
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26847])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 
 void UGameSpecialMove::ResetFacePreciseRotation()
@@ -8847,15 +8801,14 @@ void UGameSpecialMove::ResetFacePreciseRotation()
 		return;
 	}
 
+	uint16_t nativeIndex = uFnResetFacePreciseRotation->iNative;
 	uFnResetFacePreciseRotation->iNative = 0;
-	uFnResetFacePreciseRotation->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnResetFacePreciseRotation, &ResetFacePreciseRotation_Params, nullptr);
-	uFnResetFacePreciseRotation->FunctionFlags |= 0x400;
-	uFnResetFacePreciseRotation->iNative = 26847;
+	uFnResetFacePreciseRotation->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameSpecialMove.ReachedPrecisePosition
-// [0x00020800] (FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020800] (FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void UGameSpecialMove::eventReachedPrecisePosition()
@@ -8879,7 +8832,7 @@ void UGameSpecialMove::eventReachedPrecisePosition()
 }
 
 // Function GameFramework.GameSpecialMove.SetFacePreciseRotation
-// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public | FUNC_AllFlags) (iNative[26885])
+// [0x00020401] (FUNC_Final | FUNC_Native | FUNC_Public)
 // Parameter Info:
 // struct FRotator                RotationToFace                 (CPF_Parm)
 // float                          InterpolationTime              (CPF_Parm)
@@ -8903,15 +8856,14 @@ void UGameSpecialMove::SetFacePreciseRotation(const struct FRotator& RotationToF
 	memcpy_s(&SetFacePreciseRotation_Params.RotationToFace, sizeof(SetFacePreciseRotation_Params.RotationToFace), &RotationToFace, sizeof(RotationToFace));
 	SetFacePreciseRotation_Params.InterpolationTime = InterpolationTime;
 
+	uint16_t nativeIndex = uFnSetFacePreciseRotation->iNative;
 	uFnSetFacePreciseRotation->iNative = 0;
-	uFnSetFacePreciseRotation->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetFacePreciseRotation, &SetFacePreciseRotation_Params, nullptr);
-	uFnSetFacePreciseRotation->FunctionFlags |= 0x400;
-	uFnSetFacePreciseRotation->iNative = 26885;
+	uFnSetFacePreciseRotation->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameSpecialMove.SetReachPreciseDestination
-// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags) (iNative[26892])
+// [0x00024401] (FUNC_Final | FUNC_Native | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // struct FVector                 DestinationToReach             (CPF_Parm)
 // uint32_t                       bCancel                        (CPF_OptionalParm | CPF_Parm)
@@ -8935,15 +8887,14 @@ void UGameSpecialMove::SetReachPreciseDestination(const struct FVector& Destinat
 	memcpy_s(&SetReachPreciseDestination_Params.DestinationToReach, sizeof(SetReachPreciseDestination_Params.DestinationToReach), &DestinationToReach, sizeof(DestinationToReach));
 	SetReachPreciseDestination_Params.bCancel = optionalBCancel;
 
+	uint16_t nativeIndex = uFnSetReachPreciseDestination->iNative;
 	uFnSetReachPreciseDestination->iNative = 0;
-	uFnSetReachPreciseDestination->FunctionFlags &= ~0x400;
 	this->ProcessEvent(uFnSetReachPreciseDestination, &SetReachPreciseDestination_Params, nullptr);
-	uFnSetReachPreciseDestination->FunctionFlags |= 0x400;
-	uFnSetReachPreciseDestination->iNative = 26892;
+	uFnSetReachPreciseDestination->iNative = nativeIndex;
 }
 
 // Function GameFramework.GameSpecialMove.ShouldReplicate
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -8970,7 +8921,7 @@ bool UGameSpecialMove::ShouldReplicate()
 }
 
 // Function GameFramework.GameSpecialMove.SpecialMoveFlagsUpdated
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 
 void UGameSpecialMove::SpecialMoveFlagsUpdated()
@@ -8994,7 +8945,7 @@ void UGameSpecialMove::SpecialMoveFlagsUpdated()
 }
 
 // Function GameFramework.GameSpecialMove.Tick
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -9020,7 +8971,7 @@ void UGameSpecialMove::Tick(float DeltaTime)
 }
 
 // Function GameFramework.GameSpecialMove.SpecialMoveEnded
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class FName                    PrevMove                       (CPF_Parm)
 // class FName                    NextMove                       (CPF_Parm)
@@ -9048,7 +8999,7 @@ void UGameSpecialMove::SpecialMoveEnded(const class FName& PrevMove, const class
 }
 
 // Function GameFramework.GameSpecialMove.SpecialMoveStarted
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // uint32_t                       bForced                        (CPF_Parm)
 // class FName                    PrevMove                       (CPF_Parm)
@@ -9076,7 +9027,7 @@ void UGameSpecialMove::SpecialMoveStarted(bool bForced, const class FName& PrevM
 }
 
 // Function GameFramework.GameSpecialMove.InternalCanDoSpecialMove
-// [0x00080002] (FUNC_Defined | FUNC_Protected | FUNC_AllFlags)
+// [0x00080002] (FUNC_Defined | FUNC_Protected)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -9103,7 +9054,7 @@ bool UGameSpecialMove::InternalCanDoSpecialMove()
 }
 
 // Function GameFramework.GameSpecialMove.CanDoSpecialMove
-// [0x00024003] (FUNC_Final | FUNC_Defined | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024003] (FUNC_Final | FUNC_Defined | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // uint32_t                       bForceCheck                    (CPF_OptionalParm | CPF_Parm)
@@ -9132,7 +9083,7 @@ bool UGameSpecialMove::CanDoSpecialMove(bool optionalBForceCheck)
 }
 
 // Function GameFramework.GameSpecialMove.CanOverrideSpecialMove
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    InMove                         (CPF_Parm)
@@ -9161,7 +9112,7 @@ bool UGameSpecialMove::CanOverrideSpecialMove(const class FName& InMove)
 }
 
 // Function GameFramework.GameSpecialMove.CanOverrideMoveWith
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    NewMove                        (CPF_Parm)
@@ -9190,7 +9141,7 @@ bool UGameSpecialMove::CanOverrideMoveWith(const class FName& NewMove)
 }
 
 // Function GameFramework.GameSpecialMove.CanChainMove
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class FName                    NextMove                       (CPF_Parm)
@@ -9219,7 +9170,7 @@ bool UGameSpecialMove::CanChainMove(const class FName& NextMove)
 }
 
 // Function GameFramework.GameSpecialMove.ExtractSpecialMoveFlags
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // int32_t                        Flags                          (CPF_Parm)
 
@@ -9245,7 +9196,7 @@ void UGameSpecialMove::ExtractSpecialMoveFlags(int32_t Flags)
 }
 
 // Function GameFramework.GameSpecialMove.InitSpecialMoveFlags
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // int32_t                        out_Flags                      (CPF_Parm | CPF_OutParm)
 
@@ -9273,7 +9224,7 @@ void UGameSpecialMove::InitSpecialMoveFlags(int32_t& outOut_Flags)
 }
 
 // Function GameFramework.GameSpecialMove.InitSpecialMove
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class AGamePawn*               inPawn                         (CPF_Parm)
 // class FName                    InHandle                       (CPF_Parm)
@@ -9301,7 +9252,7 @@ void UGameSpecialMove::InitSpecialMove(class AGamePawn* inPawn, const class FNam
 }
 
 // Function GameFramework.GameCrowdSpawnerInterface.GetMaxSpawnDist
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 
@@ -9328,7 +9279,7 @@ float UGameCrowdSpawnerInterface::GetMaxSpawnDist()
 }
 
 // Function GameFramework.GameCrowdSpawnerInterface.AddToAgentPool
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
@@ -9357,7 +9308,7 @@ bool UGameCrowdSpawnerInterface::AddToAgentPool(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdSpawnerInterface.AgentDestroyed
-// [0x00020000] (FUNC_Public | FUNC_AllFlags)
+// [0x00020000] (FUNC_Public)
 // Parameter Info:
 // class AGameCrowdAgent*         Agent                          (CPF_Parm)
 
@@ -9383,7 +9334,7 @@ void UGameCrowdSpawnerInterface::AgentDestroyed(class AGameCrowdAgent* Agent)
 }
 
 // Function GameFramework.GameCrowdSpawnInterface.GetSpawnPosition
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class USeqAct_GameCrowdSpawner* Spawner                        (CPF_Parm)
 // struct FVector                 SpawnPos                       (CPF_Parm | CPF_OutParm)
@@ -9416,7 +9367,7 @@ void UGameCrowdSpawnInterface::GetSpawnPosition(class USeqAct_GameCrowdSpawner* 
 }
 
 // Function GameFramework.GameFixedCamera.OnBecomeActive
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameCameraBase*         OldCamera                      (CPF_Parm)
 
@@ -9442,7 +9393,7 @@ void UGameFixedCamera::OnBecomeActive(class UGameCameraBase* OldCamera)
 }
 
 // Function GameFramework.GameFixedCamera.UpdateCamera
-// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // class AGamePlayerCamera*       CameraActor                    (CPF_Parm)
@@ -9476,7 +9427,7 @@ void UGameFixedCamera::UpdateCamera(class APawn* P, class AGamePlayerCamera* Cam
 }
 
 // Function GameFramework.GameFreeCamera.LimitViewRotation
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 // struct FRotator                ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // struct FRotator                ViewRotation                   (CPF_Parm)
@@ -9509,7 +9460,7 @@ struct FRotator UGameFreeCamera::LimitViewRotation(const struct FRotator& ViewRo
 }
 
 // Function GameFramework.GameFreeCamera.ClearMoveFlags
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void UGameFreeCamera::ClearMoveFlags()
@@ -9533,7 +9484,7 @@ void UGameFreeCamera::ClearMoveFlags()
 }
 
 // Function GameFramework.GameFreeCamera.ProcessInputInfo
-// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults | FUNC_AllFlags)
+// [0x00C20102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_HasOutParms | FUNC_HasDefaults)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // struct FTViewTarget            OutVT                          (CPF_Parm | CPF_OutParm)
@@ -9563,7 +9514,7 @@ void UGameFreeCamera::ProcessInputInfo(float DeltaTime, struct FTViewTarget& out
 }
 
 // Function GameFramework.GameFreeCamera.GetInputInfo
-// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public | FUNC_AllFlags)
+// [0x00020102] (FUNC_Defined | FUNC_Simulated | FUNC_Public)
 // Parameter Info:
 
 void UGameFreeCamera::GetInputInfo()
@@ -9587,7 +9538,7 @@ void UGameFreeCamera::GetInputInfo()
 }
 
 // Function GameFramework.GameFreeCamera.IsKeyPressed
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // bool                           ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // class UPlayerInput*            InputInfo                      (CPF_Parm)
@@ -9618,7 +9569,7 @@ bool UGameFreeCamera::IsKeyPressed(class UPlayerInput* InputInfo, const class FN
 }
 
 // Function GameFramework.GameFreeCamera.GetDeflection
-// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          F                              (CPF_Parm)
@@ -9649,7 +9600,7 @@ float UGameFreeCamera::GetDeflection(float F, float optionalEpsilon)
 }
 
 // Function GameFramework.GameFreeCamera.GetSign
-// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public | FUNC_AllFlags)
+// [0x00024102] (FUNC_Defined | FUNC_Simulated | FUNC_OptionalParm | FUNC_Public)
 // Parameter Info:
 // float                          ReturnValue                    (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 // float                          F                              (CPF_Parm)
@@ -9680,7 +9631,7 @@ float UGameFreeCamera::GetSign(float F, float optionalEpsilon)
 }
 
 // Function GameFramework.GameFreeCamera.ProcessViewRotation
-// [0x00420000] (FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420000] (FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 // class AActor*                  ViewTarget                     (CPF_Parm)
@@ -9715,7 +9666,7 @@ void UGameFreeCamera::ProcessViewRotation(float DeltaTime, class AActor* ViewTar
 }
 
 // Function GameFramework.GameFreeCamera.OnBecomeActive
-// [0x00020002] (FUNC_Defined | FUNC_Public | FUNC_AllFlags)
+// [0x00020002] (FUNC_Defined | FUNC_Public)
 // Parameter Info:
 // class UGameCameraBase*         OldCamera                      (CPF_Parm)
 
@@ -9741,7 +9692,7 @@ void UGameFreeCamera::OnBecomeActive(class UGameCameraBase* OldCamera)
 }
 
 // Function GameFramework.GameFreeCamera.UpdateCamera
-// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms | FUNC_AllFlags)
+// [0x00420002] (FUNC_Defined | FUNC_Public | FUNC_HasOutParms)
 // Parameter Info:
 // class APawn*                   P                              (CPF_Parm)
 // class AGamePlayerCamera*       CameraActor                    (CPF_Parm)
@@ -9775,7 +9726,7 @@ void UGameFreeCamera::UpdateCamera(class APawn* P, class AGamePlayerCamera* Came
 }
 
 // Function GameFramework.GameKActorSpawnableEffect.Tick
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // float                          DeltaTime                      (CPF_Parm)
 
@@ -9801,7 +9752,7 @@ void AGameKActorSpawnableEffect::eventTick(float DeltaTime)
 }
 
 // Function GameFramework.GameKActorSpawnableEffect.FellOutOfWorld
-// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020902] (FUNC_Defined | FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 // class UClass*                  dmgType                        (CPF_Parm)
 
@@ -9827,7 +9778,7 @@ void AGameKActorSpawnableEffect::eventFellOutOfWorld(class UClass* dmgType)
 }
 
 // Function GameFramework.GameKActorSpawnableEffect.PostBeginPlay
-// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public | FUNC_AllFlags)
+// [0x00020900] (FUNC_Simulated | FUNC_Event | FUNC_Public)
 // Parameter Info:
 
 void AGameKActorSpawnableEffect::eventPostBeginPlay()

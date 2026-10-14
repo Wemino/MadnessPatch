@@ -70,7 +70,7 @@ struct AKynapseAIController_execPossess_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseFollow
-// [0x00020408]  (iNative[27579])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseFollow_Params
 {
 	class AActor*                                      TargetEntity;                                     // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -79,7 +79,7 @@ struct AKynapseAIController_execKynapseFollow_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseShoot
-// [0x00020408]  (iNative[27593])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseShoot_Params
 {
 	class AActor*                                      TargetEntity;                                     // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -88,7 +88,7 @@ struct AKynapseAIController_execKynapseShoot_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseHide
-// [0x00020408]  (iNative[27584])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseHide_Params
 {
 	float                                              Duration;                                         // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -96,7 +96,7 @@ struct AKynapseAIController_execKynapseHide_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseFlee
-// [0x00020408]  (iNative[27577])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseFlee_Params
 {
 	float                                              Duration;                                         // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -104,7 +104,7 @@ struct AKynapseAIController_execKynapseFlee_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseWander
-// [0x00020408]  (iNative[27596])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseWander_Params
 {
 	float                                              Duration;                                         // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -112,7 +112,7 @@ struct AKynapseAIController_execKynapseWander_Params
 };
 
 // Function Kynapse.KynapseAIController.KynapseGoTo
-// [0x00020408]  (iNative[27582])
+// [0x00020408] 
 struct AKynapseAIController_execKynapseGoTo_Params
 {
 	struct FVector                                     KynapseDestination;                               // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -120,28 +120,28 @@ struct AKynapseAIController_execKynapseGoTo_Params
 };
 
 // Function Kynapse.KynapseAIController.SetBrainState
-// [0x00020401]  (iNative[27821])
+// [0x00020401] 
 struct AKynapseAIController_execSetBrainState_Params
 {
 	int32_t                                            Set;                                              // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
 };
 
 // Function Kynapse.KynapseAIController.GetBrainState
-// [0x00020401]  (iNative[27521])
+// [0x00020401] 
 struct AKynapseAIController_execGetBrainState_Params
 {
 	int32_t                                            ReturnValue;                                      // 0x0000 (0x0004) [0x0000000000000580] (CPF_Parm | CPF_OutParm | CPF_ReturnParm)
 };
 
 // Function Kynapse.KynapseAIController.ActivateKynapseBrain
-// [0x00020401]  (iNative[27066])
+// [0x00020401] 
 struct AKynapseAIController_execActivateKynapseBrain_Params
 {
 	uint32_t                                           Activate : 1;                                     // 0x0000 (0x0004) [0x0000000000000080] [0x00000001] (CPF_Parm)
 };
 
 // Function Kynapse.KynapseAIController.KynapseHasArrived
-// [0x00020401]  (iNative[27583])
+// [0x00020401] 
 struct AKynapseAIController_execKynapseHasArrived_Params
 {
 	struct FVector                                     Dest;                                             // 0x0000 (0x000C) [0x0000000000000080] (CPF_Parm)    
@@ -166,20 +166,20 @@ struct AKynapseExclusionVolume_execStopsProjectile_Params
 };
 
 // Function Kynapse.KynapseHandle.RegisterToProfile
-// [0x00020401]  (iNative[27802])
+// [0x00020401] 
 struct UKynapseHandle_execRegisterToProfile_Params
 {
 	class FString                                      ProfileName;                                      // 0x0000 (0x000C) [0x0000000000400880] (CPF_Parm | CPF_CoerceParm | CPF_NeedCtorLink)
 };
 
 // Function Kynapse.KynapseHandle.AddKynapseEntity
-// [0x00020401]  (iNative[27082])
+// [0x00020401] 
 struct UKynapseHandle_execAddKynapseEntity_Params
 {
 };
 
 // Function Kynapse.KynapseHandle.InitKynapseEntity
-// [0x00020401]  (iNative[27552])
+// [0x00020401] 
 struct UKynapseHandle_execInitKynapseEntity_Params
 {
 };
@@ -231,7 +231,7 @@ struct AKynapsePawn_eventBump_Params
 };
 
 // Function Kynapse.KynapsePawn.SphinxAnimEnd
-// [0x00020401]  (iNative[27839])
+// [0x00020401] 
 struct AKynapsePawn_execSphinxAnimEnd_Params
 {
 	class UAnimNodeSequence*                           SeqNode;                                          // 0x0000 (0x0004) [0x0000000000000080] (CPF_Parm)    
@@ -240,13 +240,13 @@ struct AKynapsePawn_execSphinxAnimEnd_Params
 };
 
 // Function Kynapse.KynapseTeamCreationData.PostInitializeTeam
-// [0x00020400]  (iNative[27786])
+// [0x00020400] 
 struct UKynapseTeamCreationData_execPostInitializeTeam_Params
 {
 };
 
 // Function Kynapse.KynapseTeamCreationData.CreateKynapseTeam
-// [0x00020400]  (iNative[27221])
+// [0x00020400] 
 struct UKynapseTeamCreationData_execCreateKynapseTeam_Params
 {
 };

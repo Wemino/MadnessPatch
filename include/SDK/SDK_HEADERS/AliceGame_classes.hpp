@@ -4108,13 +4108,13 @@ class AAlicePickupFactory : public APickupFactory
 {
 public:
 	uint32_t                                           bRotatingPickup : 1;                           // 0x031C (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bPulseBase : 1;                                // 0x031C (0x0004) [0x0000000000000020] [0x00000002] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bPulseBase : 1;                                // 0x031C (0x0004) [0x0000000100000020] [0x00000002] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bFloatingPickup : 1;                           // 0x031C (0x0004) [0x0000000000000000] [0x00000004] 
 	uint32_t                                           bRandomStart : 1;                              // 0x031C (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
-	uint32_t                                           bIsDisabled : 1;                               // 0x031C (0x0004) [0x0000000000000020] [0x00000010] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bIsDisabled : 1;                               // 0x031C (0x0004) [0x0000000100000020] [0x00000010] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bUpdatingPickup : 1;                           // 0x031C (0x0004) [0x0000000000000000] [0x00000020] 
 	uint32_t                                           bDoVisibilityFadeIn : 1;                       // 0x031C (0x0004) [0x0000000000000000] [0x00000040] 
-	uint32_t                                           bIsRespawning : 1;                             // 0x031C (0x0004) [0x0000000000000020] [0x00000080] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bIsRespawning : 1;                             // 0x031C (0x0004) [0x0000000100000020] [0x00000080] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bHasLocationSpeech : 1;                        // 0x031C (0x0004) [0x0000000000000000] [0x00000100] 
 	struct FRotator                                    PickupItemRotationRate;                        // 0x0320 (0x000C) [0x0000000000004000] (CPF_Config)  
 	class AController*                                 TeamOwner[4];                                  // 0x032C (0x0010) [0x0000000000000000]               
@@ -9221,7 +9221,7 @@ public:
 	class AJumpPad*                                    JumpPad;                                       // 0x07A4 (0x0004) [0x0000000000000000]               
 	struct FAnimationParaConfig                        AnimCfg_GestureAnim;                           // 0x07A8 (0x0038) [0x0000000000400000] (CPF_NeedCtorLink)
 	float                                              SpeakRotateRate;                               // 0x07E0 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	struct FSpeakLineParamStruct                       ReplicatedSpeakLineParams;                     // 0x07E4 (0x002C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_RepNotify)
+	struct FSpeakLineParamStruct                       ReplicatedSpeakLineParams;                     // 0x07E4 (0x002C) [0x0000000100400000] (CPF_NeedCtorLink | CPF_RepNotify)
 	struct FSpeakLineParamStruct                       QueuedSpeakLineParams;                         // 0x0810 (0x002C) [0x0000000000400000] (CPF_NeedCtorLink)
 	struct FSpeakLineParamStruct                       CurrentSpeakLineParams;                        // 0x083C (0x002C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class UAudioComponent*                             CurrentlySpeakingLine;                         // 0x0868 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
@@ -9835,10 +9835,10 @@ public:
 	uint32_t                                           bEnableEndurance : 1;                          // 0x099C (0x0004) [0x0000000000000000] [0x00004000] 
 	uint32_t                                           bUpdateEyeheight : 1;                          // 0x099C (0x0004) [0x0000000000000000] [0x00008000] 
 	uint32_t                                           bUsingCommLink : 1;                            // 0x099C (0x0004) [0x0000000000000000] [0x00010000] 
-	uint32_t                                           bWantToUseCommLink : 1;                        // 0x099C (0x0004) [0x0000000000000000] [0x00020000] (CPF_RepNotify)
+	uint32_t                                           bWantToUseCommLink : 1;                        // 0x099C (0x0004) [0x0000000100000000] [0x00020000] (CPF_RepNotify)
 	uint32_t                                           bInCommLinkStance : 1;                         // 0x099C (0x0004) [0x0000000000000000] [0x00040000] 
 	uint32_t                                           bIsConversing : 1;                             // 0x099C (0x0004) [0x0000000000000000] [0x00080000] 
-	uint32_t                                           bWantToConverse : 1;                           // 0x099C (0x0004) [0x0000000000000000] [0x00100000] (CPF_RepNotify)
+	uint32_t                                           bWantToConverse : 1;                           // 0x099C (0x0004) [0x0000000100000000] [0x00100000] (CPF_RepNotify)
 	uint32_t                                           bUseDeathMaterial : 1;                         // 0x099C (0x0004) [0x0000000000000001] [0x00200000] (CPF_Edit)
 	uint32_t                                           bSwimKnockBack : 1;                            // 0x099C (0x0004) [0x0000000000000000] [0x00400000] 
 	uint32_t                                           bBoostingSwim : 1;                             // 0x099C (0x0004) [0x0000000000000000] [0x00800000] 
@@ -10358,7 +10358,7 @@ public:
 	int32_t                                            StompDamege;                                   // 0x231C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              RepulsorSecond;                                // 0x2320 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class UClass*                                      StompDamageType;                               // 0x2324 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              Repulsion;                                     // 0x2328 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Repulsion;                                     // 0x2328 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              AnimSlowFactor;                                // 0x232C (0x0004) [0x0000000000000000]               
 	class UPhysicsAsset*                               DashBreakPhysicsAsset;                         // 0x2330 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              DelayToActivateAimingModeWhenQuitLockOn;       // 0x2334 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -12028,7 +12028,7 @@ public:
 	class AJumpPadSkeletalMeshActor*                   JumpPadSkelActor;                              // 0x036C (0x0004) [0x0000000000000000]               
 	class AAliceGamePawn*                              P;                                             // 0x0370 (0x0004) [0x0000000000000000]               
 	class ULightEnvironmentComponent*                  LightEnvironmentJumpPad;                       // 0x0374 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	struct FVector                                     ZoneVelocity;                                  // 0x0378 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     ZoneVelocity;                                  // 0x0378 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              TerminalVelocity;                              // 0x0384 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              RotationSpeed;                                 // 0x0388 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class USkeletalMeshComponent*                      SkelMeshComp;                                  // 0x038C (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
@@ -12130,7 +12130,7 @@ public:
 	uint32_t                                           bSpeaking : 1;                                 // 0x0238 (0x0004) [0x0000000000002000] [0x00000001] (CPF_Transient)
 	uint32_t                                           bEnabled : 1;                                  // 0x0238 (0x0004) [0x0000000000000000] [0x00000002] 
 	uint32_t                                           bMuteGUDS : 1;                                 // 0x0238 (0x0004) [0x0000000000002000] [0x00000004] (CPF_Transient)
-	struct FRemoteSpeakerDelayedLine                   DelayedLineParams;                             // 0x023C (0x0024) [0x0000000000400020] (CPF_Net | CPF_NeedCtorLink | CPF_RepNotify)
+	struct FRemoteSpeakerDelayedLine                   DelayedLineParams;                             // 0x023C (0x0024) [0x0000000100400020] (CPF_Net | CPF_NeedCtorLink | CPF_RepNotify)
 	class UAudioComponent*                             CurrentlySpeakingLine;                         // 0x0260 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	int32_t                                            TeamIndex;                                     // 0x0264 (0x0004) [0x0000000000000000]               
 

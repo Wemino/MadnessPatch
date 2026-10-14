@@ -1833,8 +1833,8 @@ public:
 	uint32_t                                           streamed : 1;                                  // 0x0228 (0x0004) [0x0000000000000002] [0x00000008] (CPF_Const)
 	uint32_t                                           UseKynapseDataPackage : 1;                     // 0x0228 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	struct FPointer                                    displayGraph;                                  // 0x022C (0x0004) [0x0000000000000000]               
-	class AKynapseExplorationVolume*                   ExplorationBoundingBox;                        // 0x0230 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
-	class TArray<class AActor*>                        seeds;                                         // 0x0234 (0x000C) [0x0000000014400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class AKynapseExplorationVolume*                   ExplorationBoundingBox;                        // 0x0230 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse)
+	class TArray<class AActor*>                        seeds;                                         // 0x0234 (0x000C) [0x0000000014400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse)
 	float                                              DistEdgeMax;                                   // 0x0240 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              EntityRadius;                                  // 0x0244 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	class FString                                      displayNameInPie;                              // 0x0248 (0x000C) [0x0000000000600001] (CPF_Edit | CPF_NeedCtorLink)
@@ -1897,7 +1897,7 @@ public:
 	class UKynapseUDG*                                 outputUDG;                                     // 0x02B4 (0x0004) [0x0000000000200000]               
 	uint32_t                                           useUDGAlts : 1;                                // 0x02B8 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
 	uint32_t                                           ExploreAll : 1;                                // 0x02B8 (0x0004) [0x0000000000000002] [0x00000002] (CPF_Const)
-	class TArray<class AKynapseExclusionVolume*>       exclusionAreas;                                // 0x02BC (0x000C) [0x0000000014400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class TArray<class AKynapseExclusionVolume*>       exclusionAreas;                                // 0x02BC (0x000C) [0x0000000014400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse)
 	class TArray<class AKynapseLocalRecomputationVolume*> areasToExplore;                                // 0x02C8 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	struct FPointer                                    areasToExplorePointer;                         // 0x02D4 (0x0004) [0x0000000000000000]               
 	struct FPhysicalParams                             Physical;                                      // 0x02D8 (0x001C) [0x0000000000000003] (CPF_Edit | CPF_Const)

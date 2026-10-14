@@ -3374,8 +3374,8 @@ public:
 	uint32_t                                           bHiddenEdGroup : 1;                            // 0x0044 (0x0004) [0x0000000000000003] [0x00800000] (CPF_Edit | CPF_Const)
 	uint32_t                                           bCanBeAutoClimbedUp : 1;                       // 0x0044 (0x0004) [0x0000000000000003] [0x01000000] (CPF_Edit | CPF_Const)
 	uint32_t                                           bHiddenEdCustom : 1;                           // 0x0044 (0x0004) [0x0000000000000002] [0x02000000] (CPF_Const)
-	uint32_t                                           bHiddenEdTemporary : 1;                        // 0x0044 (0x0004) [0x0000000000002000] [0x04000000] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bHiddenEdLevel : 1;                            // 0x0044 (0x0004) [0x0000000000002000] [0x08000000] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bHiddenEdTemporary : 1;                        // 0x0044 (0x0004) [0x0000000800002000] [0x04000000] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bHiddenEdLevel : 1;                            // 0x0044 (0x0004) [0x0000000800002000] [0x08000000] (CPF_Transient | CPF_EditorOnly)
 	uint32_t                                           bEdShouldSnap : 1;                             // 0x0044 (0x0004) [0x0000000000000001] [0x10000000] (CPF_Edit)
 	uint32_t                                           bTempEditor : 1;                               // 0x0044 (0x0004) [0x0000000000002002] [0x20000000] (CPF_Const | CPF_Transient)
 	uint32_t                                           bPathColliding : 1;                            // 0x0044 (0x0004) [0x0000000000000001] [0x40000000] (CPF_Edit)
@@ -3388,8 +3388,8 @@ public:
 	class TArray<class UActorComponent*>               AllComponents;                                 // 0x0058 (0x000C) [0x000000000448200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_Component | CPF_NeedCtorLink | CPF_EditInline)
 	struct FVector                                     Location;                                      // 0x0064 (0x000C) [0x0000000000000023] (CPF_Edit | CPF_Const | CPF_Net)
 	struct FRotator                                    Rotation;                                      // 0x0070 (0x000C) [0x0000000000000023] (CPF_Edit | CPF_Const | CPF_Net)
-	float                                              DrawScale;                                     // 0x007C (0x0004) [0x0000000000000023] (CPF_Edit | CPF_Const | CPF_Net | CPF_Interp)
-	struct FVector                                     DrawScale3D;                                   // 0x0080 (0x000C) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              DrawScale;                                     // 0x007C (0x0004) [0x0000000200000023] (CPF_Edit | CPF_Const | CPF_Net | CPF_Interp)
+	struct FVector                                     DrawScale3D;                                   // 0x0080 (0x000C) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
 	struct FVector                                     PrePivot;                                      // 0x008C (0x000C) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	struct FRenderCommandFence                         DetachFence;                                   // 0x0098 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	float                                              CustomTimeDilation;                            // 0x009C (0x0004) [0x0000000000000000]               
@@ -3961,7 +3961,7 @@ public:
 	uint32_t                                           bDisabled : 1;                                 // 0x0270 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bTestDistanceToVolume : 1;                     // 0x0270 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	EStreamingVolumeUsage                              StreamingUsage;                                // 0x0274 (0x0001) [0x0000000000000001] (CPF_Edit)    
-	EStreamingVolumeUsage                              Usage;                                         // 0x0275 (0x0001) [0x0000000020000000]  CPF_Deprecated)
+	EStreamingVolumeUsage                              Usage;                                         // 0x0275 (0x0001) [0x0000000020000000] (CPF_Deprecated)
 	uint8_t                                            UnknownData00[0x2];                              // 0x0276 (0x0002) MISSED OFFSET
 	float                                              TestVolumeDistance;                            // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit)    
 
@@ -4028,7 +4028,7 @@ public:
 class APhysicsVolume : public AVolume
 {
 public:
-	struct FVector                                     ZoneVelocity;                                  // 0x0264 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     ZoneVelocity;                                  // 0x0264 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bVelocityAffectsWalking : 1;                   // 0x0270 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bPainCausing : 1;                              // 0x0270 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bAIShouldIgnorePain : 1;                       // 0x0270 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
@@ -4327,9 +4327,9 @@ class ADroppedPickup : public AActor
 {
 public:
 	class AInventory*                                  Inventory;                                     // 0x0228 (0x0004) [0x0000000000000000]               
-	class UClass*                                      InventoryClass;                                // 0x022C (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class UClass*                                      InventoryClass;                                // 0x022C (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	class ANavigationPoint*                            PickupCache;                                   // 0x0230 (0x0004) [0x0000000000000000]               
-	uint32_t                                           bFadeOut : 1;                                  // 0x0234 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bFadeOut : 1;                                  // 0x0234 (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -4366,15 +4366,15 @@ class ADynamicSMActor : public AActor
 public:
 	class UStaticMeshComponent*                        StaticMeshComponent;                           // 0x0228 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
 	class UDynamicLightEnvironmentComponent*           LightEnvironment;                              // 0x022C (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	class UStaticMesh*                                 ReplicatedMesh;                                // 0x0230 (0x0004) [0x0000000000002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
-	class UMaterialInterface*                          ReplicatedMaterial;                            // 0x0234 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	uint32_t                                           bForceStaticDecals : 1;                        // 0x0238 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	class UStaticMesh*                                 ReplicatedMesh;                                // 0x0230 (0x0004) [0x0000000100002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
+	class UMaterialInterface*                          ReplicatedMaterial;                            // 0x0234 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bForceStaticDecals : 1;                        // 0x0238 (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bPawnCanBaseOn : 1;                            // 0x0238 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bSafeBaseIfAsleep : 1;                         // 0x0238 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	uint32_t                                           bEnableWeight : 1;                             // 0x0238 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
-	struct FVector                                     ReplicatedMeshTranslation;                     // 0x023C (0x000C) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	struct FRotator                                    ReplicatedMeshRotation;                        // 0x0248 (0x000C) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	struct FVector                                     ReplicatedMeshScale3D;                         // 0x0254 (0x000C) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	struct FVector                                     ReplicatedMeshTranslation;                     // 0x023C (0x000C) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	struct FRotator                                    ReplicatedMeshRotation;                        // 0x0248 (0x000C) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	struct FVector                                     ReplicatedMeshScale3D;                         // 0x0254 (0x000C) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	float                                              Weight;                                        // 0x0260 (0x0004) [0x0000000000000001] (CPF_Edit)    
 
 public:
@@ -4475,7 +4475,7 @@ public:
 	uint32_t                                           bDestroyOnSystemFinish : 1;                    // 0x0230 (0x0004) [0x0000000000000000] [0x00000001] 
 	uint32_t                                           bPostUpdateTickGroup : 1;                      // 0x0230 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bFirstTick : 1;                                // 0x0230 (0x0004) [0x0000000000000000] [0x00000004] 
-	uint32_t                                           bCurrentlyActive : 1;                          // 0x0230 (0x0004) [0x0000000000000020] [0x00000008] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bCurrentlyActive : 1;                          // 0x0230 (0x0004) [0x0000000100000020] [0x00000008] (CPF_Net | CPF_RepNotify)
 	float                                              AdjustStopMotionSpeed;                         // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit)    
 
 public:
@@ -5302,7 +5302,7 @@ public:
 	uint32_t                                           bAllowModulateBetterShadows : 1;               // 0x0324 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bAllowLightEnvSphericalHarmonicLights : 1;     // 0x0324 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bIncreaseFogNearPrecision : 1;                 // 0x0324 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
-	uint32_t                                           bUseGlobalIllumination : 1;                    // 0x0324 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bUseGlobalIllumination : 1;                    // 0x0324 (0x0004) [0x0000000800000001] [0x00000008] (CPF_Edit | CPF_EditorOnly)
 	uint32_t                                           bSlomoSoundMode : 1;                           // 0x0324 (0x0004) [0x0000000000000000] [0x00000010] 
 	float                                              SquintModeKernelSize;                          // 0x0328 (0x0004) [0x0000000000004001] (CPF_Edit | CPF_Config)
 	class APostProcessVolume*                          HighestPriorityPostProcessVolume;              // 0x032C (0x0004) [0x0000000001002002] (CPF_Const | CPF_Transient)
@@ -5365,14 +5365,14 @@ public:
 	int32_t                                            PackedLightAndShadowMapTextureSize;            // 0x04C4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FVector                                     DefaultColorScale;                             // 0x04C8 (0x000C) [0x0000000000000001] (CPF_Edit)    
 	class TArray<class UClass*>                        GameTypesSupportedOnThisMap;                   // 0x04D4 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
-	class UClass*                                      GameTypeForPIE;                                // 0x04E0 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class UClass*                                      GameTypeForPIE;                                // 0x04E0 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	class TArray<class UObject*>                       ClientDestroyedActorContent;                   // 0x04E4 (0x000C) [0x0000000000420002] (CPF_Const | CPF_EditConst | CPF_NeedCtorLink)
 	class TArray<class FName>                          PreparingLevelNames;                           // 0x04F0 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
 	class FName                                        CommittedPersistentLevelName;                  // 0x04FC (0x0008) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class UObjectReferencer*                           PersistentMapForcedObjects;                    // 0x0504 (0x0004) [0x0000000000000000]               
 	class UAudioComponent*                             MusicComp;                                     // 0x0508 (0x0004) [0x0000000004082008] (CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
 	struct FMusicTrackStruct                           CurrentMusicTrack;                             // 0x050C (0x0018) [0x0000000000002000] (CPF_Transient)
-	struct FMusicTrackStruct                           ReplicatedMusicTrack;                          // 0x0524 (0x0018) [0x0000000000002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
+	struct FMusicTrackStruct                           ReplicatedMusicTrack;                          // 0x0524 (0x0018) [0x0000000100002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
 	class FString                                      Title;                                         // 0x053C (0x000C) [0x0000000000408003] (CPF_Edit | CPF_Const | CPF_Localized | CPF_NeedCtorLink)
 	class FString                                      Author;                                        // 0x0548 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	class UMapInfo*                                    MyMapInfo;                                     // 0x0554 (0x0004) [0x0000000004400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
@@ -5384,7 +5384,7 @@ public:
 	class AFractureManager*                            MyFractureManager;                             // 0x0584 (0x0004) [0x0000000000002000] (CPF_Transient)
 	class FString                                      ParticleEventManagerClassPath;                 // 0x0588 (0x000C) [0x0000000000444000] (CPF_Config | CPF_GlobalConfig | CPF_NeedCtorLink)
 	class AParticleEventManager*                       MyParticleEventManager;                        // 0x0594 (0x0004) [0x0000000000002000] (CPF_Transient)
-	class UProcBuildingRuleset*                        ProcBuildingRulesetOverride;                   // 0x0598 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class UProcBuildingRuleset*                        ProcBuildingRulesetOverride;                   // 0x0598 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	float                                              MaxPhysicsDeltaTime;                           // 0x059C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            MaxPhysicsSubsteps;                            // 0x05A0 (0x0004) [0x0000000000004000] (CPF_Config)  
 	struct FPhysXSceneProperties                       PhysicsProperties;                             // 0x05A4 (0x003C) [0x0000000004000001] (CPF_Edit | CPF_EditInline)
@@ -5405,10 +5405,11 @@ public:
 	float                                              CharacterLightingContrastFactor;               // 0x0640 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FMap_Mirror                                 ScreenMessages;                                // 0x0644 (0x003C) [0x0000000000003000] (CPF_Native | CPF_Transient)
 	class TArray<struct FScreenMessageString>          PriorityScreenMessages;                        // 0x0680 (0x000C) [0x0000000000003000] (CPF_Native | CPF_Transient)
-	int32_t                                            MaxTrianglesPerLeaf;                           // 0x068C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class ULightmassLevelSettings*                     LMLevelSettings;                               // 0x0690 (0x0004) [0x0000000024400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_Deprecated | CPF_EditorOnly)
-	struct FLightmassWorldInfoSettings                 LightmassSettings;                             // 0x0694 (0x0040) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	uint8_t                                            UnknownData01[0x78];                            // 0x06D4 (0x0078) MISSED OFFSET
+	int32_t                                            MaxTrianglesPerLeaf;                           // 0x068C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class ULightmassLevelSettings*                     LMLevelSettings;                               // 0x0690 (0x0004) [0x0000000824400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_Deprecated | CPF_EditorOnly)
+	struct FLightmassWorldInfoSettings                 LightmassSettings;                             // 0x0694 (0x0040) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	struct FMap_Mirror                                 NavMeshPathConstraintCache;                    // 0x06D4 (0x003C) [0x0000000000001000] (CPF_Native)  
+	struct FMap_Mirror                                 NavMeshPathGoalEvaluatorCache;                 // 0x0710 (0x003C) [0x0000000000001000] (CPF_Native)  
 	class ACrowdPopulationManagerBase*                 PopulationManager;                             // 0x074C (0x0004) [0x0000000000000000]               
 	class FString                                      PhysMatLogInfo;                                // 0x0750 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 
@@ -5564,7 +5565,7 @@ public:
 	class USkeletalMeshComponent*                      Mesh;                                          // 0x02F8 (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	float                                              DefaultAnimSpeed;                              // 0x02FC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              Priority;                                      // 0x0300 (0x0004) [0x0000000040004000] (CPF_Config | CPF_DataBinding)
-	class AAIController*                               AIController;                                  // 0x0304 (0x0004) [0x0000000000000000] (CPF_ProtectedWrite)
+	class AAIController*                               AIController;                                  // 0x0304 (0x0004) [0x0000008000000000] (CPF_ProtectedWrite)
 	class TArray<uint8_t>                              ShouldFireOnRelease;                           // 0x0308 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	float                                              AIRating;                                      // 0x0314 (0x0004) [0x0000000000000000]               
 	float                                              CachedMaxRange;                                // 0x0318 (0x0004) [0x0000000000000000]               
@@ -5777,7 +5778,7 @@ public:
 class ATargetPoint : public AKeypoint
 {
 public:
-	class UTexture2D*                                  SpawnSpriteTexture;                            // 0x022C (0x0004) [0x0000000000002000] (CPF_Transient | CPF_EditorOnly)
+	class UTexture2D*                                  SpawnSpriteTexture;                            // 0x022C (0x0004) [0x0000000800002000] (CPF_Transient | CPF_EditorOnly)
 	int32_t                                            SpawnRefCount;                                 // 0x0230 (0x0004) [0x0000000000002000] (CPF_Transient)
 
 public:
@@ -5888,8 +5889,8 @@ public:
 	uint32_t                                           bShouldSaveForCheckpoint : 1;                  // 0x0228 (0x0004) [0x0000000000002000] [0x40000000] (CPF_Transient)
 	struct FNavigationOctreeObject                     NavOctreeObject;                               // 0x022C (0x0034) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<class UReachSpec*>                    PathList;                                      // 0x0260 (0x000C) [0x0000000004620003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditInline)
-	class TArray<struct FActorReference>               EditorProscribedPaths;                         // 0x026C (0x000C) [0x0000000000600000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<struct FActorReference>               EditorForcedPaths;                             // 0x0278 (0x000C) [0x0000000000600000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FActorReference>               EditorProscribedPaths;                         // 0x026C (0x000C) [0x0000000800600000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FActorReference>               EditorForcedPaths;                             // 0x0278 (0x000C) [0x0000000800600000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	class TArray<struct FActorReference>               Volumes;                                       // 0x0284 (0x000C) [0x0000000000420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink)
 	int32_t                                            visitedWeight;                                 // 0x0290 (0x0004) [0x0000000000000000]               
 	int32_t                                            bestPathWeight;                                // 0x0294 (0x0004) [0x0000000000000002] (CPF_Const)   
@@ -6276,11 +6277,11 @@ class APickupFactory : public ANavigationPoint
 {
 public:
 	uint32_t                                           bOnlyReplicateHidden : 1;                      // 0x0300 (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bPickupHidden : 1;                             // 0x0300 (0x0004) [0x0000000000000020] [0x00000002] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bPickupHidden : 1;                             // 0x0300 (0x0004) [0x0000000100000020] [0x00000002] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bPredictRespawns : 1;                          // 0x0300 (0x0004) [0x0000000000000000] [0x00000004] 
 	uint32_t                                           bIsSuperItem : 1;                              // 0x0300 (0x0004) [0x0000000000000000] [0x00000008] 
 	uint32_t                                           bRespawnPaused : 1;                            // 0x0300 (0x0004) [0x0000000000000000] [0x00000010] 
-	class UClass*                                      InventoryType;                                 // 0x0304 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class UClass*                                      InventoryType;                                 // 0x0304 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	float                                              RespawnEffectTime;                             // 0x0308 (0x0004) [0x0000000000000000]               
 	float                                              MaxDesireability;                              // 0x030C (0x0004) [0x0000000000000000]               
 	class UPrimitiveComponent*                         PickupMesh;                                    // 0x0310 (0x0004) [0x0000000004082008] (CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
@@ -6897,7 +6898,7 @@ class AStaticMeshActor : public AStaticMeshActorBase
 {
 public:
 	class UStaticMeshComponent*                        StaticMeshComponent;                           // 0x0228 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint32_t                                           bDisableAutoBaseOnProcBuilding : 1;            // 0x022C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bDisableAutoBaseOnProcBuilding : 1;            // 0x022C (0x0004) [0x0000000800000001] [0x00000001] (CPF_Edit | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -7062,7 +7063,7 @@ public:
 	uint32_t                                           bNoReverb : 1;                                 // 0x0078 (0x0004) [0x0000000000002000] [0x00000010] (CPF_Transient)
 	class TArray<struct FPointer>                      WaveInstances;                                 // 0x007C (0x000C) [0x0000000000201002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              SoundNodeData;                                 // 0x0088 (0x000C) [0x0000000000201002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0094 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 SoundNodeOffsetMap;                            // 0x0094 (0x003C) [0x0000000000201002] (CPF_Const | CPF_Native)
 	struct FMultiMap_Mirror                            SoundNodeResetWaveMap;                         // 0x00D0 (0x003C) [0x0000000000201002] (CPF_Const | CPF_Native)
 	struct FPointer                                    Listener;                                      // 0x010C (0x0004) [0x0000000000201002] (CPF_Const | CPF_Native)
 	float                                              PlaybackTime;                                  // 0x0110 (0x0004) [0x0000000000201002] (CPF_Const | CPF_Native)
@@ -7144,11 +7145,11 @@ public:
 	uint32_t                                           bEnabled : 1;                                  // 0x0058 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
 	uint32_t                                           bCustomizedHeight : 1;                         // 0x0058 (0x0004) [0x0000000000000002] [0x00000002] (CPF_Const)
 	float                                              Height;                                        // 0x005C (0x0004) [0x0000000000000002] (CPF_Const)   
-	float                                              Density;                                       // 0x0060 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	float                                              LightBrightness;                               // 0x0064 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	struct FColor                                      LightColor;                                    // 0x0068 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	float                                              ExtinctionDistance;                            // 0x006C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	float                                              StartDistance;                                 // 0x0070 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              Density;                                       // 0x0060 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              LightBrightness;                               // 0x0064 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	struct FColor                                      LightColor;                                    // 0x0068 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              ExtinctionDistance;                            // 0x006C (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              StartDistance;                                 // 0x0070 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
 	float                                              InterpolationTime;                             // 0x0074 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              BlendTimeToGo;                                 // 0x0078 (0x0004) [0x0000000000000000]               
 	float                                              BlendWeight;                                   // 0x007C (0x0004) [0x0000000000000000]               
@@ -7299,7 +7300,7 @@ public:
 	float                                              ForceTranslucencyTargetAlpha;                  // 0x00E8 (0x0004) [0x0000000000000000]               
 	float                                              ForceTranslucencyBlendTime;                    // 0x00EC (0x0004) [0x0000000000000000]               
 	float                                              ForceTranslucencyBlendSpeed;                   // 0x00F0 (0x0004) [0x0000000000000000]               
-	class UPrimitiveComponent*                         ReplacementPrimitive;                          // 0x00F4 (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline | CPF_CrossLevelPassive)
+	class UPrimitiveComponent*                         ReplacementPrimitive;                          // 0x00F4 (0x0004) [0x0000100004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline | CPF_CrossLevelPassive)
 	class UFogVolumeDensityComponent*                  FogVolumeComponent;                            // 0x00F8 (0x0004) [0x000000000408200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
 	class ULightEnvironmentComponent*                  LightEnvironment;                              // 0x00FC (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class ULightEnvironmentComponent*                  PreviousLightEnvironment;                      // 0x0100 (0x0004) [0x000000000408200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
@@ -7988,9 +7989,9 @@ public:
 	class UMaterialInterface*                          Material;                                      // 0x0058 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	ESceneDepthPriorityGroup                           DepthPriorityGroup;                            // 0x005C (0x0001) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	uint8_t                                            UnknownData00[0x3];                              // 0x005D (0x0003) MISSED OFFSET
-	float                                              BlurScale;                                     // 0x0060 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	float                                              BlurFalloffExponent;                           // 0x0064 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	float                                              BlurOpacity;                                   // 0x0068 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              BlurScale;                                     // 0x0060 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              BlurFalloffExponent;                           // 0x0064 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              BlurOpacity;                                   // 0x0068 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
 	float                                              MaxCullDistance;                               // 0x006C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              DistanceFalloffExponent;                       // 0x0070 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	uint32_t                                           bRenderAsVelocity : 1;                         // 0x0074 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
@@ -8200,10 +8201,10 @@ class UWindDirectionalSourceComponent : public UActorComponent
 {
 public:
 	struct FPointer                                    SceneProxy;                                    // 0x0058 (0x0004) [0x0000000001003002] (CPF_Const | CPF_Native | CPF_Transient)
-	float                                              Strength;                                      // 0x005C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              Phase;                                         // 0x0060 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              Frequency;                                     // 0x0064 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              Speed;                                         // 0x0068 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Strength;                                      // 0x005C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              Phase;                                         // 0x0060 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              Frequency;                                     // 0x0064 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              Speed;                                         // 0x0068 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -8225,7 +8226,7 @@ class UWindPointSourceComponent : public UWindDirectionalSourceComponent
 {
 public:
 	class UDrawSphereComponent*                        PreviewRadiusComponent;                        // 0x006C (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
-	float                                              Radius;                                        // 0x0070 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Radius;                                        // 0x0070 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -8249,7 +8250,7 @@ public:
 	class UClass*                                      GameplayActorClass;                            // 0x003C (0x0004) [0x0000000000000000]               
 	class FString                                      MenuName;                                      // 0x0040 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	int32_t                                            MenuPriority;                                  // 0x004C (0x0004) [0x0000000000004000] (CPF_Config)  
-	int32_t                                            AlternateMenuPriority;                         // 0x0050 (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	int32_t                                            AlternateMenuPriority;                         // 0x0050 (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	class UClass*                                      NewActorClass;                                 // 0x0054 (0x0004) [0x0000000000000000]               
 	uint32_t                                           bPlaceable : 1;                                // 0x0058 (0x0004) [0x0000000000000000] [0x00000001] 
 
@@ -9112,8 +9113,8 @@ class AController : public AActor
 {
 public:
 	struct FPointer                                    VfTable_IInterface_NavigationHandle;           // 0x0228 (0x0004) [0x0000000000801002] (CPF_Const | CPF_Native | CPF_NoExport)
-	class APawn*                                       Pawn;                                          // 0x022C (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	class APlayerReplicationInfo*                      PlayerReplicationInfo;                         // 0x0230 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class APawn*                                       Pawn;                                          // 0x022C (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	class APlayerReplicationInfo*                      PlayerReplicationInfo;                         // 0x0230 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	int32_t                                            PlayerNum;                                     // 0x0234 (0x0004) [0x0000000000000002] (CPF_Const)   
 	class AController*                                 NextController;                                // 0x0238 (0x0004) [0x0000000000000002] (CPF_Const)   
 	uint32_t                                           bIsPlayer : 1;                                 // 0x023C (0x0004) [0x0000000000000000] [0x00000001] 
@@ -9406,7 +9407,7 @@ public:
 	float                                              MaxTimeMargin;                                 // 0x0460 (0x0004) [0x0000000000000000]               
 	float                                              LastActiveTime;                                // 0x0464 (0x0004) [0x0000000000000000]               
 	int32_t                                            ClientCap;                                     // 0x0468 (0x0004) [0x0000000000000000]               
-	float                                              DynamicPingThreshold;                          // 0x046C (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	float                                              DynamicPingThreshold;                          // 0x046C (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	float                                              LastPingUpdate;                                // 0x0470 (0x0004) [0x0000000000000000]               
 	float                                              LastSpeedHackLog;                              // 0x0474 (0x0004) [0x0000000000000000]               
 	struct FClientAdjustment                           PendingAdjustment;                             // 0x0478 (0x0034) [0x0000000000000000]               
@@ -10538,11 +10539,11 @@ public:
 class UFaceFXAnimSet : public UObject
 {
 public:
-	class UFaceFXAsset*                                DefaultFaceFXAsset;                            // 0x003C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_EditorOnly)
+	class UFaceFXAsset*                                DefaultFaceFXAsset;                            // 0x003C (0x0004) [0x0000000800000003] (CPF_Edit | CPF_Const | CPF_EditorOnly)
 	struct FPointer                                    InternalFaceFXAnimSet;                         // 0x0040 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              RawFaceFXAnimSetBytes;                         // 0x0044 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              RawFaceFXMiniSessionBytes;                     // 0x0050 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
-	class TArray<class USoundCue*>                     ReferencedSoundCues;                           // 0x005C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly | CPF_NotForConsole)
+	class TArray<class USoundCue*>                     ReferencedSoundCues;                           // 0x005C (0x000C) [0x0000001800400000] (CPF_NeedCtorLink | CPF_EditorOnly | CPF_NotForConsole)
 	int32_t                                            NumLoadErrors;                                 // 0x0068 (0x0004) [0x0000000000000000]               
 
 public:
@@ -10564,13 +10565,13 @@ public:
 class UFaceFXAsset : public UObject
 {
 public:
-	class USkeletalMesh*                               DefaultSkelMesh;                               // 0x003C (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
+	class USkeletalMesh*                               DefaultSkelMesh;                               // 0x003C (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
 	struct FPointer                                    FaceFXActor;                                   // 0x0040 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              RawFaceFXActorBytes;                           // 0x0044 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              RawFaceFXSessionBytes;                         // 0x0050 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
-	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x005C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x005C (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
 	class TArray<class UFaceFXAnimSet*>                MountedFaceFXAnimSets;                         // 0x0068 (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
-	class TArray<class USoundCue*>                     ReferencedSoundCues;                           // 0x0074 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly | CPF_NotForConsole)
+	class TArray<class USoundCue*>                     ReferencedSoundCues;                           // 0x0074 (0x000C) [0x0000001800400000] (CPF_NeedCtorLink | CPF_EditorOnly | CPF_NotForConsole)
 	int32_t                                            NumLoadErrors;                                 // 0x0080 (0x0004) [0x0000000000000000]               
 
 public:
@@ -10597,7 +10598,7 @@ class UFont : public UObject
 public:
 	class TArray<struct FFontCharacter>                Characters;                                    // 0x003C (0x000C) [0x0000000004400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditInline)
 	class TArray<class UTexture2D*>                    Textures;                                      // 0x0048 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0054 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 CharRemap;                                     // 0x0054 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	int32_t                                            IsRemapped;                                    // 0x0090 (0x0004) [0x0000000000000000]               
 	int32_t                                            Kerning;                                       // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FFontImportOptionsData                      ImportOptions;                                 // 0x0098 (0x0094) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
@@ -11531,7 +11532,7 @@ class UMaterialInterface : public USurface
 public:
 	struct FRenderCommandFence_Mirror                  ParentRefFence;                                // 0x003C (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	struct FLightmassMaterialInterfaceSettings         LightmassSettings;                             // 0x0040 (0x0018) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      PreviewMesh;                                   // 0x0058 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      PreviewMesh;                                   // 0x0058 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
 	struct FGuid                                       LightingGuid;                                  // 0x0064 (0x0010) [0x0000000000000002] (CPF_Const)   
 	class UTexture*                                    FlattenedTexture;                              // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit)    
 
@@ -11635,7 +11636,7 @@ public:
 	uint32_t                                           bUsesDistortion : 1;                           // 0x02D4 (0x0004) [0x0000000000000000] [0x00000400] 
 	uint32_t                                           bIsMasked : 1;                                 // 0x02D4 (0x0004) [0x0000000000000000] [0x00000800] 
 	uint32_t                                           bIsPreviewMaterial : 1;                        // 0x02D4 (0x0004) [0x0000000000202000] [0x00001000] (CPF_Transient)
-	class UMaterial*                                   FallbackMaterial;                              // 0x02D8 (0x0004) [0x0000000000200000] (CPF_NotForConsole)
+	class UMaterial*                                   FallbackMaterial;                              // 0x02D8 (0x0004) [0x0000001000200000] (CPF_NotForConsole)
 	struct FPointer                                    MaterialResources[2];                          // 0x02DC (0x0008) [0x0000000000201002] (CPF_Const | CPF_Native)
 	struct FPointer                                    DefaultMaterialInstances[2];                   // 0x02E4 (0x0008) [0x0000000000201002] (CPF_Const | CPF_Native)
 	int32_t                                            EditorX;                                       // 0x02EC (0x0004) [0x0000000000000000]               
@@ -11643,11 +11644,11 @@ public:
 	int32_t                                            EditorPitch;                                   // 0x02F4 (0x0004) [0x0000000000000000]               
 	int32_t                                            EditorYaw;                                     // 0x02F8 (0x0004) [0x0000000000000000]               
 	class TArray<class UMaterialExpression*>           Expressions;                                   // 0x02FC (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
-	class TArray<class UMaterialExpressionComment*>    EditorComments;                                // 0x0308 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class UMaterialExpressionCompound*>   EditorCompounds;                               // 0x0314 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	uint8_t                                            UnknownData01[0x3C];                            // 0x0320 (0x003C) MISSED OFFSET
+	class TArray<class UMaterialExpressionComment*>    EditorComments;                                // 0x0308 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UMaterialExpressionCompound*>   EditorCompounds;                               // 0x0314 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	struct FMap_Mirror                                 EditorParameters;                              // 0x0320 (0x003C) [0x0000000000001000] (CPF_Native)  
 	class TArray<class UTexture*>                      ReferencedTextures;                            // 0x035C (0x000C) [0x0000000020400002] (CPF_Const | CPF_NeedCtorLink | CPF_Deprecated)
-	class TArray<struct FGuid>                         ReferencedTextureGuids;                        // 0x0368 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FGuid>                         ReferencedTextureGuids;                        // 0x0368 (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -11668,10 +11669,10 @@ public:
 class UMaterialExpression : public UObject
 {
 public:
-	int32_t                                            EditorX;                                       // 0x003C (0x0004) [0x0000000020000000]  CPF_Deprecated)
-	int32_t                                            EditorY;                                       // 0x0040 (0x0004) [0x0000000020000000]  CPF_Deprecated)
-	int32_t                                            MaterialExpressionEditorX;                     // 0x0044 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            MaterialExpressionEditorY;                     // 0x0048 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	int32_t                                            EditorX;                                       // 0x003C (0x0004) [0x0000000020000000] (CPF_Deprecated)
+	int32_t                                            EditorY;                                       // 0x0040 (0x0004) [0x0000000020000000] (CPF_Deprecated)
+	int32_t                                            MaterialExpressionEditorX;                     // 0x0044 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            MaterialExpressionEditorY;                     // 0x0048 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	uint32_t                                           bRealtimePreview : 1;                          // 0x004C (0x0004) [0x0000000000000000] [0x00000001] 
 	uint32_t                                           bNeedToUpdatePreview : 1;                      // 0x004C (0x0004) [0x0000000000002000] [0x00000002] (CPF_Transient)
 	uint32_t                                           bIsParameterExpression : 1;                    // 0x004C (0x0004) [0x0000000000000000] [0x00000004] 
@@ -12448,14 +12449,14 @@ public:
 class UAmbientOcclusionEffect : public UPostProcessEffect
 {
 public:
-	struct FLinearColor                                OcclusionColor;                                // 0x0064 (0x0010) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FLinearColor                                OcclusionColor;                                // 0x0064 (0x0010) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              OcclusionPower;                                // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              OcclusionScale;                                // 0x0078 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              OcclusionBias;                                 // 0x007C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              MinOcclusion;                                  // 0x0080 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	uint32_t                                           SSAO2 : 1;                                     // 0x0084 (0x0004) [0x0000000020000000] [0x00000001]  CPF_Deprecated)
+	uint32_t                                           SSAO2 : 1;                                     // 0x0084 (0x0004) [0x0000000020000000] [0x00000001] (CPF_Deprecated)
 	float                                              OcclusionRadius;                               // 0x0088 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              OcclusionAttenuation;                          // 0x008C (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	float                                              OcclusionAttenuation;                          // 0x008C (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	EAmbientOcclusionQuality                           OcclusionQuality;                              // 0x0090 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x3];                              // 0x0091 (0x0003) MISSED OFFSET
 	float                                              OcclusionFadeoutMinDistance;                   // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -12466,7 +12467,7 @@ public:
 	float                                              EdgeDistanceThreshold;                         // 0x00A8 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              EdgeDistanceScale;                             // 0x00AC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              FilterDistanceScale;                           // 0x00B0 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	int32_t                                            FilterSize;                                    // 0x00B4 (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	int32_t                                            FilterSize;                                    // 0x00B4 (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	float                                              HistoryConvergenceTime;                        // 0x00B8 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              HistoryWeightConvergenceTime;                  // 0x00BC (0x0004) [0x0000000000000000]               
 
@@ -13440,7 +13441,7 @@ class USoundCue : public UObject
 public:
 	class FName                                        SoundClass;                                    // 0x003C (0x0008) [0x0000000000020001] (CPF_Edit | CPF_EditConst)
 	class USoundNode*                                  FirstNode;                                     // 0x0044 (0x0004) [0x0000000000000000]               
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0048 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 EditorData;                                    // 0x0048 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	float                                              MaxAudibleDistance;                            // 0x0084 (0x0004) [0x0000000000002000] (CPF_Transient)
 	float                                              VolumeMultiplier;                              // 0x0088 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              PitchMultiplier;                               // 0x008C (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -13450,7 +13451,7 @@ public:
 	class FString                                      FaceFXAnimName;                                // 0x00A4 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	int32_t                                            MaxConcurrentPlayCount;                        // 0x00B0 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            CurrentPlayCount;                              // 0x00B4 (0x0004) [0x0000000000202002] (CPF_Const | CPF_Transient)
-	class FName                                        SoundGroup;                                    // 0x00B8 (0x0008) [0x0000000020000000]  CPF_Deprecated)
+	class FName                                        SoundGroup;                                    // 0x00B8 (0x0008) [0x0000000020000000] (CPF_Deprecated)
 
 public:
 	static UClass* StaticClass()
@@ -13529,8 +13530,8 @@ public:
 	uint32_t : 0;                                  // 0x00E0 CLOSE BITFIELD STORAGE UNIT
 	uint32_t                                           bCanBecomeDynamic : 1;                         // 0x00E0 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint8_t                                            UnknownData04[0x20];                            // 0x00E4 (0x0020) MISSED OFFSET
-	class FString                                      SourceFilePath;                                // 0x0104 (0x000C) [0x0000000000420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      SourceFileTimestamp;                           // 0x0110 (0x000C) [0x0000000000420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFilePath;                                // 0x0104 (0x000C) [0x0000000800420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFileTimestamp;                           // 0x0110 (0x000C) [0x0000000800420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
 	uint8_t                                            UnknownData05[0x18];                            // 0x011C (0x0018) MISSED OFFSET
 
 public:
@@ -13591,7 +13592,7 @@ class UFracturedStaticMesh : public UStaticMesh
 {
 public:
 	uint8_t                                            UnknownData00[0x4];                              // 0x0134 (0x0004) MISSED OFFSET
-	class UStaticMesh*                                 SourceCoreMesh;                                // 0x0138 (0x0004) [0x0000000000020001] (CPF_Edit | CPF_EditConst | CPF_EditorOnly)
+	class UStaticMesh*                                 SourceCoreMesh;                                // 0x0138 (0x0004) [0x0000000800020001] (CPF_Edit | CPF_EditConst | CPF_EditorOnly)
 	float                                              CoreMeshScale;                                 // 0x013C (0x0004) [0x0000000000020001] (CPF_Edit | CPF_EditConst)
 	uint8_t                                            UnknownData01[0x30];                            // 0x0140 (0x0030) MISSED OFFSET
 	uint32_t                                           bSliceUsingCoreCollision : 1;                  // 0x0170 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
@@ -13674,13 +13675,13 @@ public:
 	class TArray<struct FParticleSystemLOD>            LODSettings;                                   // 0x008C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	struct FBox                                        FixedRelativeBoundingBox;                      // 0x0098 (0x001C) [0x0000000000000001] (CPF_Edit)    
 	float                                              SecondsBeforeInactive;                         // 0x00B4 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      FloorMesh;                                     // 0x00B8 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	struct FVector                                     FloorPosition;                                 // 0x00C4 (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	struct FRotator                                    FloorRotation;                                 // 0x00D0 (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	float                                              FloorScale;                                    // 0x00DC (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	struct FVector                                     FloorScale3D;                                  // 0x00E0 (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	struct FColor                                      BackgroundColor;                               // 0x00EC (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class UTexture2D*                                  ThumbnailImage;                                // 0x00F0 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	class FString                                      FloorMesh;                                     // 0x00B8 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	struct FVector                                     FloorPosition;                                 // 0x00C4 (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	struct FRotator                                    FloorRotation;                                 // 0x00D0 (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	float                                              FloorScale;                                    // 0x00DC (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	struct FVector                                     FloorScale3D;                                  // 0x00E0 (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	struct FColor                                      BackgroundColor;                               // 0x00EC (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class UTexture2D*                                  ThumbnailImage;                                // 0x00F0 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	float                                              Delay;                                         // 0x00F4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              DelayLow;                                      // 0x00F8 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FVector                                     MacroUVPosition;                               // 0x00FC (0x000C) [0x0000000000000001] (CPF_Edit)    
@@ -13719,7 +13720,7 @@ public:
 	uint32_t                                           bIsSourceArtUncompressed : 1;                  // 0x003C (0x0004) [0x0000000000000000] [0x00000004] 
 	uint32_t                                           CompressionNoAlpha : 1;                        // 0x003C (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
 	uint32_t                                           CompressionNone : 1;                           // 0x003C (0x0004) [0x0000000000000000] [0x00000010] 
-	uint32_t                                           CompressionNoMipmaps : 1;                      // 0x003C (0x0004) [0x0000000020000000] [0x00000020]  CPF_Deprecated)
+	uint32_t                                           CompressionNoMipmaps : 1;                      // 0x003C (0x0004) [0x0000000020000000] [0x00000020] (CPF_Deprecated)
 	uint32_t                                           CompressionFullDynamicRange : 1;               // 0x003C (0x0004) [0x0000000000000001] [0x00000040] (CPF_Edit)
 	uint32_t                                           DeferCompression : 1;                          // 0x003C (0x0004) [0x0000000000000001] [0x00000080] (CPF_Edit)
 	uint32_t                                           NeverStream : 1;                               // 0x003C (0x0004) [0x0000000000000000] [0x00000100] 
@@ -13741,10 +13742,10 @@ public:
 	int32_t                                            LODBias;                                       // 0x0098 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            CachedCombinedLODBias;                         // 0x009C (0x0004) [0x0000000000002000] (CPF_Transient)
 	int32_t                                            NumCinematicMipLevels;                         // 0x00A0 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      SourceFilePath;                                // 0x00A4 (0x000C) [0x0000000000420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      SourceFileTimestamp;                           // 0x00B0 (0x000C) [0x0000000000420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFilePath;                                // 0x00A4 (0x000C) [0x0000000800420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFileTimestamp;                           // 0x00B0 (0x000C) [0x0000000800420001] (CPF_Edit | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
 	struct FPointer                                    Resource;                                      // 0x00BC (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
-	struct FGuid                                       LightingGuid;                                  // 0x00C0 (0x0010) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
+	struct FGuid                                       LightingGuid;                                  // 0x00C0 (0x0010) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
 	float                                              AdjustBrightness;                              // 0x00D0 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              AdjustBrightnessCurve;                         // 0x00D4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              AdjustVibrance;                                // 0x00D8 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -14123,11 +14124,11 @@ public:
 class UCoverMeshComponent : public UStaticMeshComponent
 {
 public:
-	class TArray<struct FCoverMeshes>                  Meshes;                                        // 0x023C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FCoverMeshes>                  Meshes;                                        // 0x023C (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	struct FVector                                     LocationOffset;                                // 0x0248 (0x000C) [0x0000000000000000]               
-	class UStaticMesh*                                 AutoAdjustOn;                                  // 0x0254 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class UStaticMesh*                                 AutoAdjustOff;                                 // 0x0258 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class UStaticMesh*                                 Disabled;                                      // 0x025C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	class UStaticMesh*                                 AutoAdjustOn;                                  // 0x0254 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class UStaticMesh*                                 AutoAdjustOff;                                 // 0x0258 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class UStaticMesh*                                 Disabled;                                      // 0x025C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -14956,7 +14957,7 @@ class ASkeletalMeshActor : public AActor
 public:
 	uint32_t                                           bDamageAppliesImpulse : 1;                     // 0x0228 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bShouldDoAnimNotifies : 1;                     // 0x0228 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	uint32_t                                           bCollideActors_OldValue : 1;                   // 0x0228 (0x0004) [0x0000000020000000] [0x00000004]  CPF_Deprecated)
+	uint32_t                                           bCollideActors_OldValue : 1;                   // 0x0228 (0x0004) [0x0000000020000000] [0x00000004] (CPF_Deprecated)
 	uint32_t                                           bSonarActive : 1;                              // 0x0228 (0x0004) [0x0000000000000000] [0x00000008] 
 	uint32_t                                           bSonarActor : 1;                               // 0x0228 (0x0004) [0x0000000000000000] [0x00000010] 
 	uint32_t                                           bSpeaking : 1;                                 // 0x0228 (0x0004) [0x0000000000002000] [0x00000020] (CPF_Transient)
@@ -14965,8 +14966,8 @@ public:
 	class USkeletalMeshComponent*                      SkeletalMeshComponent;                         // 0x022C (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class ULightEnvironmentComponent*                  LightEnvironment;                              // 0x0230 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
 	class UAudioComponent*                             FacialAudioComp;                               // 0x0234 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
-	class USkeletalMesh*                               ReplicatedMesh;                                // 0x0238 (0x0004) [0x0000000000002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
-	class UMaterialInterface*                          ReplicatedMaterial;                            // 0x023C (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class USkeletalMesh*                               ReplicatedMesh;                                // 0x0238 (0x0004) [0x0000000100002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
+	class UMaterialInterface*                          ReplicatedMaterial;                            // 0x023C (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	class TArray<struct FSkelMeshActorControlTarget>   ControlTargets;                                // 0x0240 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	class TArray<class UInterpGroup*>                  InterpGroupList;                               // 0x024C (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
 	class TArray<class UFaceFXAnimSet*>                FacialAnimSets;                                // 0x0258 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
@@ -14977,7 +14978,7 @@ public:
 	ESpeechPriority                                    CurrentSpeechPriority;                         // 0x027C (0x0001) [0x0000000000002000] (CPF_Transient)
 	uint8_t                                            UnknownData00[0x3];                              // 0x027D (0x0003) MISSED OFFSET
 	float                                              SpeakRotateRate;                               // 0x0280 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	struct FSpeakLineParamStruct                       ReplicatedSpeakLineParams;                     // 0x0284 (0x002C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_RepNotify)
+	struct FSpeakLineParamStruct                       ReplicatedSpeakLineParams;                     // 0x0284 (0x002C) [0x0000000100400000] (CPF_NeedCtorLink | CPF_RepNotify)
 	struct FSpeakLineParamStruct                       QueuedSpeakLineParams;                         // 0x02B0 (0x002C) [0x0000000000400000] (CPF_NeedCtorLink)
 	struct FSpeakLineParamStruct                       CurrentSpeakLineParams;                        // 0x02DC (0x002C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class UAudioComponent*                             CurrentlySpeakingLine;                         // 0x0308 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
@@ -15305,7 +15306,7 @@ class UAnimMetaData_SkelControl : public UAnimMetaData
 public:
 	class TArray<class FName>                          SkelControlNameList;                           // 0x003C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	uint32_t                                           bFullControlOverController : 1;                // 0x0048 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	class FName                                        SkelControlName;                               // 0x004C (0x0008) [0x0000000020000000]  CPF_Deprecated)
+	class FName                                        SkelControlName;                               // 0x004C (0x0008) [0x0000000020000000] (CPF_Deprecated)
 
 public:
 	static UClass* StaticClass()
@@ -15487,7 +15488,7 @@ public:
 	class UParticleSystem*                             PSTemplate;                                    // 0x0040 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint32_t                                           bIsExtremeContent : 1;                         // 0x0044 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bAttach : 1;                                   // 0x0044 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	uint32_t                                           bPreview : 1;                                  // 0x0044 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bPreview : 1;                                  // 0x0044 (0x0004) [0x0000000800000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
 	uint32_t                                           bSkipIfOwnerIsHidden : 1;                      // 0x0044 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
 	uint32_t                                           bIgnoreOwnerHiddenIfAttached : 1;              // 0x0044 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	class FName                                        SocketName;                                    // 0x0048 (0x0008) [0x0000000000000001] (CPF_Edit)    
@@ -15750,7 +15751,7 @@ class UAnimNotify_Trails : public UAnimNotify
 public:
 	uint32_t                                           UseAliceLevelDataParticle : 1;                 // 0x0040 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bIsExtremeContent : 1;                         // 0x0040 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	uint32_t                                           bPreview : 1;                                  // 0x0040 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bPreview : 1;                                  // 0x0040 (0x0004) [0x0000000800000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
 	uint32_t                                           bSkipIfOwnerIsHidden : 1;                      // 0x0040 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
 	uint32_t                                           bResampleRequired : 1;                         // 0x0040 (0x0004) [0x0000000000000000] [0x00000010] 
 	class UParticleSystem*                             PSTemplate;                                    // 0x0044 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -15759,7 +15760,7 @@ public:
 	class FName                                        ControlPointSocketName;                        // 0x0058 (0x0008) [0x0000000000000001] (CPF_Edit)    
 	float                                              LastStartTime;                                 // 0x0060 (0x0004) [0x0000000000000000]               
 	float                                              EndTime;                                       // 0x0064 (0x0004) [0x0000000000000000]               
-	float                                              SampleTimeStep;                                // 0x0068 (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	float                                              SampleTimeStep;                                // 0x0068 (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	class TArray<struct FTrailSamplePoint>             TrailSampleData;                               // 0x006C (0x000C) [0x0000000020400000] (CPF_NeedCtorLink | CPF_Deprecated)
 	float                                              SamplesPerSecond;                              // 0x0078 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FTrailSample>                  TrailSampledData;                              // 0x007C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
@@ -15834,12 +15835,12 @@ public:
 class UAnimObject : public UObject
 {
 public:
-	int32_t                                            DrawWidth;                                     // 0x003C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            DrawHeight;                                    // 0x0040 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            NodePosX;                                      // 0x0044 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            NodePosY;                                      // 0x0048 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            OutDrawY;                                      // 0x004C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class FString                                      CategoryDesc;                                  // 0x0050 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	int32_t                                            DrawWidth;                                     // 0x003C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            DrawHeight;                                    // 0x0040 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            NodePosX;                                      // 0x0044 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            NodePosY;                                      // 0x0048 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            OutDrawY;                                      // 0x004C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class FString                                      CategoryDesc;                                  // 0x0050 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	class USkeletalMeshComponent*                      SkelComponent;                                 // 0x005C (0x0004) [0x000000000408200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
 
 public:
@@ -15878,7 +15879,7 @@ public:
 	int32_t                                            bCachedHasRootMotion;                          // 0x00C0 (0x0004) [0x0000000000002000] (CPF_Transient)
 	class TArray<struct FCurveKey>                     CachedCurveKeys;                               // 0x00C4 (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
 	int32_t                                            SearchTag;                                     // 0x00D0 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
-	class TArray<struct FCurveKey>                     LastUpdatedAnimMorphKeys;                      // 0x00D4 (0x000C) [0x0000000000422001] (CPF_Edit | CPF_Transient | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FCurveKey>                     LastUpdatedAnimMorphKeys;                      // 0x00D4 (0x000C) [0x0000000800422001] (CPF_Edit | CPF_Transient | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -16158,7 +16159,7 @@ public:
 	uint32_t                                           bForceChildFullWeightWhenBecomingRelevant : 1; // 0x0108 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bSkipBlendWhenNotRendered : 1;                 // 0x0108 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	float                                              SliderPosition;                                // 0x010C (0x0004) [0x0000000000000002] (CPF_Const)   
-	int32_t                                            EditorActiveChildIndex;                        // 0x0110 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	int32_t                                            EditorActiveChildIndex;                        // 0x0110 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -16496,26 +16497,26 @@ public:
 	class TArray<struct FSkelControlListHead>          SkelControlLists;                              // 0x0130 (0x000C) [0x0000000004400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
 	class TArray<struct FBoneAtom>                     SavedPose;                                     // 0x013C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	uint32_t                                           bUseSavedPose : 1;                             // 0x0148 (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bBeingEdited : 1;                              // 0x0148 (0x0004) [0x0000000000002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
-	int32_t                                            MorphConnDrawY;                                // 0x014C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	float                                              PreviewPlayRate;                               // 0x0150 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class USkeletalMesh*                               PreviewSkelMesh;                               // 0x0154 (0x0004) [0x0000000020000000]  CPF_Deprecated | CPF_EditorOnly)
-	class USkeletalMesh*                               SocketSkelMesh;                                // 0x0158 (0x0004) [0x0000000020000000]  CPF_Deprecated | CPF_EditorOnly)
-	class UStaticMesh*                                 SocketStaticMesh;                              // 0x015C (0x0004) [0x0000000020000000]  CPF_Deprecated | CPF_EditorOnly)
-	class FName                                        SocketName;                                    // 0x0160 (0x0008) [0x0000000020000000]  CPF_Deprecated | CPF_EditorOnly)
-	class TArray<class UAnimSet*>                      PreviewAnimSets;                               // 0x0168 (0x000C) [0x0000000020400000] (CPF_NeedCtorLink | CPF_Deprecated | CPF_EditorOnly)
-	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x0174 (0x000C) [0x0000000020400000] (CPF_NeedCtorLink | CPF_Deprecated | CPF_EditorOnly)
-	class TArray<struct FPreviewSkelMeshStruct>        PreviewMeshList;                               // 0x0180 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
-	int32_t                                            PreviewMeshIndex;                              // 0x018C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class TArray<struct FPreviewSocketStruct>          PreviewSocketList;                             // 0x0190 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
-	int32_t                                            PreviewSocketIndex;                            // 0x019C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class TArray<struct FPreviewAnimSetsStruct>        PreviewAnimSetList;                            // 0x01A0 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
-	int32_t                                            PreviewAnimSetListIndex;                       // 0x01AC (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            PreviewAnimSetIndex;                           // 0x01B0 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	struct FVector                                     PreviewCamPos;                                 // 0x01B4 (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	struct FRotator                                    PreviewCamRot;                                 // 0x01C0 (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	struct FVector                                     PreviewFloorPos;                               // 0x01CC (0x000C) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            PreviewFloorYaw;                               // 0x01D8 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	uint32_t                                           bBeingEdited : 1;                              // 0x0148 (0x0004) [0x0000000800002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
+	int32_t                                            MorphConnDrawY;                                // 0x014C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	float                                              PreviewPlayRate;                               // 0x0150 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class USkeletalMesh*                               PreviewSkelMesh;                               // 0x0154 (0x0004) [0x0000000820000000] (CPF_Deprecated | CPF_EditorOnly)
+	class USkeletalMesh*                               SocketSkelMesh;                                // 0x0158 (0x0004) [0x0000000820000000] (CPF_Deprecated | CPF_EditorOnly)
+	class UStaticMesh*                                 SocketStaticMesh;                              // 0x015C (0x0004) [0x0000000820000000] (CPF_Deprecated | CPF_EditorOnly)
+	class FName                                        SocketName;                                    // 0x0160 (0x0008) [0x0000000820000000] (CPF_Deprecated | CPF_EditorOnly)
+	class TArray<class UAnimSet*>                      PreviewAnimSets;                               // 0x0168 (0x000C) [0x0000000820400000] (CPF_NeedCtorLink | CPF_Deprecated | CPF_EditorOnly)
+	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x0174 (0x000C) [0x0000000820400000] (CPF_NeedCtorLink | CPF_Deprecated | CPF_EditorOnly)
+	class TArray<struct FPreviewSkelMeshStruct>        PreviewMeshList;                               // 0x0180 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	int32_t                                            PreviewMeshIndex;                              // 0x018C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class TArray<struct FPreviewSocketStruct>          PreviewSocketList;                             // 0x0190 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	int32_t                                            PreviewSocketIndex;                            // 0x019C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class TArray<struct FPreviewAnimSetsStruct>        PreviewAnimSetList;                            // 0x01A0 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	int32_t                                            PreviewAnimSetListIndex;                       // 0x01AC (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            PreviewAnimSetIndex;                           // 0x01B0 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	struct FVector                                     PreviewCamPos;                                 // 0x01B4 (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	struct FRotator                                    PreviewCamRot;                                 // 0x01C0 (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	struct FVector                                     PreviewFloorPos;                               // 0x01CC (0x000C) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            PreviewFloorYaw;                               // 0x01D8 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -16887,8 +16888,8 @@ public:
 	int32_t                                            ControlTickTag;                                // 0x00B0 (0x0004) [0x0000000000002000] (CPF_Transient)
 	int32_t                                            IgnoreAtOrAboveLOD;                            // 0x00B4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class USkelControlBase*                            NextControl;                                   // 0x00B8 (0x0004) [0x0000000000000000]               
-	int32_t                                            ControlPosX;                                   // 0x00BC (0x0004) [0x0000000020000000]  CPF_Deprecated)
-	int32_t                                            ControlPosY;                                   // 0x00C0 (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	int32_t                                            ControlPosX;                                   // 0x00BC (0x0004) [0x0000000020000000] (CPF_Deprecated)
+	int32_t                                            ControlPosY;                                   // 0x00C0 (0x0004) [0x0000000020000000] (CPF_Deprecated)
 
 public:
 	static UClass* StaticClass()
@@ -17289,15 +17290,15 @@ public:
 	float                                              RateScale;                                     // 0x007C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint32_t                                           bNoLoopingInterpolation : 1;                   // 0x0080 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bIsAdditive : 1;                               // 0x0080 (0x0004) [0x0000000000000002] [0x00000002] (CPF_Const)
-	uint32_t                                           bAdditiveBuiltLooping : 1;                     // 0x0080 (0x0004) [0x0000000000000000] [0x00000004] (CPF_EditorOnly)
-	uint32_t                                           bDoNotOverrideCompression : 1;                 // 0x0080 (0x0004) [0x0000000000000003] [0x00000008] (CPF_Edit | CPF_Const | CPF_EditorOnly)
+	uint32_t                                           bAdditiveBuiltLooping : 1;                     // 0x0080 (0x0004) [0x0000000800000000] [0x00000004] (CPF_EditorOnly)
+	uint32_t                                           bDoNotOverrideCompression : 1;                 // 0x0080 (0x0004) [0x0000000800000003] [0x00000008] (CPF_Edit | CPF_Const | CPF_EditorOnly)
 	uint32_t                                           bHasBeenUsed : 1;                              // 0x0080 (0x0004) [0x0000000000002002] [0x00000010] (CPF_Const | CPF_Transient)
 	class TArray<struct FRawAnimSequenceTrack>         RawAnimData;                                   // 0x0084 (0x000C) [0x0000000020400002] (CPF_Const | CPF_NeedCtorLink | CPF_Deprecated)
 	class TArray<struct FRawAnimSequenceTrack>         RawAnimationData;                              // 0x0090 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FTranslationTrack>             TranslationData;                               // 0x009C (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
 	class TArray<struct FRotationTrack>                RotationData;                                  // 0x00A8 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
 	class TArray<struct FCurveTrack>                   CurveData;                                     // 0x00B4 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
-	class UAnimationCompressionAlgorithm*              CompressionScheme;                             // 0x00C0 (0x0004) [0x0000000004020001] (CPF_Edit | CPF_EditConst | CPF_EditInline | CPF_EditorOnly)
+	class UAnimationCompressionAlgorithm*              CompressionScheme;                             // 0x00C0 (0x0004) [0x0000000804020001] (CPF_Edit | CPF_EditConst | CPF_EditInline | CPF_EditorOnly)
 	EAnimationCompressionFormat                        TranslationCompressionFormat;                  // 0x00C4 (0x0001) [0x0000000000000002] (CPF_Const)   
 	EAnimationCompressionFormat                        RotationCompressionFormat;                     // 0x00C5 (0x0001) [0x0000000000000002] (CPF_Const)   
 	EAnimationKeyFormat                                KeyEncodingFormat;                             // 0x00C6 (0x0001) [0x0000000000000002] (CPF_Const)   
@@ -17311,13 +17312,13 @@ public:
 	struct FPointer                                    RotationCodec;                                 // 0x00F0 (0x0004) [0x0000000000003000] (CPF_Native | CPF_Transient)
 	class TArray<struct FBoneAtom>                     AdditiveRefPose;                               // 0x00F4 (0x000C) [0x0000000020400002] (CPF_Const | CPF_NeedCtorLink | CPF_Deprecated)
 	class TArray<struct FRawAnimSequenceTrack>         AdditiveBasePose;                              // 0x0100 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
-	class FName                                        AdditiveRefName;                               // 0x010C (0x0008) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
-	class TArray<class UAnimSequence*>                 AdditiveBasePoseAnimSeq;                       // 0x0114 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class UAnimSequence*>                 AdditiveTargetPoseAnimSeq;                     // 0x0120 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class UAnimSequence*>                 RelatedAdditiveAnimSeqs;                       // 0x012C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class FName                                        AdditiveRefName;                               // 0x010C (0x0008) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
+	class TArray<class UAnimSequence*>                 AdditiveBasePoseAnimSeq;                       // 0x0114 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UAnimSequence*>                 AdditiveTargetPoseAnimSeq;                     // 0x0120 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UAnimSequence*>                 RelatedAdditiveAnimSeqs;                       // 0x012C (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	int32_t                                            EncodingPkgVersion;                            // 0x0138 (0x0004) [0x0000000000000002] (CPF_Const)   
 	float                                              UseScore;                                      // 0x013C (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
-	class TArray<struct FAnimTag>                      AnimTags;                                      // 0x0140 (0x000C) [0x0000000000404000] (CPF_Config | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FAnimTag>                      AnimTags;                                      // 0x0140 (0x000C) [0x0000000800404000] (CPF_Config | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -17394,7 +17395,7 @@ class UMorphTargetSet : public UObject
 public:
 	class TArray<class UMorphTarget*>                  Targets;                                       // 0x003C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class USkeletalMesh*                               BaseSkelMesh;                                  // 0x0048 (0x0004) [0x0000000000000000]               
-	struct FArray_Mirror                               RawWedgePointIndices;                          // 0x004C (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native | CPF_EditorOnly)
+	struct FArray_Mirror                               RawWedgePointIndices;                          // 0x004C (0x000C) [0x0000000800001002] (CPF_Const | CPF_Native | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -17662,7 +17663,7 @@ class AFogVolumeDensityInfo : public AInfo
 public:
 	class UFogVolumeDensityComponent*                  DensityComponent;                              // 0x0228 (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class UStaticMeshComponent*                        AutomaticMeshComponent;                        // 0x022C (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
-	uint32_t                                           bEnabled : 1;                                  // 0x0230 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bEnabled : 1;                                  // 0x0230 (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -17774,9 +17775,9 @@ public:
 	class UMaterialInterface*                          DefaultFogVolumeMaterial;                      // 0x005C (0x0004) [0x0000000000000000]               
 	uint32_t                                           bEnabled : 1;                                  // 0x0060 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
 	uint32_t                                           bAffectsTranslucency : 1;                      // 0x0060 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	struct FLinearColor                                SimpleLightColor;                              // 0x0064 (0x0010) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FLinearColor                                ApproxFogLightColor;                           // 0x0074 (0x0010) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              StartDistance;                                 // 0x0084 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FLinearColor                                SimpleLightColor;                              // 0x0064 (0x0010) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FLinearColor                                ApproxFogLightColor;                           // 0x0074 (0x0010) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              StartDistance;                                 // 0x0084 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	class TArray<class AActor*>                        FogVolumeActors;                               // 0x0088 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 
 public:
@@ -17800,11 +17801,11 @@ public:
 class UFogVolumeConeDensityComponent : public UFogVolumeDensityComponent
 {
 public:
-	float                                              MaxDensity;                                    // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     ConeVertex;                                    // 0x0098 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ConeRadius;                                    // 0x00A4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     ConeAxis;                                      // 0x00A8 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ConeMaxAngle;                                  // 0x00B4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              MaxDensity;                                    // 0x0094 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     ConeVertex;                                    // 0x0098 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ConeRadius;                                    // 0x00A4 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     ConeAxis;                                      // 0x00A8 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ConeMaxAngle;                                  // 0x00B4 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	class UDrawLightConeComponent*                     PreviewCone;                                   // 0x00B8 (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
 
 public:
@@ -17826,7 +17827,7 @@ public:
 class UFogVolumeConstantDensityComponent : public UFogVolumeDensityComponent
 {
 public:
-	float                                              Density;                                       // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Density;                                       // 0x0094 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -17847,9 +17848,9 @@ public:
 class UFogVolumeLinearHalfspaceDensityComponent : public UFogVolumeDensityComponent
 {
 public:
-	float                                              PlaneDistanceFactor;                           // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              PlaneDistanceFactor;                           // 0x0094 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint8_t                                            UnknownData00[0x8];                              // 0x0098 (0x0008) MISSED OFFSET
-	struct FPlane                                      HalfspacePlane;                                // 0x00A0 (0x0010) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FPlane                                      HalfspacePlane;                                // 0x00A0 (0x0010) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -17870,7 +17871,7 @@ public:
 class UFogVolumeSphericalDensityComponent : public UFogVolumeDensityComponent
 {
 public:
-	float                                              MaxDensity;                                    // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              MaxDensity;                                    // 0x0094 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FVector                                     SphereCenter;                                  // 0x0098 (0x000C) [0x0000000000000000]               
 	float                                              SphereRadius;                                  // 0x00A4 (0x0004) [0x0000000000000000]               
 	class UDrawLightRadiusComponent*                   PreviewSphereRadius;                           // 0x00A8 (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
@@ -18486,7 +18487,7 @@ class UApexAsset : public UObject
 public:
 	class FString                                      OriginalApexName;                              // 0x003C (0x000C) [0x0000000004400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditInline)
 	class TArray<class UApexComponentBase*>            ApexComponents;                                // 0x0048 (0x000C) [0x000000000408300A] (CPF_Const | CPF_ExportObject | CPF_Native | CPF_Transient | CPF_Component | CPF_EditInline)
-	class TArray<class UApexAsset*>                    NamedReferences;                               // 0x0054 (0x000C) [0x0000000014400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse | CPF_EditorOnly)
+	class TArray<class UApexAsset*>                    NamedReferences;                               // 0x0054 (0x000C) [0x0000000814400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -18508,7 +18509,7 @@ class UApexClothingAsset : public UApexAsset
 {
 public:
 	struct FPointer                                    MApexAsset;                                    // 0x0060 (0x0004) [0x0000000000001000] (CPF_Native)  
-	class TArray<class UMaterialInterface*>            Materials;                                     // 0x0064 (0x000C) [0x0000000000400043] (CPF_Edit | CPF_Const | CPF_EditFixedSize | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UMaterialInterface*>            Materials;                                     // 0x0064 (0x000C) [0x0000000800400043] (CPF_Edit | CPF_Const | CPF_EditFixedSize | CPF_NeedCtorLink | CPF_EditorOnly)
 	class UApexGenericAsset*                           ApexClothingLibrary;                           // 0x0070 (0x0004) [0x0000000020000002] (CPF_Const | CPF_Deprecated)
 	uint32_t                                           bUseHardwareCloth : 1;                         // 0x0074 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
 	uint32_t                                           bFallbackSkinning : 1;                         // 0x0074 (0x0004) [0x0000000000000003] [0x00000002] (CPF_Edit | CPF_Const)
@@ -18573,7 +18574,7 @@ class UApexGenericAsset : public UApexAsset
 {
 public:
 	struct FPointer                                    MApexAsset;                                    // 0x0060 (0x0004) [0x0000000000001000] (CPF_Native)  
-	class TArray<class UMaterialInterface*>            Materials;                                     // 0x0064 (0x000C) [0x0000000000400043] (CPF_Edit | CPF_Const | CPF_EditFixedSize | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UMaterialInterface*>            Materials;                                     // 0x0064 (0x000C) [0x0000000800400043] (CPF_Edit | CPF_Const | CPF_EditFixedSize | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -18706,8 +18707,8 @@ public:
 class UInterpFilter_Classes : public UInterpFilter
 {
 public:
-	class UClass*                                      ClassToFilterBy;                               // 0x0048 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class TArray<class UClass*>                        TrackClasses;                                  // 0x004C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class UClass*                                      ClassToFilterBy;                               // 0x0048 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class TArray<class UClass*>                        TrackClasses;                                  // 0x004C (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -18728,7 +18729,7 @@ public:
 class UInterpFilter_Custom : public UInterpFilter
 {
 public:
-	class TArray<class UInterpGroup*>                  GroupsToInclude;                               // 0x0048 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UInterpGroup*>                  GroupsToInclude;                               // 0x0048 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -18779,10 +18780,10 @@ public:
 class UInterpGroupAI : public UInterpGroup
 {
 public:
-	class USkeletalMesh*                               PreviewSkeletalMesh;                           // 0x0068 (0x0004) [0x0000000000020001] (CPF_Edit | CPF_EditConst | CPF_EditorOnly)
-	class UClass*                                      PreviewPawnClass;                              // 0x006C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class USkeletalMesh*                               PreviewSkeletalMesh;                           // 0x0068 (0x0004) [0x0000000800020001] (CPF_Edit | CPF_EditConst | CPF_EditorOnly)
+	class UClass*                                      PreviewPawnClass;                              // 0x006C (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	class FName                                        StageMarkGroup;                                // 0x0070 (0x0008) [0x0000000000000001] (CPF_Edit)    
-	class APawn*                                       PreviewPawn;                                   // 0x0078 (0x0004) [0x0000000000002000] (CPF_Transient | CPF_EditorOnly)
+	class APawn*                                       PreviewPawn;                                   // 0x0078 (0x0004) [0x0000000800002000] (CPF_Transient | CPF_EditorOnly)
 	class AActor*                                      StageMarkActor;                                // 0x007C (0x0004) [0x0000000000000000]               
 
 public:
@@ -19255,8 +19256,8 @@ class UInterpTrackParticleReplay : public UInterpTrack
 {
 public:
 	class TArray<struct FParticleReplayTrackKey>       TrackKeys;                                     // 0x005C (0x000C) [0x0000000004400000] (CPF_NeedCtorLink | CPF_EditInline)
-	uint32_t                                           bIsCapturingReplay : 1;                        // 0x0068 (0x0004) [0x0000000000002002] [0x00000001] (CPF_Const | CPF_Transient | CPF_EditorOnly)
-	float                                              FixedTimeStep;                                 // 0x006C (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bIsCapturingReplay : 1;                        // 0x0068 (0x0004) [0x0000000800002002] [0x00000001] (CPF_Const | CPF_Transient | CPF_EditorOnly)
+	float                                              FixedTimeStep;                                 // 0x006C (0x0004) [0x0000000800002002] (CPF_Const | CPF_Transient | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -20448,7 +20449,7 @@ public:
 class UMaterialExpressionCustom : public UMaterialExpression
 {
 public:
-	class FString                                      Code;                                          // 0x006C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditTextBox)
+	class FString                                      Code;                                          // 0x006C (0x000C) [0x0000040000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditTextBox)
 	ECustomMaterialOutputType                          OutputType;                                    // 0x0078 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x3];                              // 0x0079 (0x0003) MISSED OFFSET
 	class FString                                      Description;                                   // 0x007C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
@@ -22331,7 +22332,7 @@ public:
 	struct FPointer                                    StaticPermutationResources[2];                 // 0x008C (0x0008) [0x0000000000201002] (CPF_Const | CPF_Native)
 	struct FPointer                                    Resources[2];                                  // 0x0094 (0x0008) [0x0000000000201002] (CPF_Const | CPF_Native)
 	class TArray<class UTexture*>                      ReferencedTextures;                            // 0x009C (0x000C) [0x0000000020400002] (CPF_Const | CPF_NeedCtorLink | CPF_Deprecated)
-	class TArray<struct FGuid>                         ReferencedTextureGuids;                        // 0x00A8 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FGuid>                         ReferencedTextureGuids;                        // 0x00A8 (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
 	struct FGuid                                       ParentLightingGuid;                            // 0x00B4 (0x0010) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            DuplicateCount;                                // 0x00C4 (0x0004) [0x0000000000002000] (CPF_Transient)
 
@@ -22445,7 +22446,7 @@ public:
 	class UParticleSystem*                             PS_CameraEffectNonExtremeContent;              // 0x023C (0x0004) [0x0000000000000000]               
 	float                                              BaseFOV;                                       // 0x0240 (0x0004) [0x0000000000000000]               
 	float                                              DistFromCamera;                                // 0x0244 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	uint32_t                                           bAllowMultipleInstances : 1;                   // 0x0248 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const | CPF_ProtectedWrite)
+	uint32_t                                           bAllowMultipleInstances : 1;                   // 0x0248 (0x0004) [0x0000008000000003] [0x00000001] (CPF_Edit | CPF_Const | CPF_ProtectedWrite)
 	class ACamera*                                     BaseCamera;                                    // 0x024C (0x0004) [0x0000000000002000] (CPF_Transient)
 
 public:
@@ -22475,7 +22476,7 @@ class APhysXEmitterSpawnable : public AEmitter
 {
 public:
 	struct FPointer                                    VolumeFill;                                    // 0x0238 (0x0004) [0x0000000000001000] (CPF_Native)  
-	class UParticleSystem*                             ParticleTemplate;                              // 0x023C (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class UParticleSystem*                             ParticleTemplate;                              // 0x023C (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -22687,7 +22688,7 @@ public:
 	struct FColor                                      EmitterEditorColor;                            // 0x004C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class TArray<class UParticleLODLevel*>             LODLevels;                                     // 0x0050 (0x000C) [0x0000000004400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
 	uint32_t                                           ConvertedModules : 1;                          // 0x005C (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bCollapsed : 1;                                // 0x005C (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bCollapsed : 1;                                // 0x005C (0x0004) [0x0000000800000001] [0x00000002] (CPF_Edit | CPF_EditorOnly)
 	uint32_t                                           bIsSoloing : 1;                                // 0x005C (0x0004) [0x0000000000002000] [0x00000004] (CPF_Transient)
 	uint32_t                                           bCookedOut : 1;                                // 0x005C (0x0004) [0x0000000000000000] [0x00000008] 
 	int32_t                                            PeakActiveParticles;                           // 0x0060 (0x0004) [0x0000000000000000]               
@@ -23417,9 +23418,9 @@ public:
 class UParticleModuleEventReceiverSpawn : public UParticleModuleEventReceiverBase
 {
 public:
-	EParticleEventType                                 EventGeneratorType;                            // 0x0054 (0x0001) [0x0000000020000000]  CPF_Deprecated)
+	EParticleEventType                                 EventGeneratorType;                            // 0x0054 (0x0001) [0x0000000020000000] (CPF_Deprecated)
 	uint8_t                                            UnknownData00[0x3];                              // 0x0055 (0x0003) MISSED OFFSET
-	class FName                                        EventName;                                     // 0x0058 (0x0008) [0x0000000020000000]  CPF_Deprecated)
+	class FName                                        EventName;                                     // 0x0058 (0x0008) [0x0000000020000000] (CPF_Deprecated)
 	struct FRawDistributionFloat                       SpawnCount;                                    // 0x0060 (0x001C) [0x0000000000480001] (CPF_Edit | CPF_Component | CPF_NeedCtorLink)
 	uint32_t                                           bUseParticleTime : 1;                          // 0x007C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bUsePSysLocation : 1;                          // 0x007C (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
@@ -23997,7 +23998,7 @@ public:
 	uint32_t                                           bUseLocalSpace : 1;                            // 0x0054 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bKillOnDeactivate : 1;                         // 0x0054 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bKillOnCompleted : 1;                          // 0x0054 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
-	uint32_t                                           bRequiresSorting : 1;                          // 0x0054 (0x0004) [0x0000000020000000] [0x00000008]  CPF_Deprecated)
+	uint32_t                                           bRequiresSorting : 1;                          // 0x0054 (0x0004) [0x0000000020000000] [0x00000008] (CPF_Deprecated)
 	uint32_t                                           bUseLegacyEmitterTime : 1;                     // 0x0054 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	uint32_t                                           bEmitterDurationUseRange : 1;                  // 0x0054 (0x0004) [0x0000000000000001] [0x00000020] (CPF_Edit)
 	uint32_t                                           bDurationRecalcEachLoop : 1;                   // 0x0054 (0x0004) [0x0000000000000001] [0x00000040] (CPF_Edit)
@@ -24883,7 +24884,7 @@ public:
 	uint32_t                                           bCameraFacing : 1;                             // 0x004C (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	EMeshScreenAlignment                               MeshAlignment;                                 // 0x0050 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	EParticleAxisLock                                  AxisLockOption;                                // 0x0051 (0x0001) [0x0000000000000001] (CPF_Edit)    
-	EMeshCameraFacingUpAxis                            CameraFacingUpAxisOption;                      // 0x0052 (0x0001) [0x0000000020000000]  CPF_Deprecated)
+	EMeshCameraFacingUpAxis                            CameraFacingUpAxisOption;                      // 0x0052 (0x0001) [0x0000000020000000] (CPF_Deprecated)
 	EMeshCameraFacingOptions                           CameraFacingOption;                            // 0x0053 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	float                                              Pitch;                                         // 0x0054 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              Roll;                                          // 0x0058 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -25504,7 +25505,7 @@ class AKActor : public ADynamicSMActor
 {
 public:
 	uint32_t                                           bDamageAppliesImpulse : 1;                     // 0x0264 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	uint32_t                                           bWakeOnLevelStart : 1;                         // 0x0264 (0x0004) [0x0000000000000021] [0x00000002] (CPF_Edit | CPF_Net | CPF_RepNotify)
+	uint32_t                                           bWakeOnLevelStart : 1;                         // 0x0264 (0x0004) [0x0000000100000021] [0x00000002] (CPF_Edit | CPF_Net | CPF_RepNotify)
 	uint32_t                                           bCurrentSlide : 1;                             // 0x0264 (0x0004) [0x0000000000000000] [0x00000004] 
 	uint32_t                                           bSlideActive : 1;                              // 0x0264 (0x0004) [0x0000000000000000] [0x00000008] 
 	uint32_t                                           bEnableStayUprightSpring : 1;                  // 0x0264 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
@@ -25525,7 +25526,7 @@ public:
 	float                                              MaxPhysicsVelocity;                            // 0x02AC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FRigidBodyState                             RBState;                                       // 0x02B0 (0x0040) [0x0000000000001022] (CPF_Const | CPF_Net | CPF_Native)
 	float                                              AngErrorAccumulator;                           // 0x02F0 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
-	struct FVector                                     ReplicatedDrawScale3D;                         // 0x02F4 (0x000C) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	struct FVector                                     ReplicatedDrawScale3D;                         // 0x02F4 (0x000C) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	struct FVector                                     InitialLocation;                               // 0x0300 (0x000C) [0x0000000000002000] (CPF_Transient)
 	struct FRotator                                    InitialRotation;                               // 0x030C (0x000C) [0x0000000000002000] (CPF_Transient)
 
@@ -25625,8 +25626,8 @@ public:
 	uint32_t                                           bDamageAppliesImpulse : 1;                     // 0x022C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bWakeOnLevelStart : 1;                         // 0x022C (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bBlockPawns : 1;                               // 0x022C (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
-	class USkeletalMesh*                               ReplicatedMesh;                                // 0x0230 (0x0004) [0x0000000000002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
-	class UPhysicsAsset*                               ReplicatedPhysAsset;                           // 0x0234 (0x0004) [0x0000000000002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
+	class USkeletalMesh*                               ReplicatedMesh;                                // 0x0230 (0x0004) [0x0000000100002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
+	class UPhysicsAsset*                               ReplicatedPhysAsset;                           // 0x0234 (0x0004) [0x0000000100002020] (CPF_Net | CPF_Transient | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -25660,7 +25661,7 @@ public:
 	float                                              MaxJumpHeight;                                 // 0x022C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              WalkableFloorZ;                                // 0x0230 (0x0004) [0x0000000000000002] (CPF_Const)   
 	float                                              LedgeCheckThreshold;                           // 0x0234 (0x0004) [0x0000000000000002] (CPF_Const)   
-	class AController*                                 Controller;                                    // 0x0238 (0x0004) [0x0000000004000020] (CPF_Net | CPF_EditInline | CPF_RepNotify)
+	class AController*                                 Controller;                                    // 0x0238 (0x0004) [0x0000000104000020] (CPF_Net | CPF_EditInline | CPF_RepNotify)
 	class APawn*                                       NextPawn;                                      // 0x023C (0x0004) [0x0000000000000002] (CPF_Const)   
 	float                                              NetRelevancyTime;                              // 0x0240 (0x0004) [0x0000000000000000]               
 	class APlayerController*                           LastRealViewer;                                // 0x0244 (0x0004) [0x0000000000000000]               
@@ -25750,8 +25751,8 @@ public:
 	int32_t                                            XPMaxValue;                                    // 0x0284 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	EPathSearchType                                    PathSearchType;                                // 0x0288 (0x0001) [0x0000000000000000]               
 	uint8_t                                            RemoteViewPitch;                               // 0x0289 (0x0001) [0x0000000000000022] (CPF_Const | CPF_Net)
-	uint8_t                                            FlashCount;                                    // 0x028A (0x0001) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	uint8_t                                            FiringMode;                                    // 0x028B (0x0001) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	uint8_t                                            FlashCount;                                    // 0x028A (0x0001) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	uint8_t                                            FiringMode;                                    // 0x028B (0x0001) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	ECmnLedgeType                                      LedgeTypeWhileZAxisMovement;                   // 0x028C (0x0001) [0x0000000000002000] (CPF_Transient)
 	uint8_t                                            UnknownData00[0x3];                              // 0x028D (0x0003) MISSED OFFSET
 	class UPathConstraint*                             PathConstraintList;                            // 0x0290 (0x0004) [0x0000000000000000]               
@@ -25816,7 +25817,7 @@ public:
 	float                                              DamageScaling;                                 // 0x03A4 (0x0004) [0x0000000000000000]               
 	class FString                                      MenuName;                                      // 0x03A8 (0x000C) [0x0000000000408002] (CPF_Const | CPF_Localized | CPF_NeedCtorLink)
 	class UClass*                                      ControllerClass;                               // 0x03B4 (0x0004) [0x0000000000000000]               
-	class APlayerReplicationInfo*                      PlayerReplicationInfo;                         // 0x03B8 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class APlayerReplicationInfo*                      PlayerReplicationInfo;                         // 0x03B8 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	class ALadderVolume*                               OnLadder;                                      // 0x03BC (0x0004) [0x0000000000000000]               
 	class FName                                        LandMovementState;                             // 0x03C0 (0x0008) [0x0000000000000000]               
 	class FName                                        WaterMovementState;                            // 0x03C8 (0x0008) [0x0000000000000000]               
@@ -25829,7 +25830,7 @@ public:
 	class UCylinderComponent*                          CylinderComponent;                             // 0x03F8 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	float                                              RBPushRadius;                                  // 0x03FC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              RBPushStrength;                                // 0x0400 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class AVehicle*                                    DrivenVehicle;                                 // 0x0404 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class AVehicle*                                    DrivenVehicle;                                 // 0x0404 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	float                                              AlwaysRelevantDistanceSquared;                 // 0x0408 (0x0004) [0x0000000000000000]               
 	float                                              VehicleCheckRadius;                            // 0x040C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class AController*                                 LastHitBy;                                     // 0x0410 (0x0004) [0x0000000000000000]               
@@ -25839,10 +25840,10 @@ public:
 	struct FRotator                                    DesiredRotation;                               // 0x0420 (0x000C) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	struct FRotator                                    LastFrameRotatorInBlendingByNpcRotor;          // 0x042C (0x000C) [0x0000000000000000]               
 	class UClass*                                      InventoryManagerClass;                         // 0x0438 (0x0004) [0x0000000000000000]               
-	class AInventoryManager*                           InvManager;                                    // 0x043C (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class AInventoryManager*                           InvManager;                                    // 0x043C (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	class AWeapon*                                     Weapon;                                        // 0x0440 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class AWeapon*                                     PrevWeapon;                                    // 0x0444 (0x0004) [0x0000000000002000] (CPF_Transient)
-	struct FVector                                     FlashLocation;                                 // 0x0448 (0x000C) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	struct FVector                                     FlashLocation;                                 // 0x0448 (0x000C) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	struct FVector                                     LastFiringFlashLocation;                       // 0x0454 (0x000C) [0x0000000000000000]               
 	int32_t                                            ShotCount;                                     // 0x0460 (0x0004) [0x0000000000000000]               
 	class UPrimitiveComponent*                         PreRagdollCollisionComponent;                  // 0x0464 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
@@ -25884,7 +25885,8 @@ public:
 	float                                              MeshHeightOffset;                              // 0x0554 (0x0004) [0x0000000000002000] (CPF_Transient)
 	float                                              bJustPushDownSpeed;                            // 0x0558 (0x0004) [0x0000000000002000] (CPF_Transient)
 	float                                              ThresholdHeightToCancelPushDownByIK;           // 0x055C (0x0004) [0x0000000000000001] (CPF_Edit)    
-	uint8_t                                            UnknownData01[0x78];                            // 0x0560 (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 FeetPositions;                                 // 0x0560 (0x003C) [0x0000000000003000] (CPF_Native | CPF_Transient)
+	struct FMap_Mirror                                 FeetLanded;                                    // 0x059C (0x003C) [0x0000000000003000] (CPF_Native | CPF_Transient)
 
 public:
 	static UClass* StaticClass()
@@ -26180,8 +26182,8 @@ public:
 class AVehicle : public APawn
 {
 public:
-	class APawn*                                       Driver;                                        // 0x05D8 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	uint32_t                                           bDriving : 1;                                  // 0x05DC (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	class APawn*                                       Driver;                                        // 0x05D8 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bDriving : 1;                                  // 0x05DC (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bDriverIsVisible : 1;                          // 0x05DC (0x0004) [0x0000000000000000] [0x00000002] 
 	uint32_t                                           bAttachDriver : 1;                             // 0x05DC (0x0004) [0x0000000000000000] [0x00000004] 
 	uint32_t                                           bTurnInPlace : 1;                              // 0x05DC (0x0004) [0x0000000000000000] [0x00000008] 
@@ -26442,7 +26444,7 @@ public:
 	uint32_t                                           bStopAtFirstHit : 1;                           // 0x0230 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bCauseFracture : 1;                            // 0x0230 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	class UArrowComponent*                             Arrow;                                         // 0x0234 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
-	uint8_t                                            ImpulseCount;                                  // 0x0238 (0x0001) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	uint8_t                                            ImpulseCount;                                  // 0x0238 (0x0001) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -26469,7 +26471,7 @@ class ARB_RadialImpulseActor : public ARigidBodyBase
 public:
 	class UDrawSphereComponent*                        RenderComponent;                               // 0x0228 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class URB_RadialImpulseComponent*                  ImpulseComponent;                              // 0x022C (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint8_t                                            ImpulseCount;                                  // 0x0230 (0x0001) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	uint8_t                                            ImpulseCount;                                  // 0x0230 (0x0001) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -26494,7 +26496,7 @@ class ARB_Thruster : public ARigidBodyBase
 {
 public:
 	uint32_t                                           bThrustEnabled : 1;                            // 0x0228 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              ThrustStrength;                                // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ThrustStrength;                                // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -26867,7 +26869,7 @@ public:
 class UPhysicsAsset : public UObject
 {
 public:
-	class USkeletalMesh*                               DefaultSkelMesh;                               // 0x003C (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
+	class USkeletalMesh*                               DefaultSkelMesh;                               // 0x003C (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
 	class TArray<class URB_BodySetup*>                 BodySetup;                                     // 0x0040 (0x000C) [0x000000000440000A] (CPF_Const | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
 	struct FMap_Mirror                                 BodySetupIndexMap;                             // 0x004C (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<int32_t>                              BoundsBodies;                                  // 0x0088 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
@@ -27490,15 +27492,15 @@ public:
 class ANxCylindricalForceField : public ANxForceField
 {
 public:
-	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           UseSpecialRadialForce : 1;                     // 0x028C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	struct FPointer                                    Kernel;                                        // 0x0290 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
@@ -27589,9 +27591,9 @@ class ANxForceFieldRadial : public ANxForceField
 public:
 	class UForceFieldShape*                            Shape;                                         // 0x0268 (0x0004) [0x0000000004000001] (CPF_Edit | CPF_EditInline)
 	class UActorComponent*                             DrawComponent;                                 // 0x026C (0x0004) [0x0000000004081008] (CPF_ExportObject | CPF_Native | CPF_Component | CPF_EditInline)
-	float                                              ForceStrength;                                 // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SelfRotationStrength;                          // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceStrength;                                 // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x0278 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	ERadialImpulseFalloff                              ForceFalloff;                                  // 0x027C (0x0001) [0x0000000000080009] (CPF_Edit | CPF_ExportObject | CPF_Component)
 	uint8_t                                            UnknownData00[0x3];                              // 0x027D (0x0003) MISSED OFFSET
 	struct FPointer                                    Kernel;                                        // 0x0280 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
@@ -27619,17 +27621,17 @@ class ANxForceFieldTornado : public ANxForceField
 public:
 	class UForceFieldShape*                            Shape;                                         // 0x0268 (0x0004) [0x0000000004000001] (CPF_Edit | CPF_EditInline)
 	class UActorComponent*                             DrawComponent;                                 // 0x026C (0x0004) [0x0000000004081008] (CPF_ExportObject | CPF_Native | CPF_Component | CPF_EditInline)
-	float                                              RadialStrength;                                // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x0274 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x027C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0280 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x0284 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x0288 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x028C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0290 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x0274 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x0278 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x027C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0280 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x0284 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x0288 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x028C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0290 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           BSpecialRadialForceMode : 1;                   // 0x0294 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              SelfRotationStrength;                          // 0x0298 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x0298 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FPointer                                    Kernel;                                        // 0x029C (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
@@ -27690,7 +27692,7 @@ class ANxGenericForceFieldBox : public ANxGenericForceField
 {
 public:
 	class UDrawBoxComponent*                           RenderComponent;                               // 0x0304 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
-	struct FVector                                     BoxExtent;                                     // 0x0308 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     BoxExtent;                                     // 0x0308 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 
 public:
 	static UClass* StaticClass()
@@ -27737,8 +27739,8 @@ class ANxRadialForceField : public ANxForceField
 {
 public:
 	class UDrawSphereComponent*                        RenderComponent;                               // 0x0268 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
-	float                                              ForceStrength;                                 // 0x026C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceStrength;                                 // 0x026C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	ERadialImpulseFalloff                              ForceFalloff;                                  // 0x0274 (0x0001) [0x0000000000080009] (CPF_Edit | CPF_ExportObject | CPF_Component)
 	uint8_t                                            UnknownData00[0x3];                              // 0x0275 (0x0003) MISSED OFFSET
 	struct FPointer                                    LinearKernel;                                  // 0x0278 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
@@ -27762,7 +27764,7 @@ public:
 class ANxRadialCustomForceField : public ANxRadialForceField
 {
 public:
-	float                                              SelfRotationStrength;                          // 0x027C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x027C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FPointer                                    Kernel;                                        // 0x0280 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
@@ -27784,17 +27786,17 @@ public:
 class ANxTornadoAngularForceField : public ANxForceField
 {
 public:
-	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           BSpecialRadialForceMode : 1;                   // 0x028C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              SelfRotationStrength;                          // 0x0290 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x0290 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FPointer                                    Kernel;                                        // 0x0294 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
@@ -27837,15 +27839,15 @@ public:
 class ANxTornadoForceField : public ANxForceField
 {
 public:
-	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0268 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x026C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x0270 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0274 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0278 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x027C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x0280 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0284 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0288 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           BSpecialRadialForceMode : 1;                   // 0x028C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	struct FPointer                                    Kernel;                                        // 0x0290 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
@@ -27913,15 +27915,15 @@ class ARB_CylindricalForceActor : public ARigidBodyBase
 {
 public:
 	class UDrawCylinderComponent*                      RenderComponent;                               // 0x0228 (0x0004) [0x0000000004080009] (CPF_Edit | CPF_ExportObject | CPF_Component | CPF_EditInline)
-	float                                              RadialStrength;                                // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0240 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0244 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0248 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x024C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x0234 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0240 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0244 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0248 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x024C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bForceActive : 1;                              // 0x0250 (0x0004) [0x0000000000000021] [0x00000001] (CPF_Edit | CPF_Net)
 	uint32_t                                           bForceApplyToCloth : 1;                        // 0x0250 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bForceApplyToFluid : 1;                        // 0x0250 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
@@ -27951,10 +27953,10 @@ class ARB_RadialForceActor : public ARigidBodyBase
 {
 public:
 	class UDrawSphereComponent*                        RenderComponent;                               // 0x0228 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
-	float                                              ForceStrength;                                 // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SwirlStrength;                                 // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SpinTorque;                                    // 0x0238 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceStrength;                                 // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SwirlStrength;                                 // 0x0234 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SpinTorque;                                    // 0x0238 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	ERadialImpulseFalloff                              ForceFalloff;                                  // 0x023C (0x0001) [0x0000000000080009] (CPF_Edit | CPF_ExportObject | CPF_Component)
 	ERadialForceType                                   RadialForceMode;                               // 0x023D (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x2];                              // 0x023E (0x0002) MISSED OFFSET
@@ -28023,15 +28025,15 @@ public:
 class UNxForceFieldCylindricalComponent : public UNxForceFieldComponent
 {
 public:
-	float                                              RadialStrength;                                // 0x0224 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x0228 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0240 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0244 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0224 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x0228 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0234 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0240 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0244 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           UseSpecialRadialForce : 1;                     // 0x0248 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	struct FPointer                                    Kernel;                                        // 0x024C (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
@@ -28093,9 +28095,9 @@ public:
 class UNxForceFieldRadialComponent : public UNxForceFieldComponent
 {
 public:
-	float                                              ForceStrength;                                 // 0x0224 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0228 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SelfRotationStrength;                          // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceStrength;                                 // 0x0224 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0228 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	ERadialImpulseFalloff                              ForceFalloff;                                  // 0x0230 (0x0001) [0x0000000000080009] (CPF_Edit | CPF_ExportObject | CPF_Component)
 	uint8_t                                            UnknownData00[0x3];                              // 0x0231 (0x0003) MISSED OFFSET
 	struct FPointer                                    Kernel;                                        // 0x0234 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
@@ -28119,17 +28121,17 @@ public:
 class UNxForceFieldTornadoComponent : public UNxForceFieldComponent
 {
 public:
-	float                                              RadialStrength;                                // 0x0224 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RotationalStrength;                            // 0x0228 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftStrength;                                  // 0x022C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceTopRadius;                                // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              ForceHeight;                                   // 0x0240 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              HeightOffset;                                  // 0x0244 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              RadialStrength;                                // 0x0224 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RotationalStrength;                            // 0x0228 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftStrength;                                  // 0x022C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceRadius;                                   // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceTopRadius;                                // 0x0234 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              LiftFalloffHeight;                             // 0x0238 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              EscapeVelocity;                                // 0x023C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              ForceHeight;                                   // 0x0240 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              HeightOffset;                                  // 0x0244 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           BSpecialRadialForceMode : 1;                   // 0x0248 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              SelfRotationStrength;                          // 0x024C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              SelfRotationStrength;                          // 0x024C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FPointer                                    Kernel;                                        // 0x0250 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
@@ -28264,7 +28266,7 @@ class APrefabInstance : public AActor
 public:
 	class UPrefab*                                     TemplatePrefab;                                // 0x0228 (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            TemplateVersion;                               // 0x022C (0x0004) [0x0000000000000002] (CPF_Const)   
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0230 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 ArchetypeToInstanceMap;                        // 0x0230 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class UPrefabSequence*                             SequenceInstance;                              // 0x026C (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            PI_PackageVersion;                             // 0x0270 (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            PI_LicenseePackageVersion;                     // 0x0274 (0x0004) [0x0000000000000002] (CPF_Const)   
@@ -28272,7 +28274,7 @@ public:
 	class TArray<class UObject*>                       PI_CompleteObjects;                            // 0x0284 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class TArray<class UObject*>                       PI_ReferencedObjects;                          // 0x0290 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class TArray<class FString>                        PI_SavedNames;                                 // 0x029C (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData01[0x3C];                            // 0x02A8 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 PI_ObjectMap;                                  // 0x02A8 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 
 public:
 	static UClass* StaticClass()
@@ -28297,7 +28299,7 @@ public:
 	class TArray<class UObject*>                       PrefabArchetypes;                              // 0x0040 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class TArray<class UObject*>                       RemovedArchetypes;                             // 0x004C (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class UPrefabSequence*                             PrefabSequence;                                // 0x0058 (0x0004) [0x0000000000000002] (CPF_Const)   
-	class UTexture2D*                                  PrefabPreview;                                 // 0x005C (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
+	class UTexture2D*                                  PrefabPreview;                                 // 0x005C (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -28320,12 +28322,12 @@ class USequenceObject : public UObject
 public:
 	int32_t                                            ObjInstanceVersion;                            // 0x003C (0x0004) [0x0000000000000002] (CPF_Const)   
 	class USequence*                                   ParentSequence;                                // 0x0040 (0x0004) [0x0000000001000002] (CPF_Const)   
-	int32_t                                            ObjPosX;                                       // 0x0044 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            ObjPosY;                                       // 0x0048 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class FString                                      ObjName;                                       // 0x004C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      ObjCategory;                                   // 0x0058 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class FString>                        ObjRemoveInProject;                            // 0x0064 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	struct FColor                                      ObjColor;                                      // 0x0070 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	int32_t                                            ObjPosX;                                       // 0x0044 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            ObjPosY;                                       // 0x0048 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class FString                                      ObjName;                                       // 0x004C (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      ObjCategory;                                   // 0x0058 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class FString>                        ObjRemoveInProject;                            // 0x0064 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	struct FColor                                      ObjColor;                                      // 0x0070 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	class FString                                      ObjComment;                                    // 0x0074 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	uint32_t                                           bDeletable : 1;                                // 0x0080 (0x0004) [0x0000000000000000] [0x00000001] 
 	uint32_t                                           bDrawFirst : 1;                                // 0x0080 (0x0004) [0x0000000000000000] [0x00000002] 
@@ -28370,8 +28372,8 @@ public:
 	uint32_t                                           bTileFill : 1;                                 // 0x0098 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	struct FColor                                      BorderColor;                                   // 0x009C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FColor                                      FillColor;                                     // 0x00A0 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class UTexture2D*                                  FillTexture;                                   // 0x00A4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class UMaterial*                                   FillMaterial;                                  // 0x00A8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class UTexture2D*                                  FillTexture;                                   // 0x00A4 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class UMaterial*                                   FillMaterial;                                  // 0x00A8 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -28417,10 +28419,10 @@ public:
 	uint32_t                                           bActive : 1;                                   // 0x008C (0x0004) [0x0000000000000000] [0x00000001] 
 	uint32_t                                           bLatentExecution : 1;                          // 0x008C (0x0004) [0x0000000000000002] [0x00000002] (CPF_Const)
 	uint32_t                                           bAutoActivateOutputLinks : 1;                  // 0x008C (0x0004) [0x0000000000000000] [0x00000004] 
-	uint32_t                                           bHaveMovingVarConnector : 1;                   // 0x008C (0x0004) [0x0000000000002000] [0x00000008] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bHaveMovingOutputConnector : 1;                // 0x008C (0x0004) [0x0000000000002000] [0x00000010] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bPendingVarConnectorRecalc : 1;                // 0x008C (0x0004) [0x0000000000002000] [0x00000020] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bPendingOutputConnectorRecalc : 1;             // 0x008C (0x0004) [0x0000000000002000] [0x00000040] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bHaveMovingVarConnector : 1;                   // 0x008C (0x0004) [0x0000000800002000] [0x00000008] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bHaveMovingOutputConnector : 1;                // 0x008C (0x0004) [0x0000000800002000] [0x00000010] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bPendingVarConnectorRecalc : 1;                // 0x008C (0x0004) [0x0000000800002000] [0x00000020] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bPendingOutputConnectorRecalc : 1;             // 0x008C (0x0004) [0x0000000800002000] [0x00000040] (CPF_Transient | CPF_EditorOnly)
 	class TArray<struct FSeqOpInputLink>               InputLinks;                                    // 0x0090 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class TArray<struct FSeqOpOutputLink>              OutputLinks;                                   // 0x009C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class TArray<struct FSeqVarLink>                   VariableLinks;                                 // 0x00A8 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
@@ -28684,7 +28686,7 @@ class USeqAct_CameraFade : public USequenceAction
 {
 public:
 	struct FColor                                      FadeColor;                                     // 0x00E8 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	struct FVector2D                                   FadeAlpha;                                     // 0x00EC (0x0008) [0x0000000020000000]  CPF_Deprecated)
+	struct FVector2D                                   FadeAlpha;                                     // 0x00EC (0x0008) [0x0000000020000000] (CPF_Deprecated)
 	float                                              FadeOpacity;                                   // 0x00F4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              FadeTime;                                      // 0x00F8 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint32_t                                           bPersistFade : 1;                              // 0x00FC (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
@@ -28714,7 +28716,7 @@ class USeqAct_CameraLookAt : public USequenceAction
 public:
 	uint32_t                                           bAffectCamera : 1;                             // 0x00E8 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bAlwaysFocus : 1;                              // 0x00E8 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	uint32_t                                           bAdjustCamera : 1;                             // 0x00E8 (0x0004) [0x0000000020000000] [0x00000004]  CPF_Deprecated)
+	uint32_t                                           bAdjustCamera : 1;                             // 0x00E8 (0x0004) [0x0000000020000000] [0x00000004] (CPF_Deprecated)
 	uint32_t                                           bTurnInPlace : 1;                              // 0x00E8 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
 	uint32_t                                           bIgnoreTrace : 1;                              // 0x00E8 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	uint32_t                                           bAffectHead : 1;                               // 0x00E8 (0x0004) [0x0000000000000001] [0x00000020] (CPF_Edit)
@@ -28753,16 +28755,16 @@ public:
 class USeqAct_CameraShake : public USequenceAction
 {
 public:
-	class UCameraShake*                                Shake;                                         // 0x00E8 (0x0004) [0x0000000004400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_ProtectedWrite)
-	float                                              ShakeScale;                                    // 0x00EC (0x0004) [0x0000000000000001] (CPF_Edit | CPF_ProtectedWrite)
-	uint32_t                                           bDoControllerVibration : 1;                    // 0x00F0 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit | CPF_ProtectedWrite)
-	uint32_t                                           bRadialShake : 1;                              // 0x00F0 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit | CPF_ProtectedWrite)
-	uint32_t                                           bOrientTowardRadialEpicenter : 1;              // 0x00F0 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit | CPF_ProtectedWrite)
+	class UCameraShake*                                Shake;                                         // 0x00E8 (0x0004) [0x0000008004400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_ProtectedWrite)
+	float                                              ShakeScale;                                    // 0x00EC (0x0004) [0x0000008000000001] (CPF_Edit | CPF_ProtectedWrite)
+	uint32_t                                           bDoControllerVibration : 1;                    // 0x00F0 (0x0004) [0x0000008000000001] [0x00000001] (CPF_Edit | CPF_ProtectedWrite)
+	uint32_t                                           bRadialShake : 1;                              // 0x00F0 (0x0004) [0x0000008000000001] [0x00000002] (CPF_Edit | CPF_ProtectedWrite)
+	uint32_t                                           bOrientTowardRadialEpicenter : 1;              // 0x00F0 (0x0004) [0x0000008000000001] [0x00000004] (CPF_Edit | CPF_ProtectedWrite)
 	uint32_t                                           bGamePlayCamera : 1;                           // 0x00F0 (0x0004) [0x0000000000000001] [0x00000008] (CPF_Edit)
-	float                                              RadialShake_InnerRadius;                       // 0x00F4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_ProtectedWrite)
-	float                                              RadialShake_OuterRadius;                       // 0x00F8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_ProtectedWrite)
-	float                                              RadialShake_Falloff;                           // 0x00FC (0x0004) [0x0000000000000001] (CPF_Edit | CPF_ProtectedWrite)
-	ECameraAnimPlaySpace                               PlaySpace;                                     // 0x0100 (0x0001) [0x0000000000000001] (CPF_Edit | CPF_ProtectedWrite)
+	float                                              RadialShake_InnerRadius;                       // 0x00F4 (0x0004) [0x0000008000000001] (CPF_Edit | CPF_ProtectedWrite)
+	float                                              RadialShake_OuterRadius;                       // 0x00F8 (0x0004) [0x0000008000000001] (CPF_Edit | CPF_ProtectedWrite)
+	float                                              RadialShake_Falloff;                           // 0x00FC (0x0004) [0x0000008000000001] (CPF_Edit | CPF_ProtectedWrite)
+	ECameraAnimPlaySpace                               PlaySpace;                                     // 0x0100 (0x0001) [0x0000008000000001] (CPF_Edit | CPF_ProtectedWrite)
 	uint8_t                                            UnknownData00[0x3];                              // 0x0101 (0x0003) MISSED OFFSET
 	class AActor*                                      LocationActor;                                 // 0x0104 (0x0004) [0x0000000000000000]               
 
@@ -29277,7 +29279,8 @@ public:
 class USeqAct_Interp : public USeqAct_Latent
 {
 public:
-	uint8_t                                            UnknownData00[0x78];                            // 0x00F8 (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 SavedActorTransforms;                          // 0x00F8 (0x003C) [0x0000000801003002] (CPF_Const | CPF_Native | CPF_Transient | CPF_EditorOnly)
+	struct FMap_Mirror                                 SavedActorVisibilities;                        // 0x0134 (0x003C) [0x0000000801003002] (CPF_Const | CPF_Native | CPF_Transient | CPF_EditorOnly)
 	float                                              PlayRate;                                      // 0x0170 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              Position;                                      // 0x0174 (0x0004) [0x0000000000000000]               
 	float                                              ForceStartPosition;                            // 0x0178 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -29663,7 +29666,7 @@ public:
 class USeqAct_StreamInTextures : public USeqAct_Latent
 {
 public:
-	uint32_t                                           bLocationBased : 1;                            // 0x00F8 (0x0004) [0x0000000020000000] [0x00000001]  CPF_Deprecated)
+	uint32_t                                           bLocationBased : 1;                            // 0x00F8 (0x0004) [0x0000000020000000] [0x00000001] (CPF_Deprecated)
 	uint32_t                                           bStreamingActive : 1;                          // 0x00F8 (0x0004) [0x0000000000000002] [0x00000002] (CPF_Const)
 	float                                              Seconds;                                       // 0x00FC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              StopTimestamp;                                 // 0x0100 (0x0004) [0x0000000000000002] (CPF_Const)   
@@ -31841,9 +31844,9 @@ public:
 	float                                              PathBuildTime;                                 // 0x0098 (0x0004) [0x0000000000000000]               
 	class TArray<class UInterpGroup*>                  InterpGroups;                                  // 0x009C (0x000C) [0x0000000000400008] (CPF_ExportObject | CPF_NeedCtorLink)
 	class UInterpCurveEdSetup*                         CurveEdSetup;                                  // 0x00A8 (0x0004) [0x0000000000000008] (CPF_ExportObject)
-	class TArray<class UInterpFilter*>                 InterpFilters;                                 // 0x00AC (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class UInterpFilter*                               SelectedFilter;                                // 0x00B8 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	class TArray<class UInterpFilter*>                 DefaultFilters;                                // 0x00BC (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UInterpFilter*>                 InterpFilters;                                 // 0x00AC (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class UInterpFilter*                               SelectedFilter;                                // 0x00B8 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	class TArray<class UInterpFilter*>                 DefaultFilters;                                // 0x00BC (0x000C) [0x0000000800402000] (CPF_Transient | CPF_NeedCtorLink | CPF_EditorOnly)
 	float                                              EdSectionStart;                                // 0x00C8 (0x0004) [0x0000000000000000]               
 	float                                              EdSectionEnd;                                  // 0x00CC (0x0004) [0x0000000000000000]               
 	uint32_t                                           bShouldBakeAndPrune : 1;                       // 0x00D0 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
@@ -32317,7 +32320,7 @@ public:
 class AAmbientSoundSimpleToggleable : public AAmbientSoundSimple
 {
 public:
-	uint32_t                                           bCurrentlyPlaying : 1;                         // 0x0240 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bCurrentlyPlaying : 1;                         // 0x0240 (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bFadeOnToggle : 1;                             // 0x0240 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	float                                              FadeInDuration;                                // 0x0244 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              FadeInVolumeLevel;                             // 0x0248 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -32396,7 +32399,7 @@ public:
 	uint32_t                                           bAttenuate : 1;                                // 0x004C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bSpatialize : 1;                               // 0x004C (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bAttenuateWithLPF : 1;                         // 0x004C (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
-	uint32_t                                           bAttenuateWithLowPassFilter : 1;               // 0x004C (0x0004) [0x0000000020000000] [0x00000008]  CPF_Deprecated)
+	uint32_t                                           bAttenuateWithLowPassFilter : 1;               // 0x004C (0x0004) [0x0000000020000000] [0x00000008] (CPF_Deprecated)
 	float                                              dBAttenuationAtMax;                            // 0x0050 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	ESoundDistanceModel                                DistanceModel;                                 // 0x0054 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x3];                              // 0x0055 (0x0003) MISSED OFFSET
@@ -32409,7 +32412,7 @@ public:
 	float                                              VolumeMin;                                     // 0x0070 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              VolumeMax;                                     // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FAmbientSoundSlot>             SoundSlots;                                    // 0x0078 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
-	class USoundNodeWave*                              Wave;                                          // 0x0084 (0x0004) [0x0000000020000000]  CPF_Deprecated)
+	class USoundNodeWave*                              Wave;                                          // 0x0084 (0x0004) [0x0000000020000000] (CPF_Deprecated)
 	struct FRawDistributionFloat                       MinRadius;                                     // 0x0088 (0x001C) [0x0000000020480000] (CPF_Component | CPF_NeedCtorLink | CPF_Deprecated)
 	struct FRawDistributionFloat                       MaxRadius;                                     // 0x00A4 (0x001C) [0x0000000020480000] (CPF_Component | CPF_NeedCtorLink | CPF_Deprecated)
 	struct FRawDistributionFloat                       LPFMinRadius;                                  // 0x00C0 (0x001C) [0x0000000020480000] (CPF_Component | CPF_NeedCtorLink | CPF_Deprecated)
@@ -32764,10 +32767,10 @@ public:
 	int32_t                                            ResourceSize;                                  // 0x0170 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	struct FPointer                                    ResourceData;                                  // 0x0174 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FSubtitleCue>                  Subtitles;                                     // 0x0178 (0x000C) [0x0000000000408003] (CPF_Edit | CPF_Const | CPF_Localized | CPF_NeedCtorLink)
-	class FString                                      Comment;                                       // 0x0184 (0x000C) [0x0000000000408003] (CPF_Edit | CPF_Const | CPF_Localized | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      Comment;                                       // 0x0184 (0x000C) [0x0000000800408003] (CPF_Edit | CPF_Const | CPF_Localized | CPF_NeedCtorLink | CPF_EditorOnly)
 	class TArray<struct FLocalizedSubtitle>            LocalizedSubtitles;                            // 0x0190 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
-	class FString                                      SourceFilePath;                                // 0x019C (0x000C) [0x0000000000420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      SourceFileTimestamp;                           // 0x01A8 (0x000C) [0x0000000000420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFilePath;                                // 0x019C (0x000C) [0x0000000800420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFileTimestamp;                           // 0x01A8 (0x000C) [0x0000000800420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -32837,16 +32840,17 @@ public:
 class ATerrain : public AInfo
 {
 public:
-	uint8_t                                            UnknownData00[0x18];                            // 0x0228 (0x0018) MISSED OFFSET
+	class TArray<struct FTerrainHeight>                Heights;                                       // 0x0228 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
+	class TArray<struct FTerrainInfoData>              InfoData;                                      // 0x0234 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FTerrainLayer>                 Layers;                                        // 0x0240 (0x000C) [0x0000000000400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink)
 	int32_t                                            NormalMapLayer;                                // 0x024C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FTerrainDecoLayer>             DecoLayers;                                    // 0x0250 (0x000C) [0x0000000000480003] (CPF_Edit | CPF_Const | CPF_Component | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData01[0xC];                              // 0x025C (0x000C) MISSED OFFSET
-	class TArray<class UTerrainComponent*>             TerrainComponents;                             // 0x0268 (0x000C) [0x000000000448000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_NeedCtorLink | CPF_EditInline | CPF_NonTransactional)
+	class TArray<struct FAlphaMap>                     AlphaMaps;                                     // 0x025C (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
+	class TArray<class UTerrainComponent*>             TerrainComponents;                             // 0x0268 (0x000C) [0x000000040448000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_NeedCtorLink | CPF_EditInline | CPF_NonTransactional)
 	int32_t                                            NumSectionsX;                                  // 0x0274 (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            NumSectionsY;                                  // 0x0278 (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            SectionSize;                                   // 0x027C (0x0004) [0x0000000000000002] (CPF_Const)   
-	uint8_t                                            UnknownData02[0xC];                              // 0x0280 (0x000C) MISSED OFFSET
+	class TArray<struct ATerrain_FTerrainWeightedMaterial> WeightedMaterials;                             // 0x0280 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<class UTerrainWeightMapTexture*>      WeightedTextureMaps;                           // 0x028C (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              CachedDisplacements;                           // 0x0298 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	float                                              MaxCollisionDisplacement;                      // 0x02A4 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
@@ -33514,7 +33518,7 @@ public:
 	uint8_t                                            UnknownData00[0x3];                              // 0x0085 (0x0003) MISSED OFFSET
 	float                                              CurrentDelta;                                  // 0x0088 (0x0004) [0x0000000000000002] (CPF_Const)   
 	float                                              CurrentDeltaTime;                              // 0x008C (0x0004) [0x0000000000000002] (CPF_Const)   
-	uint8_t                                            UnknownData01[0x3C];                            // 0x0090 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 NameToPtr;                                     // 0x0090 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FPointer>                      AxisArray;                                     // 0x00CC (0x000C) [0x0000000000101002] (CPF_Const | CPF_Native)
 	class TArray<uint8_t>                              ButtonArray;                                   // 0x00D8 (0x000C) [0x0000000000101000] (CPF_Native)  
 
@@ -33667,7 +33671,7 @@ public:
 	class TArray<class FName>                          SupportedDoubleClickKeys;                      // 0x0098 (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
 	class UDataStoreClient*                            DataStoreManager;                              // 0x00A4 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class UUIInputConfiguration*                       UIInputConfig;                                 // 0x00A8 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x00AC (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 WidgetInputAliasLookupTable;                   // 0x00AC (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	uint32_t                                           bProcessInput : 1;                             // 0x00E8 (0x0004) [0x0000000000002002] [0x00000001] (CPF_Const | CPF_Transient)
 	uint32_t                                           bDisableToolTips : 1;                          // 0x00E8 (0x0004) [0x0000000000004002] [0x00000002] (CPF_Const | CPF_Config)
 	uint32_t                                           bFocusOnActive : 1;                            // 0x00E8 (0x0004) [0x0000000000004002] [0x00000004] (CPF_Const | CPF_Config)
@@ -33682,7 +33686,7 @@ public:
 	float                                              ToolTipInitialDelaySeconds;                    // 0x0104 (0x0004) [0x0000000000004002] (CPF_Const | CPF_Config)
 	float                                              ToolTipExpirationSeconds;                      // 0x0108 (0x0004) [0x0000000000004002] (CPF_Const | CPF_Config)
 	struct FUIKeyRepeatData                            MouseButtonRepeatInfo;                         // 0x010C (0x0010) [0x0000000000002002] (CPF_Const | CPF_Transient)
-	uint8_t                                            UnknownData01[0x3C];                            // 0x011C (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 AxisEmulationDefinitions;                      // 0x011C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	struct FUIAxisEmulationData                        AxisInputEmulation[4];                         // 0x0158 (0x0050) [0x0000000000002000] (CPF_Transient)
 	struct FPointer                                    CanvasScene;                                   // 0x01A8 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
@@ -34010,9 +34014,11 @@ public:
 	class TArray<class UUIStyle*>                      Styles;                                        // 0x0078 (0x000C) [0x000000000440000A] (CPF_Const | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
 	class TArray<class FString>                        StyleGroups;                                   // 0x0084 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class TArray<struct FUISoundCue>                   SoundCues;                                     // 0x0090 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData00[0x78];                            // 0x009C (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 StyleLookupTable;                              // 0x009C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
+	struct FMap_Mirror                                 StyleNameMap;                                  // 0x00D8 (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<class FString>                        StyleGroupMap;                                 // 0x0114 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData01[0x78];                            // 0x0120 (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 CursorMap;                                     // 0x0120 (0x003C) [0x0000000000201002] (CPF_Const | CPF_Native)
+	struct FMap_Mirror                                 SoundCueMap;                                   // 0x015C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
 	static UClass* StaticClass()
@@ -34053,7 +34059,7 @@ public:
 	class FString                                      StyleName;                                     // 0x0054 (0x000C) [0x0000000000408003] (CPF_Edit | CPF_Const | CPF_Localized | CPF_NeedCtorLink)
 	class FString                                      StyleGroupName;                                // 0x0060 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class UClass*                                      StyleDataClass;                                // 0x006C (0x0004) [0x0000000000000002] (CPF_Const)   
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0070 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 StateDataMap;                                  // 0x0070 (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
 	static UClass* StaticClass()
@@ -34249,7 +34255,7 @@ public:
 	struct FPointer                                    VfTable_IUIStyleResolver;                      // 0x006C (0x0004) [0x0000000000801002] (CPF_Const | CPF_Native | CPF_NoExport)
 	struct FPointer                                    VfTable_ICustomPropertyItemHandler;            // 0x0070 (0x0004) [0x0000000000801002] (CPF_Const | CPF_Native | CPF_NoExport)
 	class FName                                        StyleResolverTag;                              // 0x0074 (0x0008) [0x0000000000000000]               
-	class UUITexture*                                  ImageRef;                                      // 0x007C (0x0004) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class UUITexture*                                  ImageRef;                                      // 0x007C (0x0004) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse)
 	struct FUIImageStyleOverride                       StyleCustomization;                            // 0x0080 (0x005C) [0x0000000000000001] (CPF_Edit)    
 	struct FUIStyleReference                           ImageStyle;                                    // 0x00DC (0x0020) [0x0000000000000000]               
 
@@ -34719,8 +34725,8 @@ public:
 	struct FUIElementCellSchema                        ElementSchema;                                 // 0x0050 (0x000C) [0x0000000000400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink)
 	struct FUIScreenValue_Extent                       SelectionHintPadding;                          // 0x005C (0x0008) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FUIListItem>                   ListItems;                                     // 0x0064 (0x000C) [0x0000000005522001] (CPF_Edit | CPF_Transient | CPF_EditConst | CPF_NeedCtorLink | CPF_EditInline)
-	class UUITexture*                                  ColumnHeaderBackground[3];                     // 0x0070 (0x000C) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
-	class UUITexture*                                  ListItemOverlay[4];                            // 0x007C (0x0010) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class UUITexture*                                  ColumnHeaderBackground[3];                     // 0x0070 (0x000C) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse)
+	class UUITexture*                                  ListItemOverlay[4];                            // 0x007C (0x0010) [0x0000000014400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline | CPF_EditInlineUse)
 	struct FTextureCoordinates                         ColumnHeaderBackgroundCoordinates[3];          // 0x008C (0x0030) [0x0000000000000001] (CPF_Edit)    
 	struct FTextureCoordinates                         ListItemOverlayCoordinates[4];                 // 0x00BC (0x0040) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            MaxElementsPerPage;                            // 0x00FC (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -36064,7 +36070,7 @@ class UUIDataStore_InputAlias : public UUIDataStore_StringBase
 {
 public:
 	class TArray<struct FUIDataStoreInputAlias>        InputAliases;                                  // 0x0078 (0x000C) [0x0000000000404000] (CPF_Config | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0084 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 InputAliasLookupMap;                           // 0x0084 (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 
 public:
 	static UClass* StaticClass()
@@ -36142,7 +36148,7 @@ public:
 class UUICustomSkin : public UUISkin
 {
 public:
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0198 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 WidgetStyleMap;                                // 0x0198 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 
 public:
 	static UClass* StaticClass()
@@ -37308,7 +37314,7 @@ public:
 	ECalloutButtonLayoutType                           ButtonLayout;                                  // 0x0429 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x2];                              // 0x042A (0x0002) MISSED OFFSET
 	struct FUIScreenValue_Extent                       ButtonPadding[2];                              // 0x042C (0x0010) [0x0000000000000001] (CPF_Edit)    
-	uint8_t                                            UnknownData01[0x3C];                            // 0x043C (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 ButtonInputKeyMappings;                        // 0x043C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<class FName>                          CalloutButtonAliases;                          // 0x0478 (0x000C) [0x0000000000404000] (CPF_Config | CPF_NeedCtorLink)
 	uint32_t                                           bGeneratingInitialButtons : 1;                 // 0x0484 (0x0004) [0x0000000000002000] [0x00000001] (CPF_Transient)
 	uint32_t                                           bSupportsButtonRepeat : 1;                     // 0x0484 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
@@ -37733,7 +37739,7 @@ class UUIPrefab : public UUIObject
 public:
 	int32_t                                            PrefabVersion;                                 // 0x0414 (0x0004) [0x0000000000000002] (CPF_Const)   
 	int32_t                                            InternalPrefabVersion;                         // 0x0418 (0x0004) [0x0000000000000002] (CPF_Const)   
-	class UTexture2D*                                  PrefabPreview;                                 // 0x041C (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
+	class UTexture2D*                                  PrefabPreview;                                 // 0x041C (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
 	int32_t                                            ModificationCounter;                           // 0x0420 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	struct FUIScreenValue_Extent                       OriginalWidth;                                 // 0x0424 (0x0008) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	struct FUIScreenValue_Extent                       OriginalHeight;                                // 0x042C (0x0008) [0x0000000000000003] (CPF_Edit | CPF_Const)
@@ -37757,17 +37763,17 @@ public:
 class UUIPrefabInstance : public UUIObject
 {
 public:
-	class UUIPrefab*                                   SourcePrefab;                                  // 0x0414 (0x0004) [0x0000000000000002] (CPF_Const | CPF_ArchetypeProperty)
+	class UUIPrefab*                                   SourcePrefab;                                  // 0x0414 (0x0004) [0x0000010000000002] (CPF_Const | CPF_ArchetypeProperty)
 	int32_t                                            PrefabInstanceVersion;                         // 0x0418 (0x0004) [0x0000000000000002] (CPF_Const)   
-	uint8_t                                            UnknownData00[0x3C];                            // 0x041C (0x003C) MISSED OFFSET
-	int32_t                                            PI_PackageVersion;                             // 0x0458 (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
-	int32_t                                            PI_LicenseePackageVersion;                     // 0x045C (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
-	int32_t                                            PI_DataOffset;                                 // 0x0460 (0x0004) [0x0000000000000002] (CPF_Const | CPF_EditorOnly)
-	class TArray<uint8_t>                              PI_Bytes;                                      // 0x0464 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class UObject*>                       PI_CompleteObjects;                            // 0x0470 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class UObject*>                       PI_ReferencedObjects;                          // 0x047C (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class FString>                        PI_SavedNames;                                 // 0x0488 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
-	uint8_t                                            UnknownData01[0x3C];                            // 0x0494 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 ArchetypeToInstanceMap;                        // 0x041C (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
+	int32_t                                            PI_PackageVersion;                             // 0x0458 (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
+	int32_t                                            PI_LicenseePackageVersion;                     // 0x045C (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
+	int32_t                                            PI_DataOffset;                                 // 0x0460 (0x0004) [0x0000000800000002] (CPF_Const | CPF_EditorOnly)
+	class TArray<uint8_t>                              PI_Bytes;                                      // 0x0464 (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UObject*>                       PI_CompleteObjects;                            // 0x0470 (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UObject*>                       PI_ReferencedObjects;                          // 0x047C (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class FString>                        PI_SavedNames;                                 // 0x0488 (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	struct FMap_Mirror                                 PI_ObjectMap;                                  // 0x0494 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 
 public:
 	static UClass* StaticClass()
@@ -37949,7 +37955,7 @@ public:
 	class UUIContextMenu*                              ActiveContextMenu;                             // 0x01B4 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class UUIContextMenu*                              StandardContextMenu;                           // 0x01B8 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class UClass*                                      DefaultContextMenuClass;                       // 0x01BC (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	class UUISkin*                                     SceneSkin;                                     // 0x01C0 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class UUISkin*                                     SceneSkin;                                     // 0x01C0 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse)
 	class UUISafeRegionPanel*                          PrimarySafeRegionPanel;                        // 0x01C4 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class TArray<struct FUIDockingNode>                DockingStack;                                  // 0x01C8 (0x000C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<class UUIObject*>                     RenderStack;                                   // 0x01D4 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
@@ -37988,7 +37994,7 @@ public:
 	uint32_t                                           bAnimationBlockingInput : 1;                   // 0x02EC (0x0004) [0x0000000000002000] [0x10000000] (CPF_Transient)
 	int32_t                                            UpdateSceneFeedbackLoopCount;                  // 0x02F0 (0x0004) [0x0000000000002000] (CPF_Transient)
 	int32_t                                            SceneStackPriority;                            // 0x02F4 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class UTexture2D*                                  ScenePreview;                                  // 0x02F8 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	class UTexture2D*                                  ScenePreview;                                  // 0x02F8 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	uint8_t                                            PlayerInputMask;                               // 0x02FC (0x0001) [0x0000000000002000] (CPF_Transient)
 	EScreenInputMode                                   SceneInputMode;                                // 0x02FD (0x0001) [0x0000000000000001] (CPF_Edit)    
 	ESplitscreenRenderMode                             SceneRenderMode;                               // 0x02FE (0x0001) [0x0000000000000001] (CPF_Edit)    
@@ -38005,7 +38011,7 @@ public:
 	class FName                                        SceneAnimation_RegainedFocus;                  // 0x0500 (0x0008) [0x0000000000000001] (CPF_Edit)    
 	class FName                                        SceneOpenedCue;                                // 0x0508 (0x0008) [0x0000000000000001] (CPF_Edit)    
 	class FName                                        SceneClosedCue;                                // 0x0510 (0x0008) [0x0000000000000001] (CPF_Edit)    
-	class UUILayerBase*                                SceneLayerRoot;                                // 0x0518 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient | CPF_EditorOnly)
+	class UUILayerBase*                                SceneLayerRoot;                                // 0x0518 (0x0004) [0x0000000800002002] (CPF_Const | CPF_Transient | CPF_EditorOnly)
 	struct FScriptDelegate                             __GetSceneInputModeOverride__Delegate;         // 0x051C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	struct FScriptDelegate                             __OnInterceptRawInputKey__Delegate;            // 0x0528 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	struct FScriptDelegate                             __OnSceneActivated__Delegate;                  // 0x0534 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
@@ -38253,7 +38259,7 @@ public:
 class UUIStyle_Data : public UUIRoot
 {
 public:
-	class FString                                      UIEditorControlClass;                          // 0x003C (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      UIEditorControlClass;                          // 0x003C (0x000C) [0x0000000800400002] (CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
 	struct FLinearColor                                StyleColor;                                    // 0x0048 (0x0010) [0x0000000000000000]               
 	float                                              StylePadding[2];                               // 0x0058 (0x0008) [0x0000000000000000]               
 	uint32_t                                           bEnabled : 1;                                  // 0x0060 (0x0004) [0x0000000000000000] [0x00000001] 
@@ -39081,8 +39087,8 @@ public:
 	class UArrowComponent*                             FlowDirection;                                 // 0x0228 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class USpriteComponent*                            Sprite;                                        // 0x022C (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class UFluidInfluenceComponent*                    InfluenceComponent;                            // 0x0230 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint32_t                                           bActive : 1;                                   // 0x0234 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
-	uint32_t                                           bToggled : 1;                                  // 0x0234 (0x0004) [0x0000000000000020] [0x00000002] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bActive : 1;                                   // 0x0234 (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bToggled : 1;                                  // 0x0234 (0x0004) [0x0000000100000020] [0x00000002] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -39152,29 +39158,29 @@ class UFluidInfluenceComponent : public UPrimitiveComponent
 {
 public:
 	uint32_t                                           bActive : 1;                                   // 0x01D4 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	uint32_t                                           RaindropFillEntireFluid : 1;                   // 0x01D4 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit | CPF_Interp)
+	uint32_t                                           RaindropFillEntireFluid : 1;                   // 0x01D4 (0x0004) [0x0000000200000001] [0x00000002] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bIsToggleTriggered : 1;                        // 0x01D4 (0x0004) [0x0000000000002000] [0x00000004] (CPF_Transient)
 	class AFluidSurfaceActor*                          FluidActor;                                    // 0x01D8 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	EInfluenceType                                     InfluenceType;                                 // 0x01DC (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x3];                              // 0x01DD (0x0003) MISSED OFFSET
 	float                                              MaxDistance;                                   // 0x01E0 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              WaveStrength;                                  // 0x01E4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              WaveFrequency;                                 // 0x01E8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              WavePhase;                                     // 0x01EC (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              WaveRadius;                                    // 0x01F0 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RaindropAreaRadius;                            // 0x01F4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RaindropRadius;                                // 0x01F8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RaindropStrength;                              // 0x01FC (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              RaindropRate;                                  // 0x0200 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FlowSpeed;                                     // 0x0204 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	int32_t                                            FlowNumRipples;                                // 0x0208 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FlowSideMotionRadius;                          // 0x020C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FlowWaveRadius;                                // 0x0210 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FlowStrength;                                  // 0x0214 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FlowFrequency;                                 // 0x0218 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SphereOuterRadius;                             // 0x021C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SphereInnerRadius;                             // 0x0220 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              SphereStrength;                                // 0x0224 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              WaveStrength;                                  // 0x01E4 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              WaveFrequency;                                 // 0x01E8 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              WavePhase;                                     // 0x01EC (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              WaveRadius;                                    // 0x01F0 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RaindropAreaRadius;                            // 0x01F4 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RaindropRadius;                                // 0x01F8 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RaindropStrength;                              // 0x01FC (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              RaindropRate;                                  // 0x0200 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FlowSpeed;                                     // 0x0204 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	int32_t                                            FlowNumRipples;                                // 0x0208 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FlowSideMotionRadius;                          // 0x020C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FlowWaveRadius;                                // 0x0210 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FlowStrength;                                  // 0x0214 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FlowFrequency;                                 // 0x0218 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SphereOuterRadius;                             // 0x021C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SphereInnerRadius;                             // 0x0220 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              SphereStrength;                                // 0x0224 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              CurrentAngle;                                  // 0x0228 (0x0004) [0x0000000000003000] (CPF_Native | CPF_Transient)
 	float                                              CurrentTimer;                                  // 0x022C (0x0004) [0x0000000000003000] (CPF_Native | CPF_Transient)
 	class AFluidSurfaceActor*                          CurrentFluidActor;                             // 0x0230 (0x0004) [0x0000000000003000] (CPF_Native | CPF_Transient)
@@ -39312,7 +39318,7 @@ public:
 	class UMaterialInterface*                          LeafCardMaterial;                              // 0x01FC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class UMaterialInterface*                          LeafMeshMaterial;                              // 0x0200 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class UMaterialInterface*                          BillboardMaterial;                             // 0x0204 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class UTexture2D*                                  SpeedTreeIcon;                                 // 0x0208 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	class UTexture2D*                                  SpeedTreeIcon;                                 // 0x0208 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	class TArray<struct FSpeedTreeStaticLight>         StaticLights;                                  // 0x020C (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	struct USpeedTreeComponent_FLightMapRef            BranchLightMap;                                // 0x0218 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	struct USpeedTreeComponent_FLightMapRef            FrondLightMap;                                 // 0x021C (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
@@ -39420,7 +39426,7 @@ class ALensFlareSource : public AActor
 {
 public:
 	class ULensFlareComponent*                         LensFlareComp;                                 // 0x0228 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint32_t                                           bCurrentlyActive : 1;                          // 0x022C (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bCurrentlyActive : 1;                          // 0x022C (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -39616,7 +39622,7 @@ public:
 	class UPhysicsAsset*                               PhysicsAsset;                                  // 0x0210 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	class UPhysicsAssetInstance*                       PhysicsAssetInstance;                          // 0x0214 (0x0004) [0x000000000440200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_NeedCtorLink | CPF_EditInline)
 	struct FPointer                                    ApexClothing;                                  // 0x0218 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
-	float                                              PhysicsWeight;                                 // 0x021C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              PhysicsWeight;                                 // 0x021C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              GlobalAnimRateScale;                           // 0x0220 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FPointer                                    MeshObject;                                    // 0x0224 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	struct FColor                                      WireframeColor;                                // 0x0228 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -39635,7 +39641,7 @@ public:
 	uint32_t                                           bDisturbClothVertex : 1;                       // 0x02A8 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	class TArray<struct FActiveMorph>                  ActiveMorphs;                                  // 0x02AC (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
 	class TArray<struct FActiveMorph>                  ActiveCurveMorphs;                             // 0x02B8 (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x02C4 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 MorphTargetIndexMap;                           // 0x02C4 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FAttachment>                   Attachments;                                   // 0x0300 (0x000C) [0x0000000000680002] (CPF_Const | CPF_Component | CPF_NeedCtorLink)
 	class TArray<uint8_t>                              SkelControlIndex;                              // 0x030C (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
 	class TArray<uint8_t>                              PostPhysSkelControlIndex;                      // 0x0318 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
@@ -39749,7 +39755,7 @@ public:
 	class TArray<int32_t>                              ClothMeshWeldedIndexData;                      // 0x04BC (0x000C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	int32_t                                            ClothDirtyBufferFlag;                          // 0x04C8 (0x0004) [0x0000000000000000]               
 	ERBCollisionChannel                                ClothRBChannel;                                // 0x04CC (0x0001) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	uint8_t                                            UnknownData01[0x3];                              // 0x04CD (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData00[0x3];                              // 0x04CD (0x0003) MISSED OFFSET
 	struct FRBCollisionChannelContainer                ClothRBCollideWithChannels;                    // 0x04D0 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              ClothForceScale;                               // 0x04D4 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	float                                              ClothImpulseScale;                             // 0x04D8 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -39758,7 +39764,7 @@ public:
 	float                                              MinDistanceForClothReset;                      // 0x04E4 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	struct FVector                                     LastClothLocation;                             // 0x04E8 (0x000C) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	ERBCollisionChannel                                ApexClothingRBChannel;                         // 0x04F4 (0x0001) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	uint8_t                                            UnknownData02[0x3];                              // 0x04F5 (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData01[0x3];                              // 0x04F5 (0x0003) MISSED OFFSET
 	struct FRBCollisionChannelContainer                ApexClothingRBCollideWithChannels;             // 0x04F8 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	uint32_t                                           bAutoFreezeApexClothingWhenNotRendered : 1;    // 0x04FC (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	struct FVector                                     WindVelocity;                                  // 0x0500 (0x000C) [0x0000000000000001] (CPF_Edit)    
@@ -39777,11 +39783,11 @@ public:
 	uint32_t                                           bSoftBodyAwakeOnStartup : 1;                   // 0x0544 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	uint32_t                                           bSoftBodyUseCompartment : 1;                   // 0x0544 (0x0004) [0x0000000000000003] [0x00000008] (CPF_Edit | CPF_Const)
 	ERBCollisionChannel                                SoftBodyRBChannel;                             // 0x0548 (0x0001) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	uint8_t                                            UnknownData03[0x3];                              // 0x0549 (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData02[0x3];                              // 0x0549 (0x0003) MISSED OFFSET
 	struct FRBCollisionChannelContainer                SoftBodyRBCollideWithChannels;                 // 0x054C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 	struct FPointer                                    SoftBodyASVPlane;                              // 0x0550 (0x0004) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class UMaterial*                                   LimitMaterial;                                 // 0x0554 (0x0004) [0x0000000000000000]               
-	uint8_t                                            UnknownData04[0x8];                              // 0x0558 (0x0008) MISSED OFFSET
+	uint8_t                                            UnknownData03[0x8];                              // 0x0558 (0x0008) MISSED OFFSET
 	struct FBoneAtom                                   RootMotionDelta;                               // 0x0560 (0x0020) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	struct FBoneAtom                                   FakeRootMotionDelta;                           // 0x0580 (0x0020) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	struct FVector                                     RootMotionVelocity;                            // 0x05A0 (0x000C) [0x0000000000002000] (CPF_Transient)
@@ -39794,11 +39800,11 @@ public:
 	ERootMotionMode                                    PreviousRMM;                                   // 0x05DE (0x0001) [0x0000000000000002] (CPF_Const)   
 	ERootMotionMode                                    PendingRMM;                                    // 0x05DF (0x0001) [0x0000000000000000]               
 	ERootMotionMode                                    OldPendingRMM;                                 // 0x05E0 (0x0001) [0x0000000000000000]               
-	uint8_t                                            UnknownData05[0x3];                              // 0x05E1 (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData04[0x3];                              // 0x05E1 (0x0003) MISSED OFFSET
 	int32_t                                            bRMMOneFrameDelay;                             // 0x05E4 (0x0004) [0x0000000000000002] (CPF_Const)   
 	ERootMotionRotationMode                            RootMotionRotationMode;                        // 0x05E8 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	EFaceFXBlendMode                                   FaceFXBlendMode;                               // 0x05E9 (0x0001) [0x0000000000000001] (CPF_Edit)    
-	uint8_t                                            UnknownData06[0x2];                              // 0x05EA (0x0002) MISSED OFFSET
+	uint8_t                                            UnknownData05[0x2];                              // 0x05EA (0x0002) MISSED OFFSET
 	struct FPointer                                    FaceFXActorInstance;                           // 0x05EC (0x0004) [0x0000000000003000] (CPF_Native | CPF_Transient)
 	class UAudioComponent*                             CachedFaceFXAudioComp;                         // 0x05F0 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class TArray<uint8_t>                              BoneVisibility;                                // 0x05F4 (0x000C) [0x0000000000402002] (CPF_Const | CPF_Transient | CPF_NeedCtorLink)
@@ -40290,10 +40296,14 @@ public:
 	class TArray<class UAudioComponent*>               AudioComponents;                               // 0x0064 (0x000C) [0x000000000448200A] (CPF_Const | CPF_ExportObject | CPF_Transient | CPF_Component | CPF_NeedCtorLink | CPF_EditInline)
 	class TArray<struct FPointer>                      Sources;                                       // 0x0070 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FPointer>                      FreeSources;                                   // 0x007C (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0088 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 WaveInstanceSourceMap;                         // 0x0088 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FListener>                     Listeners;                                     // 0x00C4 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	struct FQWord                                      CurrentTick;                                   // 0x00D0 (0x0008) [0x0000000000001002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData01[0x12C];                          // 0x00D8 (0x012C) MISSED OFFSET
+	struct FMap_Mirror                                 SoundClasses;                                  // 0x00D8 (0x003C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
+	struct FMap_Mirror                                 SourceSoundClasses;                            // 0x0114 (0x003C) [0x0000000000400000] (CPF_NeedCtorLink)
+	struct FMap_Mirror                                 CurrentSoundClasses;                           // 0x0150 (0x003C) [0x0000000000400000] (CPF_NeedCtorLink)
+	struct FMap_Mirror                                 DestinationSoundClasses;                       // 0x018C (0x003C) [0x0000000000400000] (CPF_NeedCtorLink)
+	struct FMap_Mirror                                 SoundModes;                                    // 0x01C8 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	struct FPointer                                    Effects;                                       // 0x0204 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class FName                                        BaseSoundModeName;                             // 0x0208 (0x0008) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class USoundMode*                                  CurrentMode;                                   // 0x0210 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
@@ -40315,7 +40325,7 @@ public:
 	class UAudioComponent*                             TestAudioComponent;                            // 0x0294 (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	struct FPointer                                    TextToSpeech;                                  // 0x0298 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
 	EDebugState                                        DebugState;                                    // 0x029C (0x0001) [0x0000000000001002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData02[0x3];                              // 0x029D (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData00[0x3];                              // 0x029D (0x0003) MISSED OFFSET
 	float                                              TransientMasterVolume;                         // 0x02A0 (0x0004) [0x0000000000002000] (CPF_Transient)
 	float                                              LastUpdateTime;                                // 0x02A4 (0x0004) [0x0000000000002000] (CPF_Transient)
 
@@ -40343,8 +40353,8 @@ public:
 	struct FSoundClassProperties                       Properties;                                    // 0x003C (0x001C) [0x0000000000000001] (CPF_Edit)    
 	class TArray<class FName>                          ChildClassNames;                               // 0x0058 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	uint32_t                                           bIsChild : 1;                                  // 0x0064 (0x0004) [0x0000000000000000] [0x00000001] 
-	int32_t                                            MenuID;                                        // 0x0068 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x006C (0x003C) MISSED OFFSET
+	int32_t                                            MenuID;                                        // 0x0068 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	struct FMap_Mirror                                 EditorData;                                    // 0x006C (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 
 public:
 	static UClass* StaticClass()
@@ -40436,7 +40446,7 @@ public:
 class AMatineePawn : public APawn
 {
 public:
-	class USkeletalMesh*                               PreviewMesh;                                   // 0x05D8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class USkeletalMesh*                               PreviewMesh;                                   // 0x05D8 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -40525,7 +40535,7 @@ class ALight : public AActor
 {
 public:
 	class ULightComponent*                             LightComponent;                                // 0x0228 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint32_t                                           bEnabled : 1;                                  // 0x022C (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bEnabled : 1;                                  // 0x022C (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -40865,11 +40875,11 @@ public:
 	struct FMatrix                                     LightToWorld;                                  // 0x00A0 (0x0040) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	struct FGuid                                       LightGuid;                                     // 0x00E0 (0x0010) [0x0000000000200002] (CPF_Const)   
 	struct FGuid                                       LightmapGuid;                                  // 0x00F0 (0x0010) [0x0000000000200002] (CPF_Const)   
-	float                                              Brightness;                                    // 0x0100 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	struct FColor                                      LightColor;                                    // 0x0104 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              Brightness;                                    // 0x0100 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	struct FColor                                      LightColor;                                    // 0x0104 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
 	class ULightFunction*                              Function;                                      // 0x0108 (0x0004) [0x000000000440000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
-	float                                              LightEnv_BouncedLightBrightness;               // 0x010C (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
-	struct FColor                                      LightEnv_BouncedModulationColor;               // 0x0110 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	float                                              LightEnv_BouncedLightBrightness;               // 0x010C (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
+	struct FColor                                      LightEnv_BouncedModulationColor;               // 0x0110 (0x0004) [0x0000000200000003] (CPF_Edit | CPF_Const | CPF_Interp)
 	uint32_t                                           bEnabled : 1;                                  // 0x0114 (0x0004) [0x0000000000000003] [0x00000001] (CPF_Edit | CPF_Const)
 	uint32_t                                           CastShadows : 1;                               // 0x0114 (0x0004) [0x0000000000000003] [0x00000002] (CPF_Edit | CPF_Const)
 	uint32_t                                           CastStaticShadows : 1;                         // 0x0114 (0x0004) [0x0000000000000003] [0x00000004] (CPF_Edit | CPF_Const)
@@ -40877,7 +40887,7 @@ public:
 	uint32_t                                           bCastCompositeShadow : 1;                      // 0x0114 (0x0004) [0x0000000000000001] [0x00000010] (CPF_Edit)
 	uint32_t                                           bAffectCompositeShadowDirection : 1;           // 0x0114 (0x0004) [0x0000000000000001] [0x00000020] (CPF_Edit)
 	uint32_t                                           bNonModulatedSelfShadowing : 1;                // 0x0114 (0x0004) [0x0000000000000001] [0x00000040] (CPF_Edit)
-	uint32_t                                           bSelfShadowOnly : 1;                           // 0x0114 (0x0004) [0x0000000000000001] [0x00000080] (CPF_Edit | CPF_Interp)
+	uint32_t                                           bSelfShadowOnly : 1;                           // 0x0114 (0x0004) [0x0000000200000001] [0x00000080] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bAllowPreShadow : 1;                           // 0x0114 (0x0004) [0x0000000000000000] [0x00000100] 
 	uint32_t                                           bForceDynamicLight : 1;                        // 0x0114 (0x0004) [0x0000000000000003] [0x00000200] (CPF_Edit | CPF_Const)
 	uint32_t                                           UseDirectLightMap : 1;                         // 0x0114 (0x0004) [0x0000000000000003] [0x00000400] (CPF_Edit | CPF_Const)
@@ -40889,8 +40899,8 @@ public:
 	class ULightEnvironmentComponent*                  LightEnvironment;                              // 0x0118 (0x0004) [0x000000000408000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class TArray<class FName>                          OtherLevelsToAffect;                           // 0x011C (0x000C) [0x0000000000400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink)
 	struct FLightingChannelContainer                   LightingChannels;                              // 0x0128 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	class TArray<class ABrush*>                        InclusionVolumes;                              // 0x012C (0x000C) [0x0000000000400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<class ABrush*>                        ExclusionVolumes;                              // 0x0138 (0x000C) [0x0000000000400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class ABrush*>                        InclusionVolumes;                              // 0x012C (0x000C) [0x0000000800400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class ABrush*>                        ExclusionVolumes;                              // 0x0138 (0x000C) [0x0000000800400003] (CPF_Edit | CPF_Const | CPF_NeedCtorLink | CPF_EditorOnly)
 	class TArray<struct FPointer>                      InclusionConvexVolumes;                        // 0x0144 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FPointer>                      ExclusionConvexVolumes;                        // 0x0150 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	ELightAffectsClassification                        LightAffectsClassification;                    // 0x015C (0x0001) [0x0000000000020003] (CPF_Edit | CPF_Const | CPF_EditConst)
@@ -40983,9 +40993,9 @@ public:
 class UPointLightComponent : public ULightComponent
 {
 public:
-	float                                              ShadowRadiusMultiplier;                        // 0x018C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              Radius;                                        // 0x0190 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              FalloffExponent;                               // 0x0194 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              ShadowRadiusMultiplier;                        // 0x018C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              Radius;                                        // 0x0190 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              FalloffExponent;                               // 0x0194 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              ShadowFalloffExponent;                         // 0x0198 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	float                                              MinShadowFalloffRadius;                        // 0x019C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FMatrix                                     CachedParentToWorld;                           // 0x01A0 (0x0040) [0x0000000000000002] (CPF_Const)   
@@ -41200,13 +41210,13 @@ public:
 	struct FRotator                                    RotOrigin;                                     // 0x007C (0x000C) [0x0000000000001003] (CPF_Edit | CPF_Const | CPF_Native)
 	class TArray<int32_t>                              RefSkeleton;                                   // 0x0088 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	int32_t                                            SkeletalDepth;                                 // 0x0094 (0x0004) [0x0000000000001002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData00[0x3C];                            // 0x0098 (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 NameIndexMap;                                  // 0x0098 (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	struct FIndirectArray_Mirror                       LODModels;                                     // 0x00D4 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
-	uint8_t                                            UnknownData01[0xC];                              // 0x00E0 (0x000C) MISSED OFFSET
+	class TArray<struct FBoneTransform>                RefBasesInvMatrix;                             // 0x00E0 (0x000C) [0x0000000000001002] (CPF_Const | CPF_Native)
 	class TArray<struct FBoneMirrorInfo>               SkelMirrorTable;                               // 0x00EC (0x000C) [0x0000000000400041] (CPF_Edit | CPF_EditFixedSize | CPF_NeedCtorLink)
 	EAxis                                              SkelMirrorAxis;                                // 0x00F8 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	EAxis                                              SkelMirrorFlipAxis;                            // 0x00F9 (0x0001) [0x0000000000000001] (CPF_Edit)    
-	uint8_t                                            UnknownData02[0x2];                              // 0x00FA (0x0002) MISSED OFFSET
+	uint8_t                                            UnknownData00[0x2];                              // 0x00FA (0x0002) MISSED OFFSET
 	class TArray<class USkeletalMeshSocket*>           Sockets;                                       // 0x00FC (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class TArray<class FString>                        BoneBreakNames;                                // 0x0108 (0x000C) [0x0000000000021003] (CPF_Edit | CPF_Const | CPF_Native | CPF_EditConst)
 	class TArray<struct FSkeletalMeshLODInfo>          LODInfo;                                       // 0x0114 (0x000C) [0x0000000000400041] (CPF_Edit | CPF_EditFixedSize | CPF_NeedCtorLink)
@@ -41220,19 +41230,19 @@ public:
 	uint32_t                                           bUseFullPrecisionUVs : 1;                      // 0x0144 (0x0004) [0x0000000000000003] [0x00000010] (CPF_Edit | CPF_Const)
 	uint32_t                                           bUsePackedPosition : 1;                        // 0x0144 (0x0004) [0x0000000000000003] [0x00000020] (CPF_Edit | CPF_Const)
 	class UFaceFXAsset*                                FaceFXAsset;                                   // 0x0148 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class UPhysicsAsset*                               BoundsPreviewAsset;                            // 0x014C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x0150 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class UPhysicsAsset*                               BoundsPreviewAsset;                            // 0x014C (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class TArray<class UMorphTargetSet*>               PreviewMorphSets;                              // 0x0150 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
 	int32_t                                            LODBiasPC;                                     // 0x015C (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            LODBiasPS3;                                    // 0x0160 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            LODBiasXbox360;                                // 0x0164 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      SourceFilePath;                                // 0x0168 (0x000C) [0x0000000000420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      SourceFileTimestamp;                           // 0x0174 (0x000C) [0x0000000000420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFilePath;                                // 0x0168 (0x000C) [0x0000000800420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFileTimestamp;                           // 0x0174 (0x000C) [0x0000000800420003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_NeedCtorLink | CPF_EditorOnly)
 	class TArray<struct FPointer>                      ClothMesh;                                     // 0x0180 (0x000C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<float>                                ClothMeshScale;                                // 0x018C (0x000C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	class TArray<int32_t>                              ClothToGraphicsVertMap;                        // 0x0198 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	class TArray<float>                                ClothMovementScale;                            // 0x01A4 (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
 	EClothMovementScaleGen                             ClothMovementScaleGenMode;                     // 0x01B0 (0x0001) [0x0000000000000001] (CPF_Edit)    
-	uint8_t                                            UnknownData03[0x3];                              // 0x01B1 (0x0003) MISSED OFFSET
+	uint8_t                                            UnknownData01[0x3];                              // 0x01B1 (0x0003) MISSED OFFSET
 	float                                              ClothToAnimMeshMaxDist;                        // 0x01B4 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint32_t                                           bLimitClothToAnimMesh : 1;                     // 0x01B8 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	class TArray<int32_t>                              ClothWeldingMap;                               // 0x01BC (0x000C) [0x0000000000400002] (CPF_Const | CPF_NeedCtorLink)
@@ -41343,12 +41353,12 @@ public:
 	struct FVector                                     RelativeLocation;                              // 0x004C (0x000C) [0x0000000000000001] (CPF_Edit)    
 	struct FRotator                                    RelativeRotation;                              // 0x0058 (0x000C) [0x0000000000000001] (CPF_Edit)    
 	struct FVector                                     RelativeScale;                                 // 0x0064 (0x000C) [0x0000000000000001] (CPF_Edit)    
-	class USkeletalMesh*                               PreviewSkelMesh;                               // 0x0070 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class UAnimSet*                                    PreviewAnimSet;                                // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class FName                                        PreviewAnimSequenceName;                       // 0x0078 (0x0008) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class USkeletalMesh*                               PreviewSkelMesh;                               // 0x0070 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class UAnimSet*                                    PreviewAnimSet;                                // 0x0074 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class FName                                        PreviewAnimSequenceName;                       // 0x0078 (0x0008) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	class USkeletalMeshComponent*                      PreviewSkelComp;                               // 0x0080 (0x0004) [0x00000000040A200B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_Transient | CPF_EditConst | CPF_Component | CPF_EditInline)
-	class UStaticMesh*                                 PreviewStaticMesh;                             // 0x0084 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
-	class UParticleSystem*                             PreviewParticleTemplate;                       // 0x0088 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class UStaticMesh*                                 PreviewStaticMesh;                             // 0x0084 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
+	class UParticleSystem*                             PreviewParticleTemplate;                       // 0x0088 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -41482,7 +41492,7 @@ public:
 class AProcBuilding : public AVolume
 {
 public:
-	class UProcBuildingRuleset*                        Ruleset;                                       // 0x0264 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	class UProcBuildingRuleset*                        Ruleset;                                       // 0x0264 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	class TArray<struct FPBMeshCompInfo>               BuildingMeshCompInfos;                         // 0x0268 (0x000C) [0x00000000004A0003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_Component | CPF_NeedCtorLink)
 	class TArray<struct FPBFracMeshCompInfo>           BuildingFracMeshCompInfos;                     // 0x0274 (0x000C) [0x00000000004A0003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_Component | CPF_NeedCtorLink)
 	class UStaticMeshComponent*                        SimpleMeshComp;                                // 0x0280 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
@@ -41497,12 +41507,12 @@ public:
 	uint32_t                                           bDebugDrawEdgeInfo : 1;                        // 0x0284 (0x0004) [0x0000000000000001] [0x00000100] (CPF_Edit)
 	uint32_t                                           bDebugDrawScopes : 1;                          // 0x0284 (0x0004) [0x0000000000000001] [0x00000200] (CPF_Edit)
 	class TArray<class UStaticMeshComponent*>          LODMeshComps;                                  // 0x0288 (0x000C) [0x000000000448000A] (CPF_Const | CPF_ExportObject | CPF_Component | CPF_NeedCtorLink | CPF_EditInline)
-	class TArray<struct FPBFaceUVInfo>                 LODMeshUVInfos;                                // 0x0294 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<struct FPBScope2D>                    TopLevelScopes;                                // 0x02A0 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FPBFaceUVInfo>                 LODMeshUVInfos;                                // 0x0294 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FPBScope2D>                    TopLevelScopes;                                // 0x02A0 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	int32_t                                            NumMeshedTopLevelScopes;                       // 0x02AC (0x0004) [0x0000000000000000]               
-	class TArray<struct FPBFaceUVInfo>                 TopLevelScopeUVInfos;                          // 0x02B0 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<struct FPBScopeProcessInfo>           TopLevelScopeInfos;                            // 0x02BC (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class TArray<struct FPBEdgeInfo>                   EdgeInfos;                                     // 0x02C8 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FPBFaceUVInfo>                 TopLevelScopeUVInfos;                          // 0x02B0 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FPBScopeProcessInfo>           TopLevelScopeInfos;                            // 0x02BC (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<struct FPBEdgeInfo>                   EdgeInfos;                                     // 0x02C8 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	float                                              MaxFacadeZ;                                    // 0x02D4 (0x0004) [0x0000000000000000]               
 	float                                              MinFacadeZ;                                    // 0x02D8 (0x0004) [0x0000000000000000]               
 	class TArray<class AProcBuilding*>                 OverlappingBuildings;                          // 0x02DC (0x000C) [0x0000000000402000] (CPF_Transient | CPF_NeedCtorLink)
@@ -41510,14 +41520,14 @@ public:
 	float                                              RenderToTexturePullBackAmount;                 // 0x02EC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            RoofLightmapRes;                               // 0x02F0 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            NonRectWallLightmapRes;                        // 0x02F4 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              LODRenderToTextureScale;                       // 0x02F8 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_EditorOnly)
+	float                                              LODRenderToTextureScale;                       // 0x02F8 (0x0004) [0x0000000800000001] (CPF_Edit | CPF_EditorOnly)
 	class FName                                        ParamSwatchName;                               // 0x02FC (0x0008) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FPBMaterialParam>              BuildingMaterialParams;                        // 0x0304 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
-	class TArray<class UMaterialInstanceConstant*>     BuildingMatParamMICs;                          // 0x0310 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
-	class AStaticMeshActor*                            LowLODPersistentActor;                         // 0x031C (0x0004) [0x0000000000220003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_CrossLevelPassive)
+	class TArray<class UMaterialInstanceConstant*>     BuildingMatParamMICs;                          // 0x0310 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class AStaticMeshActor*                            LowLODPersistentActor;                         // 0x031C (0x0004) [0x0000100000220003] (CPF_Edit | CPF_Const | CPF_EditConst | CPF_CrossLevelPassive)
 	class UStaticMeshComponent*                        CurrentSimpleMeshComp;                         // 0x0320 (0x0004) [0x0000000004082008] (CPF_ExportObject | CPF_Transient | CPF_Component | CPF_EditInline)
 	class AActor*                                      CurrentSimpleMeshActor;                        // 0x0324 (0x0004) [0x0000000000002000] (CPF_Transient)
-	class TArray<class AProcBuilding*>                 AttachedBuildings;                             // 0x0328 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class AProcBuilding*>                 AttachedBuildings;                             // 0x0328 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 	int32_t                                            BuildingInstanceVersion;                       // 0x0334 (0x0004) [0x0000000000000002] (CPF_Const)   
 
 public:
@@ -41567,12 +41577,12 @@ class UPBRuleNodeBase : public UObject
 {
 public:
 	class TArray<struct FPBRuleLink>                   NextRules;                                     // 0x003C (0x000C) [0x0000000000400040] (CPF_EditFixedSize | CPF_NeedCtorLink)
-	class FString                                      Comment;                                       // 0x0048 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
-	int32_t                                            RulePosX;                                      // 0x0054 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            RulePosY;                                      // 0x0058 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            InDrawY;                                       // 0x005C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            DrawWidth;                                     // 0x0060 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
-	int32_t                                            DrawHeight;                                    // 0x0064 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	class FString                                      Comment;                                       // 0x0048 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	int32_t                                            RulePosX;                                      // 0x0054 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            RulePosY;                                      // 0x0058 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            InDrawY;                                       // 0x005C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            DrawWidth;                                     // 0x0060 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
+	int32_t                                            DrawHeight;                                    // 0x0064 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -42050,7 +42060,7 @@ class UProcBuildingRuleset : public UObject
 {
 public:
 	class UPBRuleNodeBase*                             RootRule;                                      // 0x003C (0x0004) [0x0000000004400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
-	uint32_t                                           bBeingEdited : 1;                              // 0x0040 (0x0004) [0x0000000000002000] [0x00000001] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bBeingEdited : 1;                              // 0x0040 (0x0004) [0x0000000800002000] [0x00000001] (CPF_Transient | CPF_EditorOnly)
 	uint32_t                                           bEnableInteriorTexture : 1;                    // 0x0040 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
 	uint32_t                                           bLODOnlyRoof : 1;                              // 0x0040 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
 	class UMaterialInterface*                          DefaultRoofMaterial;                           // 0x0044 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -42068,7 +42078,7 @@ public:
 	class UTexture*                                    InteriorTexture;                               // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	class TArray<struct FPBVariationInfo>              Variations;                                    // 0x0078 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	class TArray<struct FPBParamSwatch>                ParamSwatches;                                 // 0x0084 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
-	class TArray<class UPBRuleNodeComment*>            Comments;                                      // 0x0090 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink | CPF_EditorOnly)
+	class TArray<class UPBRuleNodeComment*>            Comments;                                      // 0x0090 (0x000C) [0x0000000800400000] (CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -42109,11 +42119,11 @@ public:
 class AGameReplicationInfo : public AReplicationInfo
 {
 public:
-	class UClass*                                      GameClass;                                     // 0x0228 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class UClass*                                      GameClass;                                     // 0x0228 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	class UCurrentGameDataStore*                       CurrentGameData;                               // 0x022C (0x0004) [0x0000000000000000]               
 	uint32_t                                           bStopCountDown : 1;                            // 0x0230 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net)
-	uint32_t                                           bMatchHasBegun : 1;                            // 0x0230 (0x0004) [0x0000000000000020] [0x00000002] (CPF_Net | CPF_RepNotify)
-	uint32_t                                           bMatchIsOver : 1;                              // 0x0230 (0x0004) [0x0000000000000020] [0x00000004] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bMatchHasBegun : 1;                            // 0x0230 (0x0004) [0x0000000100000020] [0x00000002] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bMatchIsOver : 1;                              // 0x0230 (0x0004) [0x0000000100000020] [0x00000004] (CPF_Net | CPF_RepNotify)
 	int32_t                                            RemainingTime;                                 // 0x0234 (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding)
 	int32_t                                            ElapsedTime;                                   // 0x0238 (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding)
 	int32_t                                            RemainingMinute;                               // 0x023C (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding)
@@ -42167,17 +42177,17 @@ public:
 class APlayerReplicationInfo : public AReplicationInfo
 {
 public:
-	float                                              Score;                                         // 0x0228 (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
+	float                                              Score;                                         // 0x0228 (0x0004) [0x0000000140000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
 	int32_t                                            Deaths;                                        // 0x022C (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding)
 	uint8_t                                            Ping;                                          // 0x0230 (0x0001) [0x0000000000000020] (CPF_Net)     
 	ETTSSpeaker                                        TTSSpeaker;                                    // 0x0231 (0x0001) [0x0000000000002000] (CPF_Transient)
 	uint8_t                                            UnknownData00[0x2];                              // 0x0232 (0x0002) MISSED OFFSET
 	class AActor*                                      PlayerLocationHint;                            // 0x0234 (0x0004) [0x0000000000000020] (CPF_Net)     
 	int32_t                                            NumLives;                                      // 0x0238 (0x0004) [0x0000000000000000]               
-	class FString                                      PlayerName;                                    // 0x023C (0x000C) [0x0000000040400020] (CPF_Net | CPF_NeedCtorLink | CPF_DataBinding | CPF_RepNotify)
+	class FString                                      PlayerName;                                    // 0x023C (0x000C) [0x0000000140400020] (CPF_Net | CPF_NeedCtorLink | CPF_DataBinding | CPF_RepNotify)
 	class FString                                      OldName;                                       // 0x0248 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	int32_t                                            PlayerID;                                      // 0x0254 (0x0004) [0x0000000000000020] (CPF_Net)     
-	class ATeamInfo*                                   Team;                                          // 0x0258 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class ATeamInfo*                                   Team;                                          // 0x0258 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 	int32_t                                            SplitscreenIndex;                              // 0x025C (0x0004) [0x0000000000000020] (CPF_Net)     
 	uint32_t                                           bAdmin : 1;                                    // 0x0260 (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net)
 	uint32_t                                           bIsFemale : 1;                                 // 0x0260 (0x0004) [0x0000000000000020] [0x00000002] (CPF_Net)
@@ -42189,7 +42199,7 @@ public:
 	uint32_t                                           bBot : 1;                                      // 0x0260 (0x0004) [0x0000000000000020] [0x00000080] (CPF_Net)
 	uint32_t                                           bHasFlag : 1;                                  // 0x0260 (0x0004) [0x0000000000000020] [0x00000100] (CPF_Net)
 	uint32_t                                           bHasBeenWelcomed : 1;                          // 0x0260 (0x0004) [0x0000000000000000] [0x00000200] 
-	uint32_t                                           bIsInactive : 1;                               // 0x0260 (0x0004) [0x0000000000000020] [0x00000400] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bIsInactive : 1;                               // 0x0260 (0x0004) [0x0000000100000020] [0x00000400] (CPF_Net | CPF_RepNotify)
 	uint32_t                                           bFromPreviousLevel : 1;                        // 0x0260 (0x0004) [0x0000000000000000] [0x00000800] 
 	int32_t                                            StartTime;                                     // 0x0264 (0x0004) [0x0000000000000020] (CPF_Net)     
 	class FString                                      StringSpectating;                              // 0x0268 (0x000C) [0x0000000000408002] (CPF_Const | CPF_Localized | CPF_NeedCtorLink)
@@ -42198,7 +42208,7 @@ public:
 	class UClass*                                      GameMessageClass;                              // 0x0284 (0x0004) [0x0000000000000000]               
 	float                                              ExactPing;                                     // 0x0288 (0x0004) [0x0000000000000000]               
 	class FString                                      SavedNetworkAddress;                           // 0x028C (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
-	struct FUniqueNetId                                UniqueId;                                      // 0x0298 (0x0008) [0x0000000040000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
+	struct FUniqueNetId                                UniqueId;                                      // 0x0298 (0x0008) [0x0000000140000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
 	class FName                                        SessionName;                                   // 0x02A0 (0x0008) [0x0000000000000002] (CPF_Const)   
 	struct FAutomatedTestingDatum                      AutomatedTestingData;                          // 0x02A8 (0x0008) [0x0000000000000000]               
 	int32_t                                            StatConnectionCounts;                          // 0x02B0 (0x0004) [0x0000000000000000]               
@@ -42272,7 +42282,7 @@ public:
 	class FString                                      TeamName;                                      // 0x0228 (0x000C) [0x0000000040408022] (CPF_Const | CPF_Net | CPF_Localized | CPF_NeedCtorLink | CPF_DataBinding)
 	int32_t                                            Size;                                          // 0x0234 (0x0004) [0x0000000040000000] (CPF_DataBinding)
 	float                                              Score;                                         // 0x0238 (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding)
-	int32_t                                            TeamIndex;                                     // 0x023C (0x0004) [0x0000000040000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
+	int32_t                                            TeamIndex;                                     // 0x023C (0x0004) [0x0000000140000020] (CPF_Net | CPF_DataBinding | CPF_RepNotify)
 	struct FColor                                      TeamColor;                                     // 0x0240 (0x0004) [0x0000000040000000] (CPF_DataBinding)
 
 public:
@@ -42405,12 +42415,12 @@ class ACameraActor : public AActor
 {
 public:
 	uint32_t                                           bConstrainAspectRatio : 1;                     // 0x0228 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	uint32_t                                           bCamOverridePostProcess : 1;                   // 0x0228 (0x0004) [0x0000000020000000] [0x00000002]  CPF_Deprecated)
+	uint32_t                                           bCamOverridePostProcess : 1;                   // 0x0228 (0x0004) [0x0000000020000000] [0x00000002] (CPF_Deprecated)
 	uint32_t                                           bGamePlayCamera : 1;                           // 0x0228 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit)
-	float                                              AspectRatio;                                   // 0x022C (0x0004) [0x0000000000000021] (CPF_Edit | CPF_Net | CPF_Interp)
-	float                                              FOVAngle;                                      // 0x0230 (0x0004) [0x0000000000000021] (CPF_Edit | CPF_Net | CPF_Interp)
-	float                                              CamOverridePostProcessAlpha;                   // 0x0234 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FPostProcessSettings                        CamOverridePostProcess;                        // 0x0238 (0x00E8) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              AspectRatio;                                   // 0x022C (0x0004) [0x0000000200000021] (CPF_Edit | CPF_Net | CPF_Interp)
+	float                                              FOVAngle;                                      // 0x0230 (0x0004) [0x0000000200000021] (CPF_Edit | CPF_Net | CPF_Interp)
+	float                                              CamOverridePostProcessAlpha;                   // 0x0234 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FPostProcessSettings                        CamOverridePostProcess;                        // 0x0238 (0x00E8) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	class UDrawFrustumComponent*                       DrawFrustum;                                   // 0x0320 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	class UStaticMeshComponent*                        MeshComp;                                      // 0x0324 (0x0004) [0x0000000004080008] (CPF_ExportObject | CPF_Component | CPF_EditInline)
 	struct FControllableParams                         CtrlParam;                                     // 0x0328 (0x0028) [0x0000000000000001] (CPF_Edit)    
@@ -42504,7 +42514,7 @@ public:
 	class UInterpTrackMove*                            MoveTrack;                                     // 0x0070 (0x0004) [0x0000000000002000] (CPF_Transient)
 	class UInterpTrackInstMove*                        MoveInst;                                      // 0x0074 (0x0004) [0x0000000000002000] (CPF_Transient)
 	class UAnimNodeSequence*                           SourceAnimNode;                                // 0x0078 (0x0004) [0x0000000000002000] (CPF_Transient)
-	ECameraAnimPlaySpace                               PlaySpace;                                     // 0x007C (0x0001) [0x0000000000000000] (CPF_ProtectedWrite)
+	ECameraAnimPlaySpace                               PlaySpace;                                     // 0x007C (0x0001) [0x0000008000000000] (CPF_ProtectedWrite)
 	uint8_t                                            UnknownData00[0x3];                              // 0x007D (0x0003) MISSED OFFSET
 	struct FMatrix                                     UserPlaySpaceMatrix;                           // 0x0080 (0x0040) [0x0000000000002000] (CPF_Transient)
 	struct FPostProcessSettings                        LastPPSettings;                                // 0x00C0 (0x00E8) [0x0000000000002000] (CPF_Transient)
@@ -43508,7 +43518,7 @@ public:
 class AEmitterSpawnable : public AEmitter
 {
 public:
-	class UParticleSystem*                             ParticleTemplate;                              // 0x0238 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class UParticleSystem*                             ParticleTemplate;                              // 0x0238 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -44472,7 +44482,7 @@ class AHeightFog : public AInfo
 {
 public:
 	class UHeightFogComponent*                         Component;                                     // 0x0228 (0x0004) [0x00000000040A000B] (CPF_Edit | CPF_Const | CPF_ExportObject | CPF_EditConst | CPF_Component | CPF_EditInline)
-	uint32_t                                           bEnabled : 1;                                  // 0x022C (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bEnabled : 1;                                  // 0x022C (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()

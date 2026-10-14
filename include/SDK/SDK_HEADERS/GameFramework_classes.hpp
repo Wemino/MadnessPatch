@@ -771,7 +771,7 @@ public:
 class AGameCrowdAttractor : public AGameCrowdForcePoint
 {
 public:
-	float                                              Attraction;                                    // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Attraction;                                    // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bAttractionFalloff : 1;                        // 0x0234 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 
 public:
@@ -795,7 +795,7 @@ public:
 class AGameCrowdRepulsor : public AGameCrowdForcePoint
 {
 public:
-	float                                              Repulsion;                                     // 0x0230 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Repulsion;                                     // 0x0230 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           bAttractionFalloff : 1;                        // 0x0234 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 
 public:
@@ -893,9 +893,9 @@ public:
 class AGameCrowdReplicationActor : public AActor
 {
 public:
-	class USeqAct_GameCrowdSpawner*                    Spawner;                                       // 0x0228 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
-	uint32_t                                           bSpawningActive : 1;                           // 0x022C (0x0004) [0x0000000000000020] [0x00000001] (CPF_Net | CPF_RepNotify)
-	int32_t                                            DestroyAllCount;                               // 0x0230 (0x0004) [0x0000000000000020] (CPF_Net | CPF_RepNotify)
+	class USeqAct_GameCrowdSpawner*                    Spawner;                                       // 0x0228 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
+	uint32_t                                           bSpawningActive : 1;                           // 0x022C (0x0004) [0x0000000100000020] [0x00000001] (CPF_Net | CPF_RepNotify)
+	int32_t                                            DestroyAllCount;                               // 0x0230 (0x0004) [0x0000000100000020] (CPF_Net | CPF_RepNotify)
 
 public:
 	static UClass* StaticClass()
@@ -1686,7 +1686,7 @@ public:
 	struct FRotator                                    LastPreModifierCameraRot;                      // 0x0150 (0x000C) [0x0000000000002000] (CPF_Transient)
 	class TArray<struct FPenetrationAvoidanceFeeler>   PenetrationAvoidanceFeelers;                   // 0x015C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	float                                              OffsetAdjustmentInterpSpeed;                   // 0x0168 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
-	struct FVector                                     LastOffsetAdjustment;                          // 0x016C (0x000C) [0x0000000000002000] (CPF_Transient | CPF_ProtectedWrite)
+	struct FVector                                     LastOffsetAdjustment;                          // 0x016C (0x000C) [0x0000008000002000] (CPF_Transient | CPF_ProtectedWrite)
 
 public:
 	static UClass* StaticClass()

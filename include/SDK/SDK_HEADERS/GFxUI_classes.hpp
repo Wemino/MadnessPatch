@@ -202,7 +202,8 @@ public:
 	uint8_t                                            UnknownData00[0x1];                              // 0x0077 (0x0001) MISSED OFFSET
 	uint32_t                                           bDisplayWithHudOff : 1;                        // 0x0078 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 	uint32_t                                           bGammaCorrection : 1;                          // 0x0078 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit)
-	uint8_t                                            UnknownData01[0x78];                            // 0x007C (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 ASUClasses;                                    // 0x007C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
+	struct FMap_Mirror                                 ASUObjects;                                    // 0x00B8 (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 	int32_t                                            NextASUObject;                                 // 0x00F4 (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	class TArray<struct FExternalTexture>              ExternalTextures;                              // 0x00F8 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	class TArray<struct FGFxDataStoreBinding>          DataStoreBindings;                             // 0x0104 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
@@ -288,12 +289,12 @@ public:
 	class TArray<class UObject*>                       References;                                    // 0x0048 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	class TArray<class UObject*>                       UserReferences;                                // 0x0054 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
 	uint32_t                                           bUsesFontlib : 1;                              // 0x0060 (0x0004) [0x0000000000020001] [0x00000001] (CPF_Edit | CPF_EditConst)
-	uint32_t                                           bUseGFxExport : 1;                             // 0x0060 (0x0004) [0x0000000000000001] [0x00000002] (CPF_Edit | CPF_EditorOnly)
-	uint32_t                                           bGFxExportSRGBTextures : 1;                    // 0x0060 (0x0004) [0x0000000000000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bUseGFxExport : 1;                             // 0x0060 (0x0004) [0x0000000800000001] [0x00000002] (CPF_Edit | CPF_EditorOnly)
+	uint32_t                                           bGFxExportSRGBTextures : 1;                    // 0x0060 (0x0004) [0x0000000800000001] [0x00000004] (CPF_Edit | CPF_EditorOnly)
 	int32_t                                            RTTextures;                                    // 0x0064 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	int32_t                                            RTVideoTextures;                               // 0x0068 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class FString                                      SourceFile;                                    // 0x006C (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
-	class FString                                      GFxExportCmdLine;                              // 0x0078 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      SourceFile;                                    // 0x006C (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
+	class FString                                      GFxExportCmdLine;                              // 0x0078 (0x000C) [0x0000000800400001] (CPF_Edit | CPF_NeedCtorLink | CPF_EditorOnly)
 
 public:
 	static UClass* StaticClass()
@@ -591,7 +592,7 @@ public:
 class UGFxFSCmdHandler_Kismet : public UGFxFSCmdHandler
 {
 public:
-	uint8_t                                            UnknownData00[0x3C];                            // 0x003C (0x003C) MISSED OFFSET
+	struct FMap_Mirror                                 Events;                                        // 0x003C (0x003C) [0x0000000000001002] (CPF_Const | CPF_Native)
 
 public:
 	static UClass* StaticClass()

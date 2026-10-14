@@ -312,7 +312,7 @@ struct FAiMesh
 // 0x0008
 struct FFlyBuilderLocalZoneDefinition
 {
-	class AVolume*                                     ZoneVolume;                                    // 0x0000 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse | CPF_EditInlineUse)
+	class AVolume*                                     ZoneVolume;                                    // 0x0000 (0x0004) [0x0000000014000003] (CPF_Edit | CPF_Const | CPF_EditInline | CPF_EditInlineUse)
 	float                                              LocalPitch;                                    // 0x0004 (0x0004) [0x0000000000000003] (CPF_Edit | CPF_Const)
 };
 

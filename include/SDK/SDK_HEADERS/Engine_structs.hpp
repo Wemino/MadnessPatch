@@ -727,46 +727,46 @@ struct FPostProcessSettings
 	uint32_t                                           bAllowAmbientOcclusion : 1;                    // 0x0004 (0x0004) [0x0000000000000001] [0x00200000] (CPF_Edit)
 	uint32_t                                           bOverrideRimShaderColor : 1;                   // 0x0004 (0x0004) [0x0000000000000001] [0x00400000] (CPF_Edit)
 	uint32_t                                           bEnableDynamicTonemapping : 1;                 // 0x0004 (0x0004) [0x0000000000000001] [0x00800000] (CPF_Edit)
-	float                                              Bloom_Scale;                                   // 0x0008 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              Bloom_Scale;                                   // 0x0008 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              Bloom_InterpolationDuration;                   // 0x000C (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              DOF_FalloffExponent;                           // 0x0010 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_BlurKernelSize;                            // 0x0014 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_BlurBloomKernelSize;                       // 0x0018 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_MaxNearBlurAmount;                         // 0x001C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_MaxFarBlurAmount;                          // 0x0020 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_FalloffExponent;                           // 0x0010 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_BlurKernelSize;                            // 0x0014 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_BlurBloomKernelSize;                       // 0x0018 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_MaxNearBlurAmount;                         // 0x001C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_MaxFarBlurAmount;                          // 0x0020 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FColor                                      DOF_ModulateBlurColor;                         // 0x0024 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            DOF_FocusType;                                 // 0x0028 (0x0001) [0x0000000000000001] (CPF_Edit)    
 	uint8_t                                            UnknownData00[0x3];                              // 0x0029 (0x0003) MISSED OFFSET
-	float                                              DOF_FocusNearInnerRadius;                      // 0x002C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_FocusFarInnerRadius;                       // 0x0030 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_FocusDistance;                             // 0x0034 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_FarFocusDistance;                          // 0x0038 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_FocusNearInnerRadius;                      // 0x002C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_FocusFarInnerRadius;                       // 0x0030 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_FocusDistance;                             // 0x0034 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_FarFocusDistance;                          // 0x0038 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	struct FVector                                     DOF_FocusPosition;                             // 0x003C (0x000C) [0x0000000000000001] (CPF_Edit)    
 	float                                              DOF_InterpolationDuration;                     // 0x0048 (0x0004) [0x0000000000000001] (CPF_Edit)    
 	uint32_t                                           DOF_EnableDynamicDoF : 1;                      // 0x004C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              DOF_AdaptationRate;                            // 0x0050 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_WaitingTime;                               // 0x0054 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     DOF_AimingPoint;                               // 0x0058 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_MinFarInnerRadius;                         // 0x0064 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_DDofRange;                                 // 0x0068 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_ResetAdaptationRate;                       // 0x006C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DOF_ResetDistDifference;                       // 0x0070 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              MotionBlur_MaxVelocity;                        // 0x0074 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              MotionBlur_Amount;                             // 0x0078 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_AdaptationRate;                            // 0x0050 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_WaitingTime;                               // 0x0054 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     DOF_AimingPoint;                               // 0x0058 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_MinFarInnerRadius;                         // 0x0064 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_DDofRange;                                 // 0x0068 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_ResetAdaptationRate;                       // 0x006C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DOF_ResetDistDifference;                       // 0x0070 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              MotionBlur_MaxVelocity;                        // 0x0074 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              MotionBlur_Amount;                             // 0x0078 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	uint32_t                                           MotionBlur_FullMotionBlur : 1;                 // 0x007C (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
-	float                                              MotionBlur_CameraRotationThreshold;            // 0x0080 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              MotionBlur_CameraTranslationThreshold;         // 0x0084 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              MotionBlur_CameraRotationThreshold;            // 0x0080 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              MotionBlur_CameraTranslationThreshold;         // 0x0084 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              MotionBlur_InterpolationDuration;              // 0x0088 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	float                                              DynamicTonemapping_MiddleGray;                 // 0x008C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DynamicTonemapping_AdaptationRate;             // 0x0090 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DynamicTonemapping_LuminanceScale;             // 0x0094 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DynamicTonemapping_MinGray;                    // 0x0098 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DynamicTonemapping_MinColorScale;              // 0x009C (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              DynamicTonemapping_MaxColorScale;              // 0x00A0 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	float                                              Scene_Desaturation;                            // 0x00A4 (0x0004) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     Scene_HighLights;                              // 0x00A8 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     Scene_MidTones;                                // 0x00B4 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
-	struct FVector                                     Scene_Shadows;                                 // 0x00C0 (0x000C) [0x0000000000000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_MiddleGray;                 // 0x008C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_AdaptationRate;             // 0x0090 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_LuminanceScale;             // 0x0094 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_MinGray;                    // 0x0098 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_MinColorScale;              // 0x009C (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              DynamicTonemapping_MaxColorScale;              // 0x00A0 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	float                                              Scene_Desaturation;                            // 0x00A4 (0x0004) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     Scene_HighLights;                              // 0x00A8 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     Scene_MidTones;                                // 0x00B4 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
+	struct FVector                                     Scene_Shadows;                                 // 0x00C0 (0x000C) [0x0000000200000001] (CPF_Edit | CPF_Interp)
 	float                                              Scene_InterpolationDuration;                   // 0x00CC (0x0004) [0x0000000000000001] (CPF_Edit)    
 	struct FLinearColor                                RimShader_Color;                               // 0x00D0 (0x0010) [0x0000000000000001] (CPF_Edit)    
 	float                                              RimShader_InterpolationDuration;               // 0x00E0 (0x0004) [0x0000000000000001] (CPF_Edit)    
@@ -795,10 +795,10 @@ struct FSeqOpOutputLink
 	float                                              ActivateDelay;                                 // 0x0020 (0x0004) [0x0000000000000000]               
 	int32_t                                            DrawY;                                         // 0x0024 (0x0004) [0x0000000000000000]               
 	uint32_t                                           bHidden : 1;                                   // 0x0028 (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bMoving : 1;                                   // 0x0028 (0x0004) [0x0000000000002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bClampedMax : 1;                               // 0x0028 (0x0004) [0x0000000000000000] [0x00000004] (CPF_EditorOnly)
-	uint32_t                                           bClampedMin : 1;                               // 0x0028 (0x0004) [0x0000000000000000] [0x00000008] (CPF_EditorOnly)
-	int32_t                                            OverrideDelta;                                 // 0x002C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	uint32_t                                           bMoving : 1;                                   // 0x0028 (0x0004) [0x0000000800002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bClampedMax : 1;                               // 0x0028 (0x0004) [0x0000000800000000] [0x00000004] (CPF_EditorOnly)
+	uint32_t                                           bClampedMin : 1;                               // 0x0028 (0x0004) [0x0000000800000000] [0x00000008] (CPF_EditorOnly)
+	int32_t                                            OverrideDelta;                                 // 0x002C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 };
 
 // ScriptStruct Engine.SequenceOp.SeqVarLink
@@ -818,10 +818,10 @@ struct FSeqVarLink
 	int32_t                                            DrawX;                                         // 0x0038 (0x0004) [0x0000000000000000]               
 	class UProperty*                                   CachedProperty;                                // 0x003C (0x0004) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	uint32_t                                           bAllowAnyType : 1;                             // 0x0040 (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bMoving : 1;                                   // 0x0040 (0x0004) [0x0000000000002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bClampedMax : 1;                               // 0x0040 (0x0004) [0x0000000000000000] [0x00000004] (CPF_EditorOnly)
-	uint32_t                                           bClampedMin : 1;                               // 0x0040 (0x0004) [0x0000000000000000] [0x00000008] (CPF_EditorOnly)
-	int32_t                                            OverrideDelta;                                 // 0x0044 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	uint32_t                                           bMoving : 1;                                   // 0x0040 (0x0004) [0x0000000800002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bClampedMax : 1;                               // 0x0040 (0x0004) [0x0000000800000000] [0x00000004] (CPF_EditorOnly)
+	uint32_t                                           bClampedMin : 1;                               // 0x0040 (0x0004) [0x0000000800000000] [0x00000008] (CPF_EditorOnly)
+	int32_t                                            OverrideDelta;                                 // 0x0044 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 };
 
 // ScriptStruct Engine.SequenceOp.SeqEventLink
@@ -833,10 +833,10 @@ struct FSeqEventLink
 	class FString                                      LinkDesc;                                      // 0x0010 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	int32_t                                            DrawX;                                         // 0x001C (0x0004) [0x0000000000000000]               
 	uint32_t                                           bHidden : 1;                                   // 0x0020 (0x0004) [0x0000000000000000] [0x00000001] 
-	uint32_t                                           bMoving : 1;                                   // 0x0020 (0x0004) [0x0000000000002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
-	uint32_t                                           bClampedMax : 1;                               // 0x0020 (0x0004) [0x0000000000000000] [0x00000004] (CPF_EditorOnly)
-	uint32_t                                           bClampedMin : 1;                               // 0x0020 (0x0004) [0x0000000000000000] [0x00000008] (CPF_EditorOnly)
-	int32_t                                            OverrideDelta;                                 // 0x0024 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	uint32_t                                           bMoving : 1;                                   // 0x0020 (0x0004) [0x0000000800002000] [0x00000002] (CPF_Transient | CPF_EditorOnly)
+	uint32_t                                           bClampedMax : 1;                               // 0x0020 (0x0004) [0x0000000800000000] [0x00000004] (CPF_EditorOnly)
+	uint32_t                                           bClampedMin : 1;                               // 0x0020 (0x0004) [0x0000000800000000] [0x00000008] (CPF_EditorOnly)
+	int32_t                                            OverrideDelta;                                 // 0x0024 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 };
 
 // ScriptStruct Engine.OnlineGameSearch.OnlineGameSearchParameter
@@ -948,7 +948,7 @@ struct FAnimBlendChild
 	struct FBoneAtom                                   RootMotion;                                    // 0x0020 (0x0020) [0x0000000000002002] (CPF_Const | CPF_Transient)
 	uint32_t                                           bMirrorSkeleton : 1;                           // 0x0040 (0x0004) [0x0000000000000000] [0x00000001] 
 	uint32_t                                           bIsAdditive : 1;                               // 0x0040 (0x0004) [0x0000000000000000] [0x00000002] 
-	int32_t                                            DrawY;                                         // 0x0044 (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	int32_t                                            DrawY;                                         // 0x0044 (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 	uint8_t                                            MinStructAlignment[0x8];                         // 0x0048 (0x0008) ADDED PADDING
 };
 
@@ -1630,7 +1630,7 @@ struct FSkelControlListHead
 {
 	class FName                                        BoneName;                                      // 0x0000 (0x0008) [0x0000000000000000]               
 	class USkelControlBase*                            ControlHead;                                   // 0x0008 (0x0004) [0x0000000004400008] (CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
-	int32_t                                            DrawY;                                         // 0x000C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	int32_t                                            DrawY;                                         // 0x000C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 };
 
 // ScriptStruct Engine.AnimTree.PreviewSkelMeshStruct
@@ -1802,7 +1802,7 @@ struct FKAggregateGeom
 	class TArray<struct FKBoxElem>                     BoxElems;                                      // 0x000C (0x000C) [0x0000000000400041] (CPF_Edit | CPF_EditFixedSize | CPF_NeedCtorLink)
 	class TArray<struct FKSphylElem>                   SphylElems;                                    // 0x0018 (0x000C) [0x0000000000400041] (CPF_Edit | CPF_EditFixedSize | CPF_NeedCtorLink)
 	class TArray<struct FKConvexElem>                  ConvexElems;                                   // 0x0024 (0x000C) [0x0000000000400041] (CPF_Edit | CPF_EditFixedSize | CPF_NeedCtorLink)
-	struct FPointer                                    RenderInfo;                                    // 0x0030 (0x0004) [0x0000000001001000] (CPF_Native | CPF_NonTransactional)
+	struct FPointer                                    RenderInfo;                                    // 0x0030 (0x0004) [0x0000000401001000] (CPF_Native | CPF_NonTransactional)
 	uint32_t                                           bSkipCloseAndParallelChecks : 1;               // 0x0034 (0x0004) [0x0000000000000001] [0x00000001] (CPF_Edit)
 };
 
@@ -2760,7 +2760,8 @@ struct FUIInputAliasClassMap
 	class FString                                      WidgetClassName;                               // 0x0000 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
 	class UClass*                                      WidgetClass;                                   // 0x000C (0x0004) [0x0000000000000000]               
 	class TArray<struct FUIInputAliasStateMap>         WidgetStates;                                  // 0x0010 (0x000C) [0x0000000000400000] (CPF_NeedCtorLink)
-	uint8_t                                            UnknownData00[0x78];                            // 0x001C (0x0078) MISSED OFFSET
+	struct FMap_Mirror                                 StateLookupTable;                              // 0x001C (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
+	struct FMap_Mirror                                 StateReverseLookupTable;                       // 0x0058 (0x003C) [0x0000000000003002] (CPF_Const | CPF_Native | CPF_Transient)
 };
 
 // ScriptStruct Engine.Console.AutoCompleteCommand
@@ -3330,8 +3331,8 @@ struct FMeshMaterialRef
 struct FMaterialReferenceList
 {
 	class UMaterialInterface*                          TargetMaterial;                                // 0x0000 (0x0004) [0x0000000000000001] (CPF_Edit)    
-	class TArray<struct FMeshMaterialRef>              AffectedMeshMaterialRefs;                      // 0x0004 (0x000C) [0x0000000000480000] (CPF_Component | CPF_NeedCtorLink | CPF_EditHide)
-	class TArray<class UDecalComponent*>               AffectedDecalMaterialRefs;                     // 0x0010 (0x000C) [0x0000000004480008] (CPF_ExportObject | CPF_Component | CPF_NeedCtorLink | CPF_EditInline | CPF_EditHide)
+	class TArray<struct FMeshMaterialRef>              AffectedMeshMaterialRefs;                      // 0x0004 (0x000C) [0x0000020000480000] (CPF_Component | CPF_NeedCtorLink | CPF_EditHide)
+	class TArray<class UDecalComponent*>               AffectedDecalMaterialRefs;                     // 0x0010 (0x000C) [0x0000020004480008] (CPF_ExportObject | CPF_Component | CPF_NeedCtorLink | CPF_EditInline | CPF_EditHide)
 };
 
 // ScriptStruct Engine.FluidSurfaceComponent.LightMapRef
@@ -3851,7 +3852,7 @@ struct FExpressionInput
 struct FCustomInput
 {
 	class FString                                      InputName;                                     // 0x0000 (0x000C) [0x0000000000400001] (CPF_Edit | CPF_NeedCtorLink)
-	struct FExpressionInput                            Input;                                         // 0x000C (0x001C) [0x0000000000000000] (CPF_EditHide)
+	struct FExpressionInput                            Input;                                         // 0x000C (0x001C) [0x0000020000000000] (CPF_EditHide)
 };
 
 // ScriptStruct Engine.MaterialInstanceConstant.FontParameterValue
@@ -4234,7 +4235,7 @@ struct FPBRuleLink
 {
 	class UPBRuleNodeBase*                             NextRule;                                      // 0x0000 (0x0004) [0x0000000004400009] (CPF_Edit | CPF_ExportObject | CPF_NeedCtorLink | CPF_EditInline)
 	class FName                                        LinkName;                                      // 0x0004 (0x0008) [0x0000000000000001] (CPF_Edit)    
-	int32_t                                            DrawY;                                         // 0x000C (0x0004) [0x0000000000000000] (CPF_EditorOnly)
+	int32_t                                            DrawY;                                         // 0x000C (0x0004) [0x0000000800000000] (CPF_EditorOnly)
 };
 
 // ScriptStruct Engine.ProcBuilding.PBMaterialParam
