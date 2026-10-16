@@ -409,3 +409,122 @@ namespace IniHelper
 		return defaultValue;
 	}
 };
+
+namespace ScriptHelper
+{
+	struct OutParmRec
+	{
+		UProperty* Property;
+		uint8_t* PropAddr;
+		OutParmRec* Next;
+	};
+
+	// FFrame
+	struct Frame
+	{
+		void* VfTable;
+		uint32_t Flags[3];
+		UStruct* Node;
+		UObject* Object;
+		uint8_t* Code;
+		uint8_t* Locals;
+		Frame* PreviousFrame;
+		OutParmRec* OutParms;
+	};
+
+	using Native = void(__thiscall*)(UObject*, Frame*, void*);
+
+	inline Native* GNatives = nullptr;
+
+	constexpr uint8_t EX_DebugInfo = 0x41;
+
+	// P_GET_*
+	inline void StepParm(Frame* stack, void* value)
+	{
+		uint8_t token = *stack->Code++;
+		GNatives[token](stack->Object, stack, value);
+	}
+
+	// P_FINISH
+	inline void FinishParms(Frame* stack)
+	{
+		stack->Code++; // EX_EndFunctionParms
+		if (*stack->Code == EX_DebugInfo)
+		{
+			stack->Code++;
+			GNatives[EX_DebugInfo](stack->Object, stack, nullptr);
+		}
+	}
+
+	namespace Token
+	{
+		constexpr uint8_t LocalVariable = 0x00;
+		constexpr uint8_t InstanceVariable = 0x01;
+		constexpr uint8_t Return = 0x04;
+		constexpr uint8_t Jump = 0x06;
+		constexpr uint8_t JumpIfNot = 0x07;
+		constexpr uint8_t Nothing = 0x0B;
+		constexpr uint8_t Let = 0x0F;
+		constexpr uint8_t EndFunctionParms = 0x16;
+		constexpr uint8_t Context = 0x19;
+		constexpr uint8_t VirtualFunction = 0x1B;
+		constexpr uint8_t FloatConst = 0x1E;
+		constexpr uint8_t PrimitiveCast = 0x38;
+		constexpr uint8_t FloatToIntCast = 0x44;
+		constexpr uint8_t EndOfScript = 0x53;
+		constexpr uint8_t AddEqual_IntInt = 161;
+		constexpr uint8_t Multiply_FloatFloat = 171;
+		constexpr uint8_t Divide_FloatFloat = 172;
+		constexpr uint8_t Less_FloatFloat = 176;
+		constexpr uint8_t AddEqual_FloatFloat = 184;
+		constexpr uint8_t SubtractEqual_FloatFloat = 185;
+		constexpr uint8_t Abs = 186;
+		constexpr uint8_t Subtract_VectorVector = 216;
+		constexpr uint8_t VSize = 225;
+	}
+
+	// A token expected at an offset from a place in a function's bytecode, and its operand
+	struct Expect
+	{
+		enum Operand : uint8_t { None, Local, Member, Name, Float };
+
+		int16_t offset;
+		uint8_t token;
+		Operand operand = None;
+		const char* name = nullptr;
+		UClass* (*owner)() = nullptr;
+		float value = 0.0f;
+	};
+
+	struct Site;
+
+	using SiteDone = void(*)(Site& site, Frame* stack, void* result);
+
+	// A token replaced by one that runs it, then hands its value to done
+	struct SiteSpec
+	{
+		const char* function;
+		const Expect* expects;
+		int expectCount;
+		SiteDone done;
+		const char* timeFunction = nullptr;
+		const char* timeParm = "DeltaTime";
+	};
+
+	struct Site
+	{
+		const SiteSpec* spec = nullptr;
+		uint8_t* code = nullptr;
+		uint8_t original = 0;
+		UStruct* timeFunction = nullptr;
+		UProperty* timeParm = nullptr;
+		float carry = 0.0f;
+	};
+
+	// Engine/ScriptPatches.cpp
+	UProperty* FindProperty(UStruct* scope, const char* name, bool inherited);
+	uint8_t* FindConstant(UFunction* fn, const uint8_t* pattern, size_t size);
+	uint8_t* FindPlace(const char* function, const Expect* expects, int count);
+	bool InstallSite(const SiteSpec& spec);
+	bool SiteDeltaTime(const Site& site, Frame* stack, float& deltaTime);
+}

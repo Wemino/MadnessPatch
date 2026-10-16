@@ -8,7 +8,22 @@
     <ClCompile Include="..\src\Engine\ResolutionHook.cpp">
       <Filter>src\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Fixes\PhysicsFixes.cpp">
+    <ClCompile Include="..\src\Fixes\FixHighFPSHairPhysics.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSClothPhysics.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSProjectileCollisionCheck.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSPhysX.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSMovementsPhysics.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSCamera.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Fixes\CrashFixes.cpp">
@@ -120,6 +135,9 @@
       <Filter>src\MainLoop</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp">
+      <Filter>src\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Engine\ScriptPatches.cpp">
       <Filter>src\Engine</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp">

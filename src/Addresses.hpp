@@ -24,28 +24,34 @@ enum class Addr
 
 	// FixHighFPSProjectileCollisionCheck
 	RangeAttackPawnCollisionCheck,
+	RangeAttackOverlapResult,
 
 	// FixHighFPSPhysX
-	PhysSceneSetTiming,
-	PhysSceneSetTimingSkip,
+	TickWorldRBPhys,
+	AddRBGravAndDamping,
 	GetUnrealWorldTM,
 	RagdollTransition,
 	ApexBoneBufferWrite,
 	ApexClothVertexWrite,
+	PhysXParticleSync,
+	PhysXParticleTick,
+	PhysXEmitterStepSize,
 
-	// FixHighFPSWalkingPhysics
-	WalkFloorStick,
-	WalkVelocityRecompute,
-	WalkVelocityRecomputeSkip,
-	WalkFloorAccepted,
-	WalkFallGate,
-	WalkFallGateResume,
-	FallIntegrated,
-	FallVelRecompute,
-	FallLandVelGate,
-	FallLandVelTake,
-	WalkSetBaseGuard,
-	WalkSetBaseSkip,
+	// FixHighFPSMovementsPhysics
+	PawnPerformPhysics,
+	GWorld,
+	PawnFootIKWalking,
+	PawnFootIKBlend,
+	PawnFootIKEnd,
+	PawnFootIKFalling,
+	PawnFootIKMeshReset,
+	PawnTickFootIKDone,
+	TickActorComponents,
+	CrowdAgentPerformPhysics,
+	CrowdAgentTickSpecial,
+
+	// FixHighFPSCamera
+	ScriptProcessInternal,
 
 	// Hash-table race condition
 	Localize,
@@ -195,6 +201,9 @@ enum class Addr
 	EngineTick,
 	ProcessEvent,
 
+	// ScriptPatches
+	GNatives,
+
 	// FixMissingMusic
 	LoadingBinkIsFinished,
 	UpdateMusicTrack,
@@ -271,28 +280,34 @@ namespace Addresses
 
 		// FixHighFPSProjectileCollisionCheck
 		/* RangeAttackPawnCollisionCheck   */ { 0xD42A50, 0xD43030, 0xCD5A40 },
+		/* RangeAttackOverlapResult        */ { 0xD42C49, 0xD43229, 0xCD5C39 },
 
 		// FixHighFPSPhysX
-		/* PhysSceneSetTiming              */ { 0x9E48E2, 0x9E4F52, 0x9A31D2 },
-		/* PhysSceneSetTimingSkip          */ { 0x9E48F8, 0x9E4F68, 0x9A31E8 },
+		/* TickWorldRBPhys                 */ { 0x9E9700, 0x9E9D90, 0x9A7050 },
+		/* AddRBGravAndDamping             */ { 0x9AC500, 0x9ACB80, 0x96A570 },
 		/* GetUnrealWorldTM                */ { 0x99D270, 0x99D930, 0x95D830 },
 		/* RagdollTransition               */ { 0xCA6A20, 0xCA6FC0, 0xC4BCD1 },
 		/* ApexBoneBufferWrite             */ { 0xC11F90, 0xC12440, 0xBC30B0 },
 		/* ApexClothVertexWrite            */ { 0xC1A700, 0xC1AA70, 0xBCAC70 },
+		/* PhysXParticleSync               */ { 0xB732E0, 0xB734E0, 0xB28E40 },
+		/* PhysXParticleTick               */ { 0xB69220, 0xB69360, 0xB1F6B0 },
+		/* PhysXEmitterStepSize            */ { 0xB656F0, 0xB657B0, 0xB1B2C0 },
 
-		// FixHighFPSWalkingPhysics
-		/* WalkFloorStick                  */ { 0xD1B4E1, 0xD1BB81, 0xCB4191 },
-		/* WalkVelocityRecompute           */ { 0xD1BC44, 0xD1C2E4, 0xCB48F4 },
-		/* WalkVelocityRecomputeSkip       */ { 0xD1BCC5, 0xD1C365, 0xCB4975 },
-		/* WalkFloorAccepted               */ { 0xD1B15D, 0xD1B7FD, 0xCB3E0D },
-		/* WalkFallGate                    */ { 0xD1B7BB, 0xD1BE5B, 0xCB446B },
-		/* WalkFallGateResume              */ { 0xD1B594, 0xD1BC34, 0xCB4244 },
-		/* FallIntegrated                  */ { 0xD3462F, 0xD34C0F, 0xCC994F },
-		/* FallVelRecompute                */ { 0xD34D3F, 0xD3531F, 0xCCA05F },
-		/* FallLandVelGate                 */ { 0xD3574F, 0xD35D2F, 0xCCAA6F },
-		/* FallLandVelTake                 */ { 0xD35758, 0xD35D38, 0xCCAA78 },
-		/* WalkSetBaseGuard                */ { 0xD1B0A4, 0xD1B744, 0xCB3D54 },
-		/* WalkSetBaseSkip                 */ { 0xD1B124, 0xD1B7C4, 0xCB3DD4 },
+		// FixHighFPSMovementsPhysics
+		/* PawnPerformPhysics              */ { 0x84D920, 0x84DC60, 0x81D890 },
+		/* GWorld                          */ { 0x1509864, 0x1509864, 0x14835BC },
+		/* PawnFootIKWalking               */ { 0x848AD4, 0x848E14, 0x8155A4 },
+		/* PawnFootIKBlend                 */ { 0x848E63, 0x8491A3, 0x815933 },
+		/* PawnFootIKEnd                   */ { 0x848FDA, 0x84931A, 0x815AAA },
+		/* PawnFootIKFalling               */ { 0x848EFA, 0x84923A, 0x8159CA },
+		/* PawnFootIKMeshReset             */ { 0x848FA8, 0x8492E8, 0x815A78 },
+		/* PawnTickFootIKDone              */ { 0x84901E, 0x84935E, 0x815AEE },
+		/* TickActorComponents             */ { 0x7BC550, 0x7BD1C0, 0x78C1D0 },
+		/* CrowdAgentPerformPhysics        */ { 0xC32860, 0xC32B80, 0xBE2560 },
+		/* CrowdAgentTickSpecial           */ { 0xC360C0, 0xC36540, 0xBE5D80 },
+
+		// FixHighFPSCamera
+		/* ScriptProcessInternal           */ { 0x4C36B0, 0x4C37E0, 0x4B1820 },
 
 		// Hash-table race condition
 		/* Localize                        */ { 0x4E9E80, 0x4EA250, 0x4D3ED0 },
@@ -441,6 +456,9 @@ namespace Addresses
 		// MainLoop
 		/* EngineTick                      */ { 0xC8F6C0, 0xC8FCD0, 0xC361F0 },
 		/* ProcessEvent                    */ { 0x4C7840, 0x4C78F0, 0x4B5270 },
+
+		// ScriptPatches
+		/* GNatives                        */ { 0x1497D50, 0x1497D50, 0x1413520 },
 
 		// FixMissingMusic
 		/* LoadingBinkIsFinished           */ { 0x991CA5, 0x992315, 0x952C55 },

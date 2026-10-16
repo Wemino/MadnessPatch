@@ -46,7 +46,8 @@ static void Init()
 	ApplyFixHighFPSClothPhysics();
 	ApplyFixHighFPSProjectileCollisionCheck();
 	ApplyFixHighFPSPhysX();
-	ApplyFixHighFPSWalkingPhysics();
+	ApplyFixHighFPSMovementsPhysics();
+	ApplyFixHighFPSCamera();
 	ApplyCrashFixes();
 	ApplyFixMissingMusic();
 	ApplyFixInputBinding();

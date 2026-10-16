@@ -116,7 +116,12 @@
     <ClCompile Include="..\src\Modding\ModFiles.cpp" />
     <ClCompile Include="..\src\Engine\EnginePointers.cpp" />
     <ClCompile Include="..\src\Engine\ResolutionHook.cpp" />
-    <ClCompile Include="..\src\Fixes\PhysicsFixes.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSHairPhysics.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSClothPhysics.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSProjectileCollisionCheck.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSPhysX.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSMovementsPhysics.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSCamera.cpp" />
     <ClCompile Include="..\src\Fixes\CrashFixes.cpp" />
     <ClCompile Include="..\src\Fixes\WindowHandling.cpp" />
     <ClCompile Include="..\src\Fixes\ThreadPoolClamp.cpp" />
@@ -157,6 +162,7 @@
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp" />
     <ClCompile Include="..\src\MainLoop\FixHatterElevator.cpp" />
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp" />
+    <ClCompile Include="..\src\Engine\ScriptPatches.cpp" />
     <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp" />
     <ClCompile Include="..\src\MainLoop\BlackBarGuard.cpp" />
     <ClCompile Include="..\src\MainLoop\MenuMouseCursor.cpp" />

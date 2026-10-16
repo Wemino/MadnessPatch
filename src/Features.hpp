@@ -5,7 +5,14 @@ void ApplyFixHighFPSHairPhysics();
 void ApplyFixHighFPSClothPhysics();
 void ApplyFixHighFPSProjectileCollisionCheck();
 void ApplyFixHighFPSPhysX();
-void ApplyFixHighFPSWalkingPhysics();
+void ApplyFixHighFPSMovementsPhysics();
+void ResolveFixHighFPSMovementsPhysics();
+void ApplyFixHighFPSCamera();
+void ResolveFixHighFPSCamera();
+uint32_t StepClothAtFixedRate(safetyhook::InlineHook& original, void* thisPtr, float delta);
+void InstallPhysXStepping();
+bool BeforeRBPhysTick();
+void HoldRollingPushes(bool stepped, bool step);
 void ApplyCrashFixes();
 void ApplyFixMissingMusic();
 void ApplyFixInputBinding();
@@ -62,6 +69,7 @@ void ApplyResolutionHook();
 void ApplyGetPointerHook();
 void ApplyProcessEventHook();
 void ResolveProcessEventFunctions();
+void ApplyScriptPatches();
 void RefreshDLCWeapon();
 int QueryCalloutPlatform();
 
@@ -75,3 +83,4 @@ namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }
 namespace BlockCameraInMenu { void Tick(); }
 namespace MenuMouseCursor { void Tick(); }
+namespace HighFPSCamera { size_t BeforeEvent(UObject* object, UFunction* fn, void* params); void AfterEvent(size_t mark); }

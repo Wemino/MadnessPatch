@@ -39,7 +39,10 @@ static void OnGetGEnginePtr(safetyhook::Context& ctx)
 static void OnEngineInit(safetyhook::Context& ctx)
 {
 	SDKLoader::Initialize();
+	ApplyScriptPatches();
 	ResolveProcessEventFunctions();
+	ResolveFixHighFPSMovementsPhysics();
+	ResolveFixHighFPSCamera();
 
 	if (UnlockCompleteEditionDLC)
 	{
