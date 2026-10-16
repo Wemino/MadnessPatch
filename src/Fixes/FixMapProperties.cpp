@@ -450,23 +450,24 @@ static void ApplyKillVolume(ULevel* level, const char* touch)
 	kill->MaxTriggerCount = 0;
 }
 
-// ---- Chapter 1 hub Doom Clock ----
+// ---- Chapter 1 hub backdrop ----
 
 constexpr const char* HubLevel = "Chapter1_W2_HUB_01";
+constexpr const char* HubScriptLevel = "Chapter1_W2_HUB_01_S";
 constexpr const char* AssemblyLevel = "Chapter1_W2_ASSEM_03";
 
-static ULevel* VisibleLevel(AWorldInfo* worldInfo, const char* name)
+static ULevelStreaming* FindStreaming(AWorldInfo* worldInfo, const char* name)
 {
 	for (ULevelStreaming* streaming : worldInfo->StreamingLevels)
 	{
-		if (streaming && streaming->bIsVisible && streaming->LoadedLevel && FullNameIs(streaming->PackageName, name))
-			return streaming->LoadedLevel;
+		if (streaming && FullNameIs(streaming->PackageName, name))
+			return streaming;
 	}
 
 	return nullptr;
 }
 
-static void ApplyHubDoomClock(ULevel* level)
+static void ApplyHubBackdrop(ULevel* level)
 {
 	AWorldInfo* worldInfo = nullptr;
 	for (AActor* actor : LevelActors(level))
@@ -481,22 +482,17 @@ static void ApplyHubDoomClock(ULevel* level)
 	if (!worldInfo)
 		return;
 
-	ULevel* hub = VisibleLevel(worldInfo, HubLevel);
-	if (!hub || !VisibleLevel(worldInfo, AssemblyLevel))
+	ULevelStreaming* hub = FindStreaming(worldInfo, HubLevel);
+	ULevelStreaming* hubScript = FindStreaming(worldInfo, HubScriptLevel);
+	ULevelStreaming* assembly = FindStreaming(worldInfo, AssemblyLevel);
+	if (!hub || !hubScript || !assembly)
 		return;
 
-	for (AActor* actor : LevelActors(hub))
-	{
-		if (!actor || !actor->IsA<AStaticMeshActor>())
-			continue;
+	if (!hub->bIsVisible || !assembly->bIsVisible || hubScript->bShouldBeLoaded || hubScript->bIsVisible)
+		return;
 
-		UStaticMeshComponent* comp = static_cast<AStaticMeshActor*>(actor)->StaticMeshComponent;
-		if (!comp || !comp->StaticMesh || comp->HiddenGame || strncmp(BaseName(comp->StaticMesh->Name), "DoomClock", 9) != 0)
-			continue;
-
-		comp->HiddenGame = 1;
-		ForceUpdate(comp, false);
-	}
+	hub->bShouldBeLoaded = 0;
+	hub->bShouldBeVisible = 0;
 }
 
 // ---- Chapter 1 Infernal Train carriages ----
@@ -563,7 +559,7 @@ static int __fastcall AddToWorld_Hook(UWorld* world, int, ULevelStreaming* strea
 	}
 
 	if (FullNameIs(streaming->PackageName, HubLevel) || FullNameIs(streaming->PackageName, AssemblyLevel))
-		ApplyHubDoomClock(level);
+		ApplyHubBackdrop(level);
 
 	return result;
 }
