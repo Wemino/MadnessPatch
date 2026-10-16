@@ -133,6 +133,7 @@
     <ClCompile Include="..\src\Fixes\FixSlowLoading.cpp" />
     <ClCompile Include="..\src\Fixes\FixStuckKeys.cpp" />
     <ClCompile Include="..\src\Fixes\FixFadeToBlack.cpp" />
+    <ClCompile Include="..\src\Fixes\ScriptFixes.cpp" />
     <ClCompile Include="..\src\Fixes\FixMapProperties.cpp" />
     <ClCompile Include="..\src\General\IntroSkip.cpp" />
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />

@@ -59,6 +59,9 @@
     <ClCompile Include="..\src\Fixes\FixFadeToBlack.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\ScriptFixes.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Fixes\FixMapProperties.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>

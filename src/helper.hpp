@@ -469,9 +469,16 @@ namespace ScriptHelper
 		constexpr uint8_t Context = 0x19;
 		constexpr uint8_t VirtualFunction = 0x1B;
 		constexpr uint8_t FloatConst = 0x1E;
+		constexpr uint8_t NameConst = 0x21;
+		constexpr uint8_t ByteConst = 0x24;
+		constexpr uint8_t DynamicCast = 0x2E;
 		constexpr uint8_t PrimitiveCast = 0x38;
 		constexpr uint8_t FloatToIntCast = 0x44;
 		constexpr uint8_t EndOfScript = 0x53;
+		constexpr uint8_t EqualEqual_ObjectObject = 114;
+		constexpr uint8_t Not_PreBool = 129;
+		constexpr uint8_t AndAnd_BoolBool = 130;
+		constexpr uint8_t EqualEqual_ByteByte = 154;
 		constexpr uint8_t AddEqual_IntInt = 161;
 		constexpr uint8_t Multiply_FloatFloat = 171;
 		constexpr uint8_t Divide_FloatFloat = 172;

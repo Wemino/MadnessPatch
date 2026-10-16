@@ -43,6 +43,7 @@ static void OnEngineInit(safetyhook::Context& ctx)
 	ResolveProcessEventFunctions();
 	ResolveFixHighFPSMovementsPhysics();
 	ResolveFixHighFPSCamera();
+	ResolveScriptFixes();
 
 	if (UnlockCompleteEditionDLC)
 	{

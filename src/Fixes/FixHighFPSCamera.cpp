@@ -629,21 +629,23 @@ static int siteCount = 0;
 static SiteState& SiteOf(const Frame* stack)
 {
 	const CallSite site(stack);
-	int oldest = 0;
-	for (int i = 0; i < siteCount; i++)
+	const int count = siteCount < MaxSites ? siteCount : MaxSites;
+	SiteState* oldest = &sites[0];
+	for (int i = 0; i < count; i++)
 	{
 		if (sites[i].site == site)
 			return sites[i];
 
-		if (sites[i].frameIndex < sites[oldest].frameIndex) oldest = i;
+		if (sites[i].frameIndex < oldest->frameIndex) oldest = &sites[i];
 	}
 
-	const int slot = siteCount < MaxSites ? siteCount++ : oldest;
-	sites[slot] = SiteState{};
-	sites[slot].site = site;
-	sites[slot].frameIndex = frame.index - SiteForgetFrames;
-	sites[slot].frame30 = frame.first30;
-	return sites[slot];
+	SiteState& slot = count < MaxSites ? sites[count] : *oldest;
+	siteCount = count < MaxSites ? count + 1 : count;
+	slot = SiteState{};
+	slot.site = site;
+	slot.frameIndex = frame.index - SiteForgetFrames;
+	slot.frame30 = frame.first30;
+	return slot;
 }
 
 static SiteState& TurnSite(const Frame* stack)

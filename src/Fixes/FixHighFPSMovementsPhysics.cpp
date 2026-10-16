@@ -208,6 +208,20 @@ static void PlacePawn(APawn* pawn, const FVector& location, const FRotator& rota
 	RefreshComponents(pawn);
 }
 
+// The last pose simulated ahead, or the simulated one
+static void PlaceAhead(APawn* pawn, const PawnStepState& st)
+{
+	const int last = st.ahead - 1;
+	if (last >= 0 && last < PawnMaxStepsAhead)
+	{
+		PlacePawn(pawn, st.aheadLocations[last], st.aheadRotations[last]);
+	}
+	else
+	{
+		PlacePawn(pawn, st.simLocation, st.simRotation);
+	}
+}
+
 static FVector LerpVector(const FVector& from, const FVector& to, float alpha)
 {
 	if (alpha <= 0.0f) return from;
@@ -538,7 +552,7 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 
 	if (st.accumulator > due)
 	{
-		PlacePawn(pawn, st.ahead ? st.aheadLocations[st.ahead - 1] : st.simLocation, st.ahead ? st.aheadRotations[st.ahead - 1] : st.simRotation);
+		PlaceAhead(pawn, st);
 
 		int steps = 0;
 		while (st.accumulator > due && steps < MAX_TARGET_STEPS)
@@ -552,7 +566,7 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 				st.simLocation = st.aheadLocations[0];
 				st.simRotation = st.aheadRotations[0];
 				st.ahead--;
-				for (int i = 0; i < st.ahead; i++)
+				for (int i = 0; i < st.ahead && i + 1 < PawnMaxStepsAhead; i++)
 				{
 					st.aheadLocations[i] = st.aheadLocations[i + 1];
 					st.aheadRotations[i] = st.aheadRotations[i + 1];
@@ -595,7 +609,7 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 
 	if (stepped && !simulated && modeChanged && st.ahead < PawnMaxStepsAhead && !fullFrame)
 	{
-		PlacePawn(pawn, st.ahead ? st.aheadLocations[st.ahead - 1] : st.simLocation, st.ahead ? st.aheadRotations[st.ahead - 1] : st.simRotation);
+		PlaceAhead(pawn, st);
 		simulated = true;
 		const PawnStepEnd end = RunPawnStep(pawn, TARGET_FRAME_TIME * dilation);
 		if (end == PawnStepEnd::Left)
@@ -605,9 +619,12 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 		else
 		{
 			st.stepVelocity = pawn->Velocity;
-			st.aheadLocations[st.ahead] = pawn->Location;
-			st.aheadRotations[st.ahead] = pawn->Rotation;
-			st.ahead++;
+			if (st.ahead >= 0 && st.ahead < PawnMaxStepsAhead)
+			{
+				st.aheadLocations[st.ahead] = pawn->Location;
+				st.aheadRotations[st.ahead] = pawn->Rotation;
+				st.ahead++;
+			}
 			if (end == PawnStepEnd::Teleported)
 			{
 				st.prevLocation = st.simLocation = pawn->Location;

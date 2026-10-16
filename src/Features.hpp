@@ -28,6 +28,7 @@ void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
 void ApplyFixFadeToBlack();
 void ApplyFixMapProperties();
+void ResolveScriptFixes();
 
 // General
 void ApplyIntroSkip();

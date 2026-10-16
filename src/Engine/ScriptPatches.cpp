@@ -9,7 +9,7 @@ constexpr int32_t ObjectOperandSize = 8;
 constexpr int32_t NameOperandSize = 8;
 constexpr int32_t FloatOperandSize = 4;
 constexpr int MaxExpects = 8;
-constexpr int MaxSites = 32;
+constexpr int MaxSites = 64;
 constexpr int GNativesCount = 0x1000;
 constexpr uint8_t UnusedTokens[] = { 0x5F, 0x5E, 0x5D, 0x5C, 0x5B, 0x5A, 0x50, 0x4F, 0x4E, 0x4D, 0x4C };
 
