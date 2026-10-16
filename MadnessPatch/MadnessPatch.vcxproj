@@ -179,6 +179,7 @@
     <ClInclude Include="..\include\AchievementOverlay.hpp" />
     <ClInclude Include="..\include\Controller.hpp" />
     <ClInclude Include="..\include\CrashHandler.hpp" />
+    <ClInclude Include="..\include\FixIniBindings.hpp" />
     <ClInclude Include="..\include\ini.hpp" />
     <ClInclude Include="..\include\MFortress\PatchEngine.hpp" />
     <ClInclude Include="..\include\MFortress\Patches_EA.hpp" />

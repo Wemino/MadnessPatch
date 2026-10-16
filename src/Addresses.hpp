@@ -169,6 +169,7 @@ enum class Addr
 
 	// FixMapProperties
 	AddToWorld,
+	ActorSetHidden,
 
 	// FixBlurScaling
 	GaussianBlurFilterBuffer,
@@ -425,6 +426,7 @@ namespace Addresses
 
 		// FixMapProperties
 		/* AddToWorld                      */ { 0x98F0D0, 0x98F740, 0x950400 },
+		/* ActorSetHidden                  */ { 0x681AE0, 0x682370, 0x654E90 },
 
 		// FixBlurScaling
 		/* GaussianBlurFilterBuffer        */ { 0xAECCD0, 0xAEC690, 0xAA4E00 },

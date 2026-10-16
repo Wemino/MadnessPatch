@@ -2,6 +2,7 @@
 #include "Features.hpp"
 
 static safetyhook::InlineHook AddToWorld;
+static safetyhook::InlineHook ActorSetHidden;
 
 struct SetAnimParams { FName Sequence; };
 struct PlayAnimParams { uint32_t bLoop; float InRate; float StartTime; };
@@ -25,6 +26,21 @@ static bool NameIs(const FName& name, const char* base, int suffix = -1)
 	return name.GetInstance() == suffix + 1 && strcmp(BaseName(name), base) == 0;
 }
 
+static bool FullNameIs(const FName& name, const char* full)
+{
+	const char* base = BaseName(name);
+	size_t length = strlen(base);
+	if (strncmp(full, base, length) != 0)
+		return false;
+
+	if (name.GetInstance() == 0)
+		return full[length] == '\0';
+
+	char suffix[16];
+	snprintf(suffix, sizeof(suffix), "_%d", name.GetInstance() - 1);
+	return strcmp(full + length, suffix) == 0;
+}
+
 static TArray<AActor*>& LevelActors(ULevel* level)
 {
 	return *reinterpret_cast<TArray<AActor*>*>(reinterpret_cast<uint8_t*>(level) + 0x3C);
@@ -34,6 +50,32 @@ static USequence* LevelMainSequence(ULevel* level)
 {
 	TArray<USequence*>& sequences = *reinterpret_cast<TArray<USequence*>*>(reinterpret_cast<uint8_t*>(level) + 0xA0);
 	return sequences.size() > 0 ? sequences[0] : nullptr;
+}
+
+static USequenceObject* FindSequenceObject(ULevel* level, const char* name)
+{
+	USequence* sequence = LevelMainSequence(level);
+	if (!sequence)
+		return nullptr;
+
+	for (USequenceObject* obj : sequence->SequenceObjects)
+	{
+		if (obj && FullNameIs(obj->Name, name))
+			return obj;
+	}
+
+	return nullptr;
+}
+
+static AActor* FindLevelActor(ULevel* level, const char* name)
+{
+	for (AActor* actor : LevelActors(level))
+	{
+		if (actor && FullNameIs(actor->Name, name))
+			return actor;
+	}
+
+	return nullptr;
 }
 
 static void CallScript(UObject* target, UFunction*& fn, const char* name, void* params)
@@ -286,6 +328,31 @@ static void ApplyTrain(ULevel* level)
 	}
 }
 
+// ---- Chapter 5 cellar door ----
+
+constexpr float CellarDoorMaxGap = 100.0f;
+
+static void ApplyCellarDoor(ULevel* level)
+{
+	AActor* door = FindLevelActor(level, "InterpActor_58");
+	AActor* wall = FindLevelActor(level, "DynamicBlockingVolume_5");
+	if (!door || !wall || !door->IsA<AInterpActor>() || !wall->IsA<ADynamicBlockingVolume>() || wall->Base)
+		return;
+
+	float dx = door->Location.X - wall->Location.X;
+	float dy = door->Location.Y - wall->Location.Y;
+	float dz = door->Location.Z - wall->Location.Z;
+
+	if ((dx * dx + dy * dy + dz * dz) > (CellarDoorMaxGap * CellarDoorMaxGap))
+	{
+		wall->SetCollisionType(ECollisionType::COLLIDE_NoCollision);
+		return;
+	}
+
+	wall->SetHardAttach(true);
+	wall->SetBase(door, FVector(0.0f, 0.0f, 1.0f), nullptr, FName(0));
+}
+
 struct MapFix
 {
 	const char* level;
@@ -294,11 +361,175 @@ struct MapFix
 
 static const MapFix MapFixes[] =
 {
-	{ "Chapter5_W1_Dfort1_DH", ApplyFort   },
-	{ "CC_Rolling",            ApplyRadula },
-	{ "Chapter6_Station_01",   ApplyLamps  },
-	{ "Chapter4_W2_West_09_S", ApplyTrain  },
+	{ "Chapter5_W1_Dfort1_DH",  ApplyFort       },
+	{ "CC_Rolling",             ApplyRadula     },
+	{ "Chapter6_Station_01",    ApplyLamps      },
+	{ "Chapter4_W2_West_09_S",  ApplyTrain      },
+	{ "Chapter5_W1_BoysL_04_S", ApplyCellarDoor },
 };
+
+// ---- Cutscene fades ----
+
+struct PersistFade
+{
+	const char* level;
+	const char* matinee;
+};
+
+static const PersistFade PersistFades[] =
+{
+	{ "Chapter1_W1_Cin_Car",     "SeqAct_Interp_0"  },
+	{ "Chapter3_W1_Pool_02_S",   "SeqAct_Interp_4"  },
+	{ "Chapter4_L1_Cin_411",     "SeqAct_Interp_1"  },
+	{ "Chapter5_L1_Cin_522",     "SeqAct_Interp_2"  },
+	{ "Chapter5_W1_BoysL_07_S",  "SeqAct_Interp_10" },
+	{ "Chapter5_W3_Girls2_02_S", "SeqAct_Interp_0"  },
+	{ "Chapter6_Asylum_01_S",    "SeqAct_Interp_13" },
+	{ "Chapter6_Cin_619",        "SeqAct_Interp_5"  },
+	{ "Chapter6_Cin_6113",       "SeqAct_Interp_5"  },
+};
+
+static void PersistEndingFades(UInterpData* data)
+{
+	for (UInterpGroup* group : data->InterpGroups)
+	{
+		if (!group)
+			continue;
+
+		for (UInterpTrack* track : group->InterpTracks)
+		{
+			if (!track || !track->IsA<UInterpTrackFade>())
+				continue;
+
+			UInterpTrackFade* fade = static_cast<UInterpTrackFade*>(track);
+			TArray<FInterpCurvePointFloat>& points = fade->FloatTrack.Points;
+			if (points.size() > 0 && points[points.size() - 1].OutVal >= 0.99f)
+				fade->bPersistFade = 1;
+		}
+	}
+}
+
+static void ApplyPersistFade(ULevel* level, const char* matinee)
+{
+	USequenceObject* obj = FindSequenceObject(level, matinee);
+	if (!obj || !obj->IsA<USeqAct_Interp>())
+		return;
+
+	for (FSeqVarLink& link : static_cast<USeqAct_Interp*>(obj)->VariableLinks)
+	{
+		for (USequenceVariable* var : link.LinkedVariables)
+		{
+			if (var && var->IsA<UInterpData>())
+				PersistEndingFades(static_cast<UInterpData*>(var));
+		}
+	}
+}
+
+// ---- Enemy kill volumes ----
+
+struct KillVolume
+{
+	const char* level;
+	const char* touch;
+};
+
+static const KillVolume KillVolumes[] =
+{
+	{ "Chapter5_W1_BoysL_01-b_S",     "SeqEvent_Touch_10" },
+	{ "Chapter5_W3_Girls_Ambush_NPC", "SeqEvent_Touch_3"  },
+};
+
+static void ApplyKillVolume(ULevel* level, const char* touch)
+{
+	USequenceObject* obj = FindSequenceObject(level, touch);
+	if (!obj || !obj->IsA<USeqEvent_Touch>())
+		return;
+
+	USeqEvent_Touch* kill = static_cast<USeqEvent_Touch*>(obj);
+	kill->bPlayerOnly = 0;
+	kill->MaxTriggerCount = 0;
+}
+
+// ---- Chapter 1 hub Doom Clock ----
+
+constexpr const char* HubLevel = "Chapter1_W2_HUB_01";
+constexpr const char* AssemblyLevel = "Chapter1_W2_ASSEM_03";
+
+static ULevel* VisibleLevel(AWorldInfo* worldInfo, const char* name)
+{
+	for (ULevelStreaming* streaming : worldInfo->StreamingLevels)
+	{
+		if (streaming && streaming->bIsVisible && streaming->LoadedLevel && FullNameIs(streaming->PackageName, name))
+			return streaming->LoadedLevel;
+	}
+
+	return nullptr;
+}
+
+static void ApplyHubDoomClock(ULevel* level)
+{
+	AWorldInfo* worldInfo = nullptr;
+	for (AActor* actor : LevelActors(level))
+	{
+		if (actor && actor->WorldInfo)
+		{
+			worldInfo = actor->WorldInfo;
+			break;
+		}
+	}
+
+	if (!worldInfo)
+		return;
+
+	ULevel* hub = VisibleLevel(worldInfo, HubLevel);
+	if (!hub || !VisibleLevel(worldInfo, AssemblyLevel))
+		return;
+
+	for (AActor* actor : LevelActors(hub))
+	{
+		if (!actor || !actor->IsA<AStaticMeshActor>())
+			continue;
+
+		UStaticMeshComponent* comp = static_cast<AStaticMeshActor*>(actor)->StaticMeshComponent;
+		if (!comp || !comp->StaticMesh || comp->HiddenGame || strncmp(BaseName(comp->StaticMesh->Name), "DoomClock", 9) != 0)
+			continue;
+
+		comp->HiddenGame = 1;
+		ForceUpdate(comp, false);
+	}
+}
+
+// ---- Chapter 1 Infernal Train carriages ----
+
+constexpr const char* TrainCinematicLevel = "Chapter1_W2_Cin_1102";
+
+static bool IsTrainEngine(AActor* actor)
+{
+	if (!NameIs(actor->Name, "InterpActor", 5))
+		return false;
+
+	// Actor -> PersistentLevel -> TheWorld -> map package
+	UObject* level = actor->Outer;
+	UObject* world = level ? level->Outer : nullptr;
+	UObject* package = world ? world->Outer : nullptr;
+	return package && FullNameIs(package->Name, TrainCinematicLevel);
+}
+
+static int __fastcall ActorSetHidden_Hook(AActor* actor, void*, uint32_t bNewHidden)
+{
+	int result = ActorSetHidden.unsafe_thiscall<int>(actor, bNewHidden);
+
+	if (!IsTrainEngine(actor))
+		return result;
+
+	for (AActor* attached : actor->Attached)
+	{
+		if (attached)
+			ActorSetHidden.unsafe_thiscall<int>(attached, bNewHidden);
+	}
+
+	return result;
+}
 
 static int __fastcall AddToWorld_Hook(UWorld* world, int, ULevelStreaming* streaming, FVector* offset)
 {
@@ -308,14 +539,31 @@ static int __fastcall AddToWorld_Hook(UWorld* world, int, ULevelStreaming* strea
 	if (wasVisible || !streaming->bIsVisible || !streaming->LoadedLevel)
 		return result;
 
+	ULevel* level = streaming->LoadedLevel;
+
 	for (const MapFix& fix : MapFixes)
 	{
-		if (NameIs(streaming->PackageName, fix.level))
+		if (FullNameIs(streaming->PackageName, fix.level))
 		{
-			fix.apply(streaming->LoadedLevel);
+			fix.apply(level);
 			break;
 		}
 	}
+
+	for (const PersistFade& fade : PersistFades)
+	{
+		if (FullNameIs(streaming->PackageName, fade.level))
+			ApplyPersistFade(level, fade.matinee);
+	}
+
+	for (const KillVolume& volume : KillVolumes)
+	{
+		if (FullNameIs(streaming->PackageName, volume.level))
+			ApplyKillVolume(level, volume.touch);
+	}
+
+	if (FullNameIs(streaming->PackageName, HubLevel) || FullNameIs(streaming->PackageName, AssemblyLevel))
+		ApplyHubDoomClock(level);
 
 	return result;
 }
@@ -325,4 +573,5 @@ void ApplyFixMapProperties()
 	if (!FixMapProperties) return;
 
 	AddToWorld = HookHelper::CreateHook((void*)GetAddress(Addr::AddToWorld), &AddToWorld_Hook);
+	ActorSetHidden = HookHelper::CreateHook((void*)GetAddress(Addr::ActorSetHidden), &ActorSetHidden_Hook);
 }

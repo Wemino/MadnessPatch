@@ -315,6 +315,9 @@
     <ClInclude Include="..\include\MFortress\Patches_Steam.hpp">
       <Filter>MFortress</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\FixIniBindings.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\CrashHandler.hpp">
       <Filter>include</Filter>
     </ClInclude>

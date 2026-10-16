@@ -3,6 +3,7 @@
 #include "MFortress/Patches_EA.hpp"
 #include "MFortress/Patches_Steam.hpp"
 #include "CrashHandler.hpp"
+#include "FixIniBindings.hpp"
 
 #include "Features.hpp"
 
@@ -35,6 +36,11 @@ static bool IsUALPresent()
 static void Init()
 {
 	ReadConfig();
+
+	if (FixInputBinding)
+	{
+		FixIniBindings::FixAll();
+	}
 
 	if (EnableCrashHandler)
 	{
@@ -89,6 +95,7 @@ static void Init()
 	ApplyTrilinearFiltering();
 	ApplyDisableBackgroundLevelStreaming();
 	ApplyImprovedBinkVideo();
+	ApplyFixAspectRatio();
 	ApplyForceMSAA();
 	ApplySupersampling();
 	ApplyMenuScripts();

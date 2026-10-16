@@ -103,35 +103,28 @@ namespace FixMissingMusic
 		if (!g_State.loadEndPending)
 			return;
 
-		uint64_t now = GetTickCount64();
-		if (now - g_State.loadEndTick > kLoadGraceMs)
-		{
-			g_State.loadEndPending = false;
-			nextScan = 0;
-			return;
-		}
-
 		AAlicePlayerController* pc = g_State.AlicePlayerController;
 		if (!pc || !pc->Pawn || !pc->WorldInfo)
 			return;
 
 		AWorldInfo* wi = pc->WorldInfo;
-		const char* cue = WantedCueForArea(wi);
-		if (!cue)
-			return;
+		uint64_t now = GetTickCount64();
+		bool done = false;
 
-		if (CueAlreadyPlaying(wi, cue))
+		if (const char* cue = WantedCueForArea(wi))
 		{
-			g_State.loadEndPending = false;
-			nextScan = 0;
-			return;
+			if (CueAlreadyPlaying(wi, cue))
+			{
+				done = true;
+			}
+			else if (now >= nextScan)
+			{
+				nextScan = now + kRescanMs;
+				done = PlayCue(wi, cue);
+			}
 		}
 
-		if (now < nextScan)
-			return;
-
-		nextScan = now + kRescanMs;
-		if (PlayCue(wi, cue))
+		if (done || now - g_State.loadEndTick > kLoadGraceMs)
 		{
 			g_State.loadEndPending = false;
 			nextScan = 0;

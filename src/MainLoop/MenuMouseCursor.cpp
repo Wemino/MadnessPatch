@@ -10,6 +10,7 @@ namespace MenuMouseCursor
 		constexpr BYTE kTriggerDeadzone = 62;
 		constexpr LONG kMouseThreshold = 2;
 		constexpr ULONGLONG kMousePollIntervalMs = 33;
+		constexpr ULONGLONG kReapplyIntervalMs = 250;
 		constexpr ULONGLONG kSelfMoveIgnoreMs = 250;
 
 		struct CachedMovie
@@ -24,6 +25,7 @@ namespace MenuMouseCursor
 		bool s_haveMousePos = false;
 		POINT s_lastMousePos{};
 		ULONGLONG s_nextMousePoll = 0;
+		ULONGLONG s_nextReapply = 0;
 
 		bool s_parked = false;
 		POINT s_parkReturn{};
@@ -239,15 +241,22 @@ namespace MenuMouseCursor
 		const bool moviesLoaded = s_moviesBuiltAt != g_State.gfxMovieLoads;
 		if (moviesLoaded) RefreshMovies();
 
+		ULONGLONG now = GetTickCount64();
+
 		if (s_applied && visible == s_visible)
 		{
-			// New movies start with their cursor shown, only a hidden cursor has to reach them
-			if (moviesLoaded && !visible) PushVisibility(false);
+			// A cursor clip attached later starts shown, in a new movie or in a menu opening inside a loaded one, so only hiding is reapplied
+			if (!visible && (moviesLoaded || now >= s_nextReapply))
+			{
+				s_nextReapply = now + kReapplyIntervalMs;
+				PushVisibility(false);
+			}
 			return;
 		}
 
 		s_visible = visible;
 		s_applied = true;
+		s_nextReapply = now + kReapplyIntervalMs;
 		if (!visible) s_haveMousePos = false;
 		PushVisibility(visible);
 	}
