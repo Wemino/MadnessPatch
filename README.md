@@ -54,6 +54,8 @@ If you want a different size, you can fine-tune it with `FontScalingFactor` in `
 
 Adds an in-game achievement overlay that tracks your progress and shows a notification when one is unlocked, using the same achievements as the Xbox 360 and PlayStation 3 versions. Press **HOME**, or **L3 + D-Pad Up** on a controller, to open the list at any time.
 
+The key can be changed with `AchievementOverlayKey` in `MadnessPatch.ini`, using its decimal [virtual-key code](https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes) (36 = HOME).
+
 <div align="center">
   <table>
     <tr>

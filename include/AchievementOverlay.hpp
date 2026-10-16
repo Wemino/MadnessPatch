@@ -2173,7 +2173,7 @@ namespace AchievementOverlay
             g_visible = false;
         }
 
-        if (GetAsyncKeyState(VK_HOME) & 1)
+        if (GetAsyncKeyState(AchievementOverlayKey) & 1)
         {
             Toggle();
         }
