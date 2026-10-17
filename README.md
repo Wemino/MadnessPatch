@@ -355,5 +355,6 @@ All features can be customized via the `MadnessPatch.ini` file.
 # Credits
 - [SDL3](https://www.libsdl.org/) for improved controller support.
 - [safetyhook](https://github.com/cursey/safetyhook) for hooking.  
+- [AMD FidelityFX Super Resolution 1](https://github.com/GPUOpen-Effects/FidelityFX-FSR) for upscaling the pre-rendered cutscenes.  
 - [mINI](https://github.com/metayeti/mINI) for INI file handling.  
 - [CRASHARKI](https://github.com/CRASHARKI) for the logo.
