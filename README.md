@@ -73,7 +73,7 @@ The key can be changed with `AchievementOverlayKey` in `MadnessPatch.ini`, using
 
 ## High FPS Fixes
 
-Fix multiple physics and gameplay issues that occur at high framerates by preventing hair and dress physics from becoming unstable and ensuring consistent hitbox size for projectiles like the Pepper Grinder.
+Alice's and the enemies' movement, the camera and PhysX objects now behave exactly as they do at 30 FPS at any framerate. Hair and dress physics also stay stable at high framerates, and projectiles like the Pepper Grinder's keep a consistent hitbox.
 
 ## Crashes and Infinite Loading Fix
 
@@ -87,15 +87,15 @@ Disable with `AtomicSaves = 0` in `MadnessPatch.ini`.
 
 ## Input Binding Fix
 
-Fix issues where certain input mappings fail to respond correctly. This particularly affects the umbrella key and other special action bindings that may not register during the input initialization process.
+Fixes issues where certain input mappings fail to respond correctly. This particularly affects the umbrella key and other special action bindings that may not register during the input initialization process.
 
 ## Stuck Keys Fix
 
-Stops Alice from moving on her own when using keyboard and mouse, caused by a sync issue between the game's key state and your actual key presses.
+Stops Alice from moving on her own after a loading screen, a streaming hitch or a movie, when a key released during it stayed pressed in the game.
 
 ## Force High Resolution Textures
 
-The game normally loads blurry textures first and then sharpens them as you get closer, which was meant for consoles but looks distracting on PC. This patch forces the highest texture resolution from the start and improves texture streaming, so you don't see textures popping into clarity as you move around. It also slightly reduces mipmap bias, improving texture sharpness at a distance.
+The game normally loads blurry textures first and then sharpens them as you get closer, which was meant for consoles but looks distracting on PC. This patch forces the highest texture resolution from the start and improves texture streaming, so you don't see textures popping into clarity as you move around.
 
 <div align="center">
   <table>
@@ -114,8 +114,7 @@ The game normally loads blurry textures first and then sharpens them as you get 
 
 ## Disable Background Level Streaming
 
-Disables the engine's background level streaming during gameplay, which can cause stuttering as levels are loaded in the background while playing.
-Will increase loading times.
+Disables the engine's background level streaming during gameplay, which can cause stuttering as levels are loaded in the background while playing. This makes loading screens longer, so they are also sped up to bring them back to about their original length.
 
 Disable with `DisableBackgroundLevelStreaming = 0` in `MadnessPatch.ini`.
 
@@ -125,7 +124,7 @@ Area music is triggered by in-game scripts, so loading a checkpoint or missing a
 
 ## Hatter Elevator Fix
 
-Fixes the Chapter 1 softlock where the Hatter elevator's pressure pad stops responding when returning to pick the second section, a broken state the game can then bake into the checkpoint permanently. The room's script is kept re-entrant so it reconfigures on every visit, and saves already affected are repaired when loaded.
+Fixes the Chapter 1 softlock where the Hatter elevator's pressure pad stops responding when returning to pick the second section. Saves already affected are repaired when loaded.
 
 ## Input Improvements
 
@@ -152,33 +151,27 @@ Replaces the keyboard and mouse button prompts with matching controller button i
   </table>
 </div>
 
-> **Note**: While a controller is connected, the mouse cursor is hidden in menus, so you'll need to unplug the controller to use the mouse there.
-
 Disable with `EnableControllerIcons = 0` in `MadnessPatch.ini`.
 
-## Profile Creation Screen
+### Disable Mouse and Controller Acceleration
 
-Adds an option to skip the profile creation and selection screen and go straight to the main menu. Useful for controller-only players, as profile names can't be typed with a controller.
+Stops the game from ramping up the camera speed when you start moving the mouse or the stick, so it responds more consistently.
 
-> **Note**: A save created while this is disabled won't be selectable in the profile screen if it's re-enabled later.
-
-Disable with `ShowProfileCreation = 0` in `MadnessPatch.ini`.
-
-### Disable Mouse Acceleration
-
-Stops the game from ramping up mouse speed when you start moving it.
-
-### Disable Controller Acceleration
-
-Turns off the same acceleration system for controllers. The game speeds up your look input as the stick starts moving, and this option removes that so the stick behaves more consistently.
-
-Disable with `DisableControllerAcceleration = 0` in `MadnessPatch.ini`.
+Controller acceleration can be kept with `DisableControllerAcceleration = 0` in `MadnessPatch.ini`.
 
 ### Disable Mouse Smoothing
 
 Turns off camera smoothing so the view responds instantly to your mouse movements.
 
 Enable with `DisableMouseSmoothing = 1` in `MadnessPatch.ini`.
+
+## Profile Creation Screen
+
+Adds an option to skip the profile creation and selection screen and go straight to the main menu. Useful for controller-only players, as profile names can't be typed with a controller.
+
+> **Note**: A save created while the screen is skipped won't be selectable in it if it's shown again later.
+
+Skip it with `ShowProfileCreation = 0` in `MadnessPatch.ini`.
 
 ## Aspect Ratio Fix
 
@@ -201,32 +194,71 @@ Removes pillarboxing and adjusts the field of view for ultrawide monitors, and a
   </table>
 </div>
 
-## Bink Video Color Space Fix
+## Improved Bink Video
 
-Switched the Bink video color profile from BT.601 to BT.709, which is the standard for HD video, so pre-rendered videos now show correct colors, especially deep reds and warm tones.
+The pre-rendered cutscenes are upscaled with AMD FidelityFX Super Resolution (EASU) instead of a plain bilinear stretch, so they stay sharp above their native resolution, and the banding in dark gradients is smoothed out.
 
 <div align="center">
   <table>
     <tr>
-      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/FixBinkVideoBT709_Off.jpg"></td>
-      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/FixBinkVideoBT709_On.jpg"></td>
+      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/ImprovedBinkVideo_Off.png"></td>
+      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/ImprovedBinkVideo_On.png"></td>
     </tr>
     <tr>
-      <td align="center">Vanilla (BT.601)</td>
-      <td align="center">MadnessPatch (BT.709)</td>
+      <td align="center">Vanilla</td>
+      <td align="center">MadnessPatch</td>
     </tr>
   </table>
 </div>
 
+## MSAA Level
+
+The in-game anti-aliasing option only switches between off and 4x MSAA. `ForceMSAA` sets the level instead, to 2x, 4x, 8x or 16x, or turns it off. If the GPU doesn't support the chosen level, the highest level below it is used.
+
+Set `ForceMSAA` in `MadnessPatch.ini` (0 = off, 2, 4, 8 or 16, -1 = use the in-game option).
+
+## MSAA Fog Fix
+
+With anti-aliasing enabled, fog wasn’t working properly around the edges of characters and objects, making them appear to have a bright outline in foggy areas. A thin bright line also appeared along the top and left edges of the screen. Both issues have been fixed, so fog now looks more natural and covers the entire screen.
+
+`FixMSAAFog = 2` is a higher quality mode that's more demanding on the GPU.
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/FixMSAAFog_Off.png"></td>
+      <td width="50%"><img style="width:100%" src="https://raw.githubusercontent.com/Wemino/MadnessPatch/main/assets/FixMSAAFog_On.png"></td>
+    </tr>
+    <tr>
+      <td align="center">Vanilla (MSAA)</td>
+      <td align="center">MadnessPatch (MSAA)</td>
+    </tr>
+  </table>
+</div>
+
+Disable with `FixMSAAFog = 0` in `MadnessPatch.ini`.
+
+## Supersampling
+
+Renders the 3D scene at a multiple of the screen resolution and averages it back down, which smooths every edge. For example, `SSAAScale = 2.0` at 1080p renders the scene at 4K.
+
+> **Note**: Very demanding on the GPU. MSAA can usually be turned off when using it.
+
+Set `SSAAScale` in `MadnessPatch.ini` (1.0 = disabled, up to 4.0).
+
+## GPU PhysX Performance
+
+With PhysX on the GPU, the GPU can now draw a frame while the game works on the next one instead of the game waiting for it, which raises the framerate where PhysX is busy. The memory PhysX uses on the GPU is also sized to your graphics card.
+
 ## Skip Cutscenes with Enter
 
-Prevent accidental cutscene skips by moving the skip key from Space (jump) to Enter.
+Prevents accidental cutscene skips by moving the skip key from Space (jump) to Enter.
 
 Disable with `SkipCutscenesWithEnter = 0` in `MadnessPatch.ini`.
 
 ## Framerate Limiter
 
-Allow to set a framerate limit easily without editing the game's files.
+Allows setting a framerate limit without editing the game's files.
 
 Set `MaxFPS` in `MadnessPatch.ini` (0 = disable, recommended maximum: 120).
 
@@ -285,9 +317,17 @@ Installs a crash handler that writes a detailed report (`crash_YYYYMMDD.txt`) wh
 
 Disable with `EnableCrashHandler = 0` in `MadnessPatch.ini`.
 
+## Script Fixes
+
+Fixes bugs in the game's own scripts around the lock-on and the ranged weapons, such as the lock-on staying on a dead enemy or the Pepper Grinder getting stuck after Alice is hit while firing.
+
+## Map Fixes
+
+Fixes mistakes left in several levels, such as cutscenes briefly showing the game camera before the next one and leftover scenery at the end of Chapter 1.
+
 ## Additional Fixes
 
-Fixes a couple of small UI issues, such as a leftover HUD cursor sprite from the first weapon-upgrade popup and an incorrect Pinball Cannon button prompt on PC. Full screen fades also reach true black now instead of leaving the scene faintly visible, especially at the beginning of Chapter 2.
+Fixes a few small UI issues, such as a leftover HUD cursor sprite from the first weapon-upgrade popup and an incorrect Pinball Cannon button prompt on PC. Activating Hysteria while locked on to an enemy above 30 FPS no longer makes the camera rotate around Alice, facial animations no longer pile up on characters while they're off screen, and full screen fades reach true black instead of leaving the scene faintly visible, especially at the beginning of Chapter 2.
 
 ## Skip Intro Videos
 
@@ -296,7 +336,7 @@ Bypasses intro videos on game launch:
 - **SkipSHIntro**: Skips the Spicy Horse studio logo video  
 - **SkipUEIntro**: Skips the Unreal Engine logo video
 
-Enable individually in `MadnessPatch.ini`.
+Each can be toggled individually in `MadnessPatch.ini`.
 
 ## Archive Asset Dump
 
