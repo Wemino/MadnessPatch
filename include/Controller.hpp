@@ -92,22 +92,19 @@ namespace ControllerHelper
 
 		switch (type)
 		{
-			case SDL_GAMEPAD_TYPE_XBOX360:
-			case SDL_GAMEPAD_TYPE_XBOXONE:
-				return GamepadStyle::Xbox;
-
 			case SDL_GAMEPAD_TYPE_PS3:
 			case SDL_GAMEPAD_TYPE_PS4:
 			case SDL_GAMEPAD_TYPE_PS5:
 				return GamepadStyle::PlayStation;
 
-			case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO:
-			case SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR:
-				return GamepadStyle::Nintendo;
-
 			default:
-				return GamepadStyle::Xbox;
+				break;
 		}
+
+		if (SDL_GetGamepadButtonLabel(pGamepad, SDL_GAMEPAD_BUTTON_SOUTH) == SDL_GAMEPAD_BUTTON_LABEL_B)
+			return GamepadStyle::Nintendo;
+
+		return GamepadStyle::Xbox;
 	}
 
 	inline void LoadGamepadCapabilities(SDL_Gamepad* pGamepad)
@@ -151,6 +148,19 @@ namespace ControllerHelper
 		}
 
 		LoadGamepadMappings();
+
+		const SDL_EventType unusedEvents[] =
+		{
+			SDL_EVENT_JOYSTICK_AXIS_MOTION, SDL_EVENT_JOYSTICK_BALL_MOTION, SDL_EVENT_JOYSTICK_HAT_MOTION,
+			SDL_EVENT_JOYSTICK_BUTTON_DOWN, SDL_EVENT_JOYSTICK_BUTTON_UP,
+			SDL_EVENT_GAMEPAD_AXIS_MOTION, SDL_EVENT_GAMEPAD_BUTTON_DOWN, SDL_EVENT_GAMEPAD_BUTTON_UP,
+			SDL_EVENT_GAMEPAD_TOUCHPAD_DOWN, SDL_EVENT_GAMEPAD_TOUCHPAD_MOTION, SDL_EVENT_GAMEPAD_TOUCHPAD_UP,
+			SDL_EVENT_GAMEPAD_SENSOR_UPDATE,
+		};
+		for (SDL_EventType eventType : unusedEvents)
+		{
+			SDL_SetEventEnabled(eventType, false);
+		}
 
 		return true;
 	}
