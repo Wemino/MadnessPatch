@@ -78,6 +78,28 @@ static AActor* FindLevelActor(ULevel* level, const char* name)
 	return nullptr;
 }
 
+static AWorldInfo* LevelWorldInfo(ULevel* level)
+{
+	for (AActor* actor : LevelActors(level))
+	{
+		if (actor && actor->WorldInfo)
+			return actor->WorldInfo;
+	}
+
+	return nullptr;
+}
+
+static ULevelStreaming* FindStreaming(AWorldInfo* worldInfo, const char* name)
+{
+	for (ULevelStreaming* streaming : worldInfo->StreamingLevels)
+	{
+		if (streaming && FullNameIs(streaming->PackageName, name))
+			return streaming;
+	}
+
+	return nullptr;
+}
+
 static void CallScript(UObject* target, UFunction*& fn, const char* name, void* params)
 {
 	if (!target) return;
@@ -353,6 +375,59 @@ static void ApplyCellarDoor(ULevel* level)
 	wall->SetBase(door, FVector(0.0f, 0.0f, 1.0f), nullptr, FName(0));
 }
 
+// ---- Chapter 5 Dollmaker goo ----
+
+constexpr const char* GooTemplate = "DoomDripping01_P";
+
+static void ApplyDollmakerGoo(ULevel* level)
+{
+	for (AActor* actor : LevelActors(level))
+	{
+		if (!actor || !actor->IsA<AEmitter>())
+			continue;
+
+		UParticleSystemComponent* comp = static_cast<AEmitter*>(actor)->ParticleSystemComponent;
+		UParticleSystem* system = comp ? comp->Template : nullptr;
+		if (!system || !FullNameIs(system->Name, GooTemplate))
+			continue;
+
+		for (UParticleEmitter* emitter : system->Emitters)
+		{
+			if (!emitter || emitter->LODLevels.size() < 2)
+				continue;
+
+			UParticleLODLevel* top = emitter->LODLevels[0];
+			UParticleLODLevel* distant = emitter->LODLevels[1];
+
+			if (top && distant && !top->bEnabled)
+				distant->bEnabled = 0;
+		}
+
+		return;
+	}
+}
+
+// ---- Chapter 5 Fort Resistance draw range ----
+
+constexpr const char* FortWorldLevel = "Chapter5_W2_World_01";
+constexpr const char* FortGeometryLevel = "Chapter5_W2_Dfort2_DH";
+
+static void ApplyFortRange(ULevel* level)
+{
+	AWorldInfo* worldInfo = LevelWorldInfo(level);
+	if (!worldInfo)
+		return;
+
+	ULevelStreaming* world = FindStreaming(worldInfo, FortWorldLevel);
+	ULevelStreaming* fort = FindStreaming(worldInfo, FortGeometryLevel);
+	if (!world || !fort || world->EditorStreamingVolumes.size() != 1 || fort->EditorStreamingVolumes.size() != 1)
+		return;
+
+	// Volume streaming reads each level's EditorStreamingVolumes every frame, the slot is replaced in place
+	if (ALevelStreamingVolume* volume = world->EditorStreamingVolumes[0])
+		fort->EditorStreamingVolumes[0] = volume;
+}
+
 struct MapFix
 {
 	const char* level;
@@ -366,6 +441,8 @@ static const MapFix MapFixes[] =
 	{ "Chapter6_Station_01",    ApplyLamps      },
 	{ "Chapter4_W2_West_09_S",  ApplyTrain      },
 	{ "Chapter5_W1_BoysL_04_S", ApplyCellarDoor },
+	{ "Chapter5_W3_Cin_5121",   ApplyDollmakerGoo },
+	{ FortWorldLevel,           ApplyFortRange  },
 };
 
 // ---- Cutscene fades ----
@@ -456,29 +533,9 @@ constexpr const char* HubLevel = "Chapter1_W2_HUB_01";
 constexpr const char* HubScriptLevel = "Chapter1_W2_HUB_01_S";
 constexpr const char* AssemblyLevel = "Chapter1_W2_ASSEM_03";
 
-static ULevelStreaming* FindStreaming(AWorldInfo* worldInfo, const char* name)
-{
-	for (ULevelStreaming* streaming : worldInfo->StreamingLevels)
-	{
-		if (streaming && FullNameIs(streaming->PackageName, name))
-			return streaming;
-	}
-
-	return nullptr;
-}
-
 static void ApplyHubBackdrop(ULevel* level)
 {
-	AWorldInfo* worldInfo = nullptr;
-	for (AActor* actor : LevelActors(level))
-	{
-		if (actor && actor->WorldInfo)
-		{
-			worldInfo = actor->WorldInfo;
-			break;
-		}
-	}
-
+	AWorldInfo* worldInfo = LevelWorldInfo(level);
 	if (!worldInfo)
 		return;
 
