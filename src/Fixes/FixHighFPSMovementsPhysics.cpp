@@ -62,6 +62,7 @@ struct PawnStepState
 	bool gamePawn = false; // has a special move
 	bool valid = false;
 	float simulatedAt = -1.0f; // the game time of the last frame that ran its physics
+	float teleportedAt = -1.0f; // the game time of the last frame whose foot IK found the pawn teleported
 };
 
 static std::unordered_map<APawn*, PawnStepState> pawnStates;
@@ -405,12 +406,27 @@ static void OnPawnFootIKWalking(safetyhook::Context& ctx)
 {
 	APawn* pawn = reinterpret_cast<APawn*>(ctx.esi);
 	const PawnFramePlan plan = PlanFootIK(pawn, ctx);
-	if (plan.step == PawnFrameStep::Waits)
+
+	bool teleportFrames = false;
+	AWorldInfo* world = pawn->WorldInfo;
+	auto it = pawnStates.find(pawn);
+	if (world && it != pawnStates.end() && it->second.valid)
+	{
+		PawnStepState& st = it->second;
+		const bool teleported = FVector::DistSquared(pawn->Location, st.shownLocation) > PawnTeleportDistance * PawnTeleportDistance;
+		teleportFrames = teleported || st.teleportedAt == st.lastTime;
+		if (teleported)
+		{
+			st.teleportedAt = world->TimeSeconds;
+		}
+	}
+
+	if (plan.step == PawnFrameStep::Waits && !teleportFrames)
 	{
 		const bool noFootOnFloor = *reinterpret_cast<const int32_t*>(ctx.ebp - PawnTick_NoFootOnFloor) != 0;
 		ctx.eip = noFootOnFloor ? PawnFootIKEnd : PawnFootIKBlend;
 	}
-	else if (plan.step == PawnFrameStep::Step && !footIKTickTime.frame)
+	else if ((plan.step == PawnFrameStep::Step || plan.step == PawnFrameStep::Waits) && !footIKTickTime.frame)
 	{
 		float& deltaSeconds = *reinterpret_cast<float*>(ctx.ebx + PawnTick_DeltaSeconds);
 		footIKTickTime = { ctx.ebx, deltaSeconds };
