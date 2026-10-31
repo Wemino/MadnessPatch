@@ -120,6 +120,13 @@ inline void ReadConfig()
 
 	// General
 	AchievementSupport = IniHelper::ReadInteger("General", "AchievementSupport", 1) == 1;
+
+	if (AchievementSupport)
+	{
+		std::error_code ec;
+		AchievementSupport = std::filesystem::is_directory(std::filesystem::path(SystemHelper::GetModulePath()) / "Achievements", ec);
+	}
+
 	AchievementOverlayKey = IniHelper::ReadInteger("General", "AchievementOverlayKey", VK_HOME);
 	UnlockCompleteEditionDLC = IniHelper::ReadInteger("General", "UnlockCompleteEditionDLC", 1) == 1;
 	ShowProfileCreation = IniHelper::ReadInteger("General", "ShowProfileCreation", 1) == 1;
