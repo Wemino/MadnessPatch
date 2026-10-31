@@ -171,6 +171,10 @@ enum class Addr
 	AddToWorld,
 	ActorSetHidden,
 
+	// FixHatterElevator
+	SequenceBeginPlay,
+	CheckpointLoadData,
+
 	// FixBlurScaling
 	GaussianBlurFilterBuffer,
 
@@ -427,6 +431,10 @@ namespace Addresses
 		// FixMapProperties
 		/* AddToWorld                      */ { 0x98F0D0, 0x98F740, 0x950400 },
 		/* ActorSetHidden                  */ { 0x681AE0, 0x682370, 0x654E90 },
+
+		// FixHatterElevator
+		/* SequenceBeginPlay               */ { 0x8C8FC0, 0x8C91E0, 0x890050 },
+		/* CheckpointLoadData              */ { 0xD74EA0, 0xD752D0, 0xD01FB0 },
 
 		// FixBlurScaling
 		/* GaussianBlurFilterBuffer        */ { 0xAECCD0, 0xAEC690, 0xAA4E00 },

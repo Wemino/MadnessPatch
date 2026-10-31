@@ -69,6 +69,7 @@ static void Init()
 	ApplyFixStuckKeys();
 	ApplyFixFadeToBlack();
 	ApplyFixMapProperties();
+	ApplyFixHatterElevator();
 
 	// General
 	ApplyIntroSkip();

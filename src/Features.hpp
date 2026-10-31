@@ -28,6 +28,7 @@ void ApplyFixSlowLoading();
 void ApplyFixStuckKeys();
 void ApplyFixFadeToBlack();
 void ApplyFixMapProperties();
+void ApplyFixHatterElevator();
 void ResolveScriptFixes();
 
 // General
@@ -79,7 +80,6 @@ void ApplyMainLoopHooks();
 
 namespace HysteriaLockOnGuard { void Tick(); }
 namespace FixMissingMusic { void Tick(); }
-namespace FixHatterElevator { void Tick(); }
 namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }
 namespace BlockCameraInMenu { void Tick(); }

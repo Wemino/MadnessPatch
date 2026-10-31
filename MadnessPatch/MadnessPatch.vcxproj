@@ -135,6 +135,7 @@
     <ClCompile Include="..\src\Fixes\FixFadeToBlack.cpp" />
     <ClCompile Include="..\src\Fixes\ScriptFixes.cpp" />
     <ClCompile Include="..\src\Fixes\FixMapProperties.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHatterElevator.cpp" />
     <ClCompile Include="..\src\General\IntroSkip.cpp" />
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />
     <ClCompile Include="..\src\General\AchievementSupport.cpp" />
@@ -161,7 +162,6 @@
     <ClCompile Include="..\src\MainLoop\MainLoop.cpp" />
     <ClCompile Include="..\src\MainLoop\HysteriaLockOnGuard.cpp" />
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp" />
-    <ClCompile Include="..\src\MainLoop\FixHatterElevator.cpp" />
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp" />
     <ClCompile Include="..\src\Engine\ScriptPatches.cpp" />
     <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp" />

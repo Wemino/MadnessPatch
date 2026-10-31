@@ -10,7 +10,6 @@ static void* __fastcall Loop_Hook(int thisp, int)
 
 	if (HysteriaLockOnGuardEnabled) HysteriaLockOnGuard::Tick();
 	if (FixMissingMusicEnabled) FixMissingMusic::Tick();
-	if (FixHatterElevatorEnabled) FixHatterElevator::Tick();
 	if (UnlockCompleteEditionDLC) RefreshDLCWeapon();
 	InputResponsiveness::Tick();
 	if (FixAspectRatio) BlackBarGuard::Tick();
