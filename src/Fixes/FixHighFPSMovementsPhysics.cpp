@@ -11,6 +11,7 @@ static safetyhook::InlineHook PawnPerformPhysics{};
 static safetyhook::InlineHook TickActorComponents{};
 static safetyhook::MidHook PawnFootIKWalkingHook{};
 static safetyhook::MidHook PawnFootIKFallingHook{};
+static safetyhook::MidHook PawnFootIKBlendRateHook{};
 static uintptr_t PawnFootIKBlend = 0; // APawn::Tick: the mesh height blended to the feet
 static uintptr_t PawnFootIKEnd = 0; // the end of the foot IK (its per-frame reset)
 static uintptr_t PawnFootIKMeshReset = 0; // the mesh height put back, with no feet to follow
@@ -29,6 +30,7 @@ constexpr size_t Actor_ForceUpdateComponentsSlot = 0x138 / sizeof(void*);
 constexpr uintptr_t PawnTick_DeltaSeconds = 0x8; // [ebx+8]
 constexpr uintptr_t PawnTick_TickType = 0xC; // [ebx+0Ch]
 constexpr uintptr_t PawnTick_NoFootOnFloor = 0x1C; // [ebp-1Ch]: no foot found the floor
+constexpr uintptr_t PawnTick_BlendRate = 0x10; // [ebp-10h]: the share of the way to the feet the mesh moves in a frame
 constexpr int32_t LevelTick_ViewportsOnly = 1; // paused: the actors tick without their physics
 
 struct PawnModes
@@ -62,7 +64,16 @@ struct PawnStepState
 	bool gamePawn = false; // has a special move
 	bool valid = false;
 	float simulatedAt = -1.0f; // the game time of the last frame that ran its physics
-	float teleportedAt = -1.0f; // the game time of the last frame whose foot IK found the pawn teleported
+	float ranAt = -1.0f; // the game time of the last frame its performPhysics went through the steps
+	float lookedAt = -1.0f; // the game time of the last frame that looked at it
+};
+
+// What a frame does with a pawn's steps, as the first of its foot IK, its physics or its input to ask it finds out
+struct PawnFramePlan
+{
+	bool simulates = false; // its physics runs in this frame
+	bool fullFrame = false; // a frame of about 1/30s, run with its own time
+	float stepTime = 0.0f; // the game time of a step, when it isn't one
 };
 
 static std::unordered_map<APawn*, PawnStepState> pawnStates;
@@ -318,61 +329,133 @@ static bool PawnStartsOver(const PawnStepState& st, APawn* pawn, AWorldInfo* wor
 		|| now - st.lastTime > tickGap + TARGET_FRAME_TIME * world->TimeDilation + 0.001f;
 }
 
-enum class PawnFrameStep
+// Its steps start from where it is, with one due
+static void StartPawnOver(PawnStepState& st, APawn* pawn, float now)
 {
-	None, // not stepped
-	Waits,
-	Step, // a step of a 30fps frame's time
-	Frame // a frame of about 1/30s, run with its own time
-};
+	st.objectIndex = pawn->ObjectInternalInteger;
+	st.creationTime = pawn->CreationTime;
+	st.lastTime = now;
+	st.simLocation = st.prevLocation = st.shownLocation = pawn->Location;
+	st.simRotation = st.prevRotation = st.shownRotation = pawn->Rotation;
+	st.accumulator = TARGET_FRAME_TIME;
+	st.lastStepTime = TARGET_FRAME_TIME;
+	st.ahead = 0;
+	st.stepVelocity = pawn->Velocity;
+	st.gamePawn = pawn->IsA(AAliceGamePawn::StaticClass());
+	st.modes = ModesOf(pawn, st.gamePawn);
+	st.valid = true;
+}
 
-struct PawnFramePlan
+static void FollowMoves(PawnStepState& st, APawn* pawn, float now, bool firstLook)
 {
-	PawnFrameStep step = PawnFrameStep::None;
-	float gameTime = 0.0f; // of a Step
-};
+	const FVector moved = pawn->Location - st.shownLocation;
+	if (moved.SizeSquared() > PawnTeleportDistance * PawnTeleportDistance && (firstLook || pawn->bJustTeleported))
+	{
+		StartPawnOver(st, pawn, now);
+		return;
+	}
 
-static PawnFramePlan PlanPawnFrame(APawn* pawn, float DeltaSeconds)
+	if (!moved.IsZero())
+	{
+		st.simLocation += moved;
+		st.prevLocation += moved;
+		for (int i = 0; i < st.ahead; i++)
+		{
+			st.aheadLocations[i] += moved;
+		}
+	}
+
+	if (pawn->Rotation != st.shownRotation)
+	{
+		FRotator delta = SubtractRotators(pawn->Rotation, st.shownRotation);
+		st.simRotation = AddRotators(st.simRotation, delta);
+		st.prevRotation = AddRotators(st.prevRotation, delta);
+		for (int i = 0; i < st.ahead; i++)
+		{
+			st.aheadRotations[i] = AddRotators(st.aheadRotations[i], delta);
+		}
+	}
+
+	st.shownLocation = pawn->Location;
+	st.shownRotation = pawn->Rotation;
+}
+
+static void RestoreScriptVelocity(APawn* pawn, PawnStepState& st)
 {
-	PawnFramePlan plan;
-	if (pawnStepDepth > 0 || !pawn->WorldInfo || !IsSteppedPhysics(pawn->Physics) || pawn->bDeleteMe || !(DeltaSeconds >= 0.0f))
-		return plan;
+	st.velocityShown = false;
+	if (pawn->Velocity == st.stepVelocity)
+	{
+		pawn->Velocity = st.scriptVelocity;
+	}
+}
+
+static bool IsFullFrame(float frameTime) { return fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW; }
+static float StepDueAt(bool fullFrame) { return TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK); }
+
+static PawnStepState* BeginPawnFrame(APawn* pawn, float DeltaSeconds, PawnFramePlan& plan)
+{
+	plan = {};
+	if (pawnStepDepth > 0 || !pawn || !pawn->WorldInfo || !IsSteppedPhysics(pawn->Physics) || pawn->bDeleteMe || !(DeltaSeconds >= 0.0f))
+		return nullptr;
 
 	AWorldInfo* world = pawn->WorldInfo;
 	const float customDilation = pawn->CustomTimeDilation;
-	const float dilation = world->TimeDilation * customDilation;
 	if (!(customDilation > 0.0f && world->TimeDilation * TARGET_FRAME_TIME >= MIN_WORLD_FRAME_TIME))
-		return plan;
+		return nullptr;
 
-	const float frameTime = DeltaSeconds / dilation;
-	const bool fullFrame = fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW;
-	const float due = TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK);
-	const PawnFrameStep stepped = fullFrame ? PawnFrameStep::Frame : PawnFrameStep::Step;
-	plan.gameTime = TARGET_FRAME_TIME * dilation;
+	const float now = world->TimeSeconds;
+	PawnStepState& st = pawnStates[pawn];
 
-	auto it = pawnStates.find(pawn);
-	if (it == pawnStates.end() || PawnStartsOver(it->second, pawn, world, DeltaSeconds))
+	if (st.velocityShown)
 	{
-		plan.step = TARGET_FRAME_TIME + frameTime > due ? stepped : PawnFrameStep::None;
-		return plan;
+		RestoreScriptVelocity(pawn, st);
 	}
 
-	const PawnStepState& st = it->second;
+	const bool firstLook = st.lookedAt != now;
+	st.lookedAt = now;
+	if (PawnStartsOver(st, pawn, world, DeltaSeconds))
+	{
+		StartPawnOver(st, pawn, now);
+	}
+	else
+	{
+		FollowMoves(st, pawn, now, firstLook);
+	}
+
+	const float dilation = world->TimeDilation * customDilation;
+	const float frameTime = DeltaSeconds / dilation;
+	plan.fullFrame = IsFullFrame(frameTime);
+	plan.stepTime = TARGET_FRAME_TIME * dilation;
+
+	if (st.ranAt == now)
+	{
+		plan.simulates = st.simulatedAt == now; // its physics went already
+		return &st;
+	}
+
+	// The steps it owes run its physics once the poses simulated ahead are shown
+	const float due = StepDueAt(plan.fullFrame);
 	float accumulator = st.accumulator + frameTime;
 	int ahead = st.ahead;
-	for (int steps = 0; accumulator > due && steps < MAX_TARGET_STEPS; steps++)
+	for (int steps = 0; accumulator > due && steps < MAX_TARGET_STEPS && !plan.simulates; steps++)
 	{
 		if (!ahead)
 		{
-			plan.step = stepped;
-			return plan;
+			plan.simulates = true;
 		}
-		ahead--;
-		accumulator -= TARGET_FRAME_TIME;
+		else
+		{
+			ahead--;
+			accumulator -= TARGET_FRAME_TIME;
+		}
 	}
 
-	plan.step = ModesOf(pawn, st.gamePawn) != st.modes && ahead < PawnMaxStepsAhead && !fullFrame ? PawnFrameStep::Step : PawnFrameStep::Waits;
-	return plan;
+	if (!plan.simulates)
+	{
+		plan.simulates = ModesOf(pawn, st.gamePawn) != st.modes && ahead < PawnMaxStepsAhead && !plan.fullFrame;
+	}
+
+	return &st;
 }
 
 // Whether the pawn's physics runs in this frame: 1 it does (or did), 0 it waits for its next 1/30s, -1 it isn't stepped
@@ -381,56 +464,61 @@ static int PawnFrameSteps(APawn* pawn)
 	if (!FixHighFPSMovementsPhysics || !pawn || !pawn->WorldInfo)
 		return -1;
 
-	const float now = pawn->WorldInfo->TimeSeconds;
-	auto it = pawnStates.find(pawn);
-	if (it != pawnStates.end() && it->second.valid && it->second.lastTime == now)
-		return it->second.simulatedAt == now ? 1 : 0;
+	PawnFramePlan plan;
+	if (!BeginPawnFrame(pawn, pawn->WorldInfo->DeltaSeconds * pawn->CustomTimeDilation, plan))
+		return -1;
 
-	const PawnFramePlan plan = PlanPawnFrame(pawn, pawn->WorldInfo->DeltaSeconds * pawn->CustomTimeDilation);
-	return plan.step == PawnFrameStep::None ? -1 : plan.step == PawnFrameStep::Waits ? 0 : 1;
+	return plan.simulates ? 1 : 0;
 }
 
-static PawnFramePlan PlanFootIK(APawn* pawn, const safetyhook::Context& ctx)
+static struct { uintptr_t frame = 0; float deltaSeconds = 0.0f; } footIKTickTime; // APawn::Tick's own time, while the foot IK runs with a step's
+
+static float& PawnTickTime(const safetyhook::Context& ctx)
 {
-	const float deltaSeconds = *reinterpret_cast<const float*>(ctx.ebx + PawnTick_DeltaSeconds);
+	return *reinterpret_cast<float*>(ctx.ebx + PawnTick_DeltaSeconds);
+}
+
+// APawn::Tick's own time, even while the foot IK runs with a step's
+static float PawnFrameTime(const safetyhook::Context& ctx)
+{
+	return footIKTickTime.frame && footIKTickTime.frame == ctx.ebx ? footIKTickTime.deltaSeconds : PawnTickTime(ctx);
+}
+
+// Whether the foot IK runs in this frame, as at 30fps, and the game time it runs with
+static bool FootIKRuns(APawn* pawn, const safetyhook::Context& ctx, float& time)
+{
+	time = PawnTickTime(ctx);
 	const int32_t tickType = *reinterpret_cast<const int32_t*>(ctx.ebx + PawnTick_TickType);
 	if (tickType == LevelTick_ViewportsOnly || pawn->TickFrequency != 0.0f || pawn->TickFrequencyAtEndDistance > 0.0f)
-		return {};
+		return true; // as the game runs it: these tick without their physics
 
-	return PlanPawnFrame(pawn, deltaSeconds);
+	PawnFramePlan plan;
+	if (!BeginPawnFrame(pawn, time, plan))
+		return true;
+
+	if (!plan.fullFrame)
+	{
+		time = plan.stepTime;
+	}
+	return plan.simulates;
 }
-
-static struct { uintptr_t frame = 0; float deltaSeconds = 0.0f; } footIKTickTime;
 
 static void OnPawnFootIKWalking(safetyhook::Context& ctx)
 {
 	APawn* pawn = reinterpret_cast<APawn*>(ctx.esi);
-	const PawnFramePlan plan = PlanFootIK(pawn, ctx);
-
-	bool teleportFrames = false;
-	AWorldInfo* world = pawn->WorldInfo;
-	auto it = pawnStates.find(pawn);
-	if (world && it != pawnStates.end() && it->second.valid)
+	float time;
+	if (!FootIKRuns(pawn, ctx, time))
 	{
-		PawnStepState& st = it->second;
-		const bool teleported = FVector::DistSquared(pawn->Location, st.shownLocation) > PawnTeleportDistance * PawnTeleportDistance;
-		teleportFrames = teleported || st.teleportedAt == st.lastTime;
-		if (teleported)
-		{
-			st.teleportedAt = world->TimeSeconds;
-		}
-	}
-
-	if (plan.step == PawnFrameStep::Waits && !teleportFrames)
-	{
+		// as a frame whose checks find nothing new: no floor under it, or the feet followed
 		const bool noFootOnFloor = *reinterpret_cast<const int32_t*>(ctx.ebp - PawnTick_NoFootOnFloor) != 0;
 		ctx.eip = noFootOnFloor ? PawnFootIKEnd : PawnFootIKBlend;
+		return;
 	}
-	else if ((plan.step == PawnFrameStep::Step || plan.step == PawnFrameStep::Waits) && !footIKTickTime.frame)
+
+	if (time != PawnTickTime(ctx) && !footIKTickTime.frame)
 	{
-		float& deltaSeconds = *reinterpret_cast<float*>(ctx.ebx + PawnTick_DeltaSeconds);
-		footIKTickTime = { ctx.ebx, deltaSeconds };
-		deltaSeconds = plan.gameTime;
+		footIKTickTime = { ctx.ebx, PawnTickTime(ctx) };
+		PawnTickTime(ctx) = time;
 	}
 }
 
@@ -438,7 +526,7 @@ static void OnPawnTickFootIKDone(safetyhook::Context& ctx)
 {
 	if (footIKTickTime.frame && footIKTickTime.frame == ctx.ebx)
 	{
-		*reinterpret_cast<float*>(ctx.ebx + PawnTick_DeltaSeconds) = footIKTickTime.deltaSeconds;
+		PawnTickTime(ctx) = footIKTickTime.deltaSeconds;
 		footIKTickTime.frame = 0;
 	}
 }
@@ -449,9 +537,22 @@ static void OnPawnFootIKFalling(safetyhook::Context& ctx)
 	if (!pawn->bJustPushDownByIK || pawn->Physics != EPhysics::PHYS_Falling)
 		return;
 
-	if (PlanFootIK(pawn, ctx).step == PawnFrameStep::Waits)
+	float time;
+	if (!FootIKRuns(pawn, ctx, time))
 	{
-		ctx.eip = PawnFootIKMeshReset;
+		ctx.eip = PawnFootIKMeshReset; // the floor is looked for on the steps
+	}
+}
+
+// The mesh moves FootOffsetBlendingSpeed (a third going up) of the way to the feet each frame: as much per 1/30s at any framerate
+static void OnPawnFootIKBlendRate(safetyhook::Context& ctx)
+{
+	APawn* pawn = reinterpret_cast<APawn*>(ctx.esi);
+	float& rate = *reinterpret_cast<float*>(ctx.ebp - PawnTick_BlendRate);
+	float realTime;
+	if (rate > 0.0f && rate < 1.0f && GetRealFrameTime(pawn, PawnFrameTime(ctx), realTime))
+	{
+		rate = 1.0f - powf(1.0f - rate, realTime / TARGET_FRAME_TIME);
 	}
 }
 
@@ -468,11 +569,9 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 
 	PurgePawnStates(now);
 
-	const float customDilation = pawn->CustomTimeDilation;
-	const float dilation = world->TimeDilation * customDilation;
-	const bool steppable = customDilation > 0.0f && world->TimeDilation * TARGET_FRAME_TIME >= MIN_WORLD_FRAME_TIME;
-
-	if (!IsSteppedPhysics(pawn->Physics) || pawn->bDeleteMe || !(DeltaSeconds >= 0.0f) || !steppable)
+	PawnFramePlan plan;
+	PawnStepState* begun = BeginPawnFrame(pawn, DeltaSeconds, plan);
+	if (!begun)
 	{
 		auto it = pawnStates.find(pawn);
 		if (it != pawnStates.end())
@@ -489,77 +588,17 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 		return;
 	}
 
-	PawnStepState& st = pawnStates[pawn];
-
-	if (st.velocityShown)
-	{
-		st.velocityShown = false;
-		if (pawn->Velocity == st.stepVelocity)
-		{
-			pawn->Velocity = st.scriptVelocity;
-		}
-	}
-
-	if (PawnStartsOver(st, pawn, world, DeltaSeconds))
-	{
-		st.objectIndex = pawn->ObjectInternalInteger;
-		st.creationTime = pawn->CreationTime;
-		st.simLocation = st.prevLocation = st.shownLocation = pawn->Location;
-		st.simRotation = st.prevRotation = st.shownRotation = pawn->Rotation;
-		st.accumulator = TARGET_FRAME_TIME;
-		st.lastStepTime = TARGET_FRAME_TIME;
-		st.ahead = 0;
-		st.stepVelocity = pawn->Velocity;
-		st.gamePawn = pawn->IsA(AAliceGamePawn::StaticClass());
-		st.modes = ModesOf(pawn, st.gamePawn);
-		st.valid = true;
-	}
-	else
-	{
-		FVector moved = pawn->Location - st.shownLocation;
-		if (pawn->bJustTeleported && moved.SizeSquared() > PawnTeleportDistance * PawnTeleportDistance)
-		{
-			st.simLocation = st.prevLocation = pawn->Location;
-			st.simRotation = st.prevRotation = pawn->Rotation;
-			for (int i = 0; i < st.ahead; i++)
-			{
-				st.aheadLocations[i] = pawn->Location;
-				st.aheadRotations[i] = pawn->Rotation;
-			}
-		}
-		else
-		{
-			if (!moved.IsZero())
-			{
-				st.simLocation += moved;
-				st.prevLocation += moved;
-				for (int i = 0; i < st.ahead; i++)
-				{
-					st.aheadLocations[i] += moved;
-				}
-			}
-
-			if (pawn->Rotation != st.shownRotation)
-			{
-				FRotator delta = SubtractRotators(pawn->Rotation, st.shownRotation);
-				st.simRotation = AddRotators(st.simRotation, delta);
-				st.prevRotation = AddRotators(st.prevRotation, delta);
-				for (int i = 0; i < st.ahead; i++)
-				{
-					st.aheadRotations[i] = AddRotators(st.aheadRotations[i], delta);
-				}
-			}
-		}
-	}
-
+	PawnStepState& st = *begun;
 	st.lastTime = now;
+	st.ranAt = now;
 
+	const float dilation = world->TimeDilation * pawn->CustomTimeDilation;
 	const float frameTime = DeltaSeconds / dilation; // real time
 	const bool inStep = st.accumulator == TARGET_FRAME_TIME; // the last frame ended exactly on its simulated pose
 	st.accumulator += frameTime;
 
-	const bool fullFrame = fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW;
-	const float due = TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK);
+	const bool fullFrame = plan.fullFrame;
+	const float due = StepDueAt(fullFrame);
 	const bool modeChanged = ModesOf(pawn, st.gamePawn) != st.modes;
 
 	pawnStepDepth++;
@@ -685,15 +724,6 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 	}
 
 	pawnStepDepth--;
-}
-
-static void RestoreScriptVelocity(APawn* pawn, PawnStepState& st)
-{
-	st.velocityShown = false;
-	if (pawn->Velocity == st.stepVelocity)
-	{
-		pawn->Velocity = st.scriptVelocity;
-	}
 }
 
 static void __cdecl TickActorComponents_Hook(AActor* actor, float DeltaSeconds, int32_t TickType, void* deferredList)
@@ -1771,6 +1801,7 @@ void ApplyFixHighFPSMovementsPhysics()
 	PawnFootIKMeshReset = GetAddress(Addr::PawnFootIKMeshReset);
 	PawnFootIKWalkingHook = safetyhook::create_mid(GetAddress(Addr::PawnFootIKWalking), OnPawnFootIKWalking);
 	PawnFootIKFallingHook = safetyhook::create_mid(GetAddress(Addr::PawnFootIKFalling), OnPawnFootIKFalling);
+	PawnFootIKBlendRateHook = safetyhook::create_mid(GetAddress(Addr::PawnFootIKBlendRate), OnPawnFootIKBlendRate);
 	PawnTickFootIKDoneHook = safetyhook::create_mid(GetAddress(Addr::PawnTickFootIKDone), OnPawnTickFootIKDone);
 	TickActorComponents = HookHelper::CreateHook((void*)GetAddress(Addr::TickActorComponents), &TickActorComponents_Hook);
 
