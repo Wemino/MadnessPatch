@@ -428,6 +428,36 @@ static void ApplyFortRange(ULevel* level)
 		fort->EditorStreamingVolumes[0] = volume;
 }
 
+// ---- Hatter and Queen of Hearts draw range ----
+
+struct CutsceneReach
+{
+	const char* world;
+	const char* level;
+	float distance;
+};
+
+static const CutsceneReach CutsceneReaches[] =
+{
+	{ "Chapter1_W2_RR_world", "Chapter1_W2_Cin_161", 10000.0f }, // the Hatter
+	{ "Chapter4_W3_World_03", "Chapter4_W3_Cin_481", 12000.0f }, // the Queen
+};
+
+static void ApplyCutsceneReach(ULevel* level, const CutsceneReach& reach)
+{
+	AWorldInfo* worldInfo = LevelWorldInfo(level);
+	ULevelStreaming* cutscene = worldInfo ? FindStreaming(worldInfo, reach.level) : nullptr;
+	if (!cutscene || cutscene->EditorStreamingVolumes.size() != 1)
+		return;
+
+	ALevelStreamingVolume* volume = cutscene->EditorStreamingVolumes[0];
+	if (!volume || volume->StreamingLevels.size() != 1)
+		return;
+
+	volume->bTestDistanceToVolume = 1;
+	volume->TestVolumeDistance = reach.distance;
+}
+
 struct MapFix
 {
 	const char* level;
@@ -613,6 +643,12 @@ static int __fastcall AddToWorld_Hook(UWorld* world, int, ULevelStreaming* strea
 	{
 		if (FullNameIs(streaming->PackageName, volume.level))
 			ApplyKillVolume(level, volume.touch);
+	}
+
+	for (const CutsceneReach& reach : CutsceneReaches)
+	{
+		if (FullNameIs(streaming->PackageName, reach.world))
+			ApplyCutsceneReach(level, reach);
 	}
 
 	if (FullNameIs(streaming->PackageName, HubLevel) || FullNameIs(streaming->PackageName, AssemblyLevel))
