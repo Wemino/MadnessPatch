@@ -122,6 +122,7 @@
     <ClCompile Include="..\src\Fixes\FixHighFPSPhysX.cpp" />
     <ClCompile Include="..\src\Fixes\FixHighFPSMovementsPhysics.cpp" />
     <ClCompile Include="..\src\Fixes\FixHighFPSCamera.cpp" />
+    <ClCompile Include="..\src\Fixes\FixHighFPSLoading.cpp" />
     <ClCompile Include="..\src\Fixes\CrashFixes.cpp" />
     <ClCompile Include="..\src\Fixes\WindowHandling.cpp" />
     <ClCompile Include="..\src\Fixes\ThreadPoolClamp.cpp" />

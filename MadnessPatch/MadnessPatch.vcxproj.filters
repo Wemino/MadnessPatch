@@ -26,6 +26,9 @@
     <ClCompile Include="..\src\Fixes\FixHighFPSCamera.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Fixes\FixHighFPSLoading.cpp">
+      <Filter>src\Fixes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Fixes\CrashFixes.cpp">
       <Filter>src\Fixes</Filter>
     </ClCompile>

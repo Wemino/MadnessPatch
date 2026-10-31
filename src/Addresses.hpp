@@ -54,6 +54,12 @@ enum class Addr
 	// FixHighFPSCamera
 	ScriptProcessInternal,
 
+	// FixHighFPSLoading
+	MapLoadedCountStep,
+	MapLoadedCountStepEnd,
+	MapLoadedCount,
+	MapLoadedMaxCount,
+
 	// Hash-table race condition
 	Localize,
 	HashLoop,
@@ -315,6 +321,12 @@ namespace Addresses
 
 		// FixHighFPSCamera
 		/* ScriptProcessInternal           */ { 0x4C36B0, 0x4C37E0, 0x4B1820 },
+
+		// FixHighFPSLoading
+		/* MapLoadedCountStep              */ { 0x991BC4, 0x992234, 0x952B74 },
+		/* MapLoadedCountStepEnd           */ { 0x991BE6, 0x992256, 0x952B96 },
+		/* MapLoadedCount                  */ { 0x150779C, 0x150779C, 0x1481E3C },
+		/* MapLoadedMaxCount               */ { 0x1428EE4, 0x1428EE4, 0x13A5CE8 },
 
 		// Hash-table race condition
 		/* Localize                        */ { 0x4E9E80, 0x4EA250, 0x4D3ED0 },

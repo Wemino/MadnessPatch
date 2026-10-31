@@ -11,6 +11,7 @@ inline bool FixHighFPSProjectileCollisionCheck = false;
 inline bool FixHighFPSPhysX = false;
 inline bool FixHighFPSMovementsPhysics = false;
 inline bool FixHighFPSCamera = false;
+inline bool FixHighFPSLoading = false;
 inline bool CrashFixes = false;
 inline bool FixInputBinding = false;
 inline bool FixWindowHandling = false;
@@ -95,6 +96,7 @@ inline void ReadConfig()
 	FixHighFPSPhysX = IniHelper::ReadInteger("Fixes", "FixHighFPSPhysX", 1) == 1;
 	FixHighFPSMovementsPhysics = IniHelper::ReadInteger("Fixes", "FixHighFPSMovementsPhysics", 1) == 1;
 	FixHighFPSCamera = IniHelper::ReadInteger("Fixes", "FixHighFPSCamera", 1) == 1;
+	FixHighFPSLoading = IniHelper::ReadInteger("Fixes", "FixHighFPSLoading", 1) == 1;
 	CrashFixes = IniHelper::ReadInteger("Fixes", "CrashFixes", 1) == 1;
 	FixInputBinding = IniHelper::ReadInteger("Fixes", "FixInputBinding", 1) == 1;
 	FixWindowHandling = IniHelper::ReadInteger("Fixes", "FixWindowHandling", 1) == 1;

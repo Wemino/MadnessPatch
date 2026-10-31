@@ -9,6 +9,7 @@ void ApplyFixHighFPSMovementsPhysics();
 void ResolveFixHighFPSMovementsPhysics();
 void ApplyFixHighFPSCamera();
 void ResolveFixHighFPSCamera();
+void ApplyFixHighFPSLoading();
 uint32_t StepClothAtFixedRate(safetyhook::InlineHook& original, void* thisPtr, float delta);
 void InstallPhysXStepping();
 bool BeforeRBPhysTick();

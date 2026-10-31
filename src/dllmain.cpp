@@ -54,6 +54,7 @@ static void Init()
 	ApplyFixHighFPSPhysX();
 	ApplyFixHighFPSMovementsPhysics();
 	ApplyFixHighFPSCamera();
+	ApplyFixHighFPSLoading();
 	ApplyCrashFixes();
 	ApplyFixMissingMusic();
 	ApplyFixInputBinding();
