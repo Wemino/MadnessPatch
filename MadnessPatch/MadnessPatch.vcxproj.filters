@@ -131,9 +131,6 @@
     <ClCompile Include="..\src\MainLoop\MainLoop.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\MainLoop\HysteriaLockOnGuard.cpp">
-      <Filter>src\MainLoop</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp">
       <Filter>src\MainLoop</Filter>
     </ClCompile>
@@ -143,8 +140,8 @@
     <ClCompile Include="..\src\Engine\ScriptPatches.cpp">
       <Filter>src\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp">
-      <Filter>src\MainLoop</Filter>
+    <ClCompile Include="..\src\Input\InputResponsiveness.cpp">
+      <Filter>src\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\src\MainLoop\BlackBarGuard.cpp">
       <Filter>src\MainLoop</Filter>

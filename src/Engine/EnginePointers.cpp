@@ -44,6 +44,7 @@ static void OnEngineInit(safetyhook::Context& ctx)
 	ResolveFixHighFPSMovementsPhysics();
 	ResolveFixHighFPSCamera();
 	ResolveScriptFixes();
+	ResolveInputResponsiveness();
 
 	if (UnlockCompleteEditionDLC)
 	{

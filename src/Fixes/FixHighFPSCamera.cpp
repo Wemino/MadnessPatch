@@ -572,14 +572,14 @@ static bool ModifyRotationSpeed(UObject* self, Frame* stack, void*)
 
 	AAlicePawn* pawn = pc->MyAlicePawn;
 	const float accelTime = pawn ? pawn->AliceCameraRevolAccelTime : 0.0f; // what the script reads through None
-	const float accelExponent = pawn ? pawn->AliceCameraRevolAccelExponent : 0.0f;
+	const float accelExponent = pawn && !LookAccelerationDisabled(pc) ? pawn->AliceCameraRevolAccelExponent : 0.0f; // 0 turns at full speed at once
 
 	const bool fromUpdateRotation = stack->PreviousFrame && stack->PreviousFrame->Node == fnUpdateRotation;
 	const float cameraSpeed = pawn ? pawn->CameraRotationSpeed : 1.0f;
 	const float units = fromUpdateRotation ? cameraSpeed : 1.0f;
 	const bool truncated = units > 0.0f && units < MaxTurnUnits;
 
-	const bool wholeMoves = !input->bUsingGamepad && (!input->bEnableMouseSmoothing || smoothMouseFixed); // the game's smoothing spreads them
+	const bool wholeMoves = !input->bUsingGamepad && (!input->bEnableMouseSmoothing || MouseSmoothingDisabled() || smoothMouseFixed); // the game's smoothing spreads them
 	const LookTurn turn = ShapeLook(turnAxis, *aTurn, fresh, wholeMoves, pc->aOldTurn, pc->aTurnElapsedTime, accelTime, accelExponent, truncated ? units : 1.0f);
 	const LookTurn lookUp = ShapeLook(lookUpAxis, *aLookUp, fresh, wholeMoves, pc->aOldLookUp, pc->aLookUpElapsedTime, accelTime, accelExponent, truncated ? units : 1.0f);
 
@@ -1153,6 +1153,88 @@ static const Expect lockOnAim[] =
 
 static const SiteSpec lockOnAimSite = { "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", lockOnAim, std::size(lockOnAim), &LockOnAimBlend, "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", "fDeltaTime" };
 
+// ---- Lock-on yaw ----
+
+static struct
+{
+	AAlicePawn* pawn = nullptr;
+	float time = 0.0f; // game time of the frame it turned in
+	int32_t from = 0;
+	int32_t to = 0;
+} lockOnYaw;
+
+static UProperty* localLockOnDeltaRot = nullptr;
+
+static int32_t LockOnStartYaw(AAlicePawn* pawn, int32_t cameraYaw)
+{
+	AController* controller = pawn->Controller;
+	ACamera* camera = controller && controller->IsA(APlayerController::StaticClass()) ? static_cast<APlayerController*>(controller)->PlayerCamera : nullptr;
+	const float now = pawn->WorldInfo ? pawn->WorldInfo->TimeSeconds : 0.0f;
+	if (!camera || lockOnYaw.pawn != pawn)
+		return cameraYaw;
+
+	if (lockOnYaw.time == now)
+		return lockOnYaw.from; // called again in the same frame
+
+	return camera->CameraCache.TimeStamp == lockOnYaw.time ? lockOnYaw.to : cameraYaw;
+}
+
+static void LockOnTurnFrom(Site&, Frame* stack, void* result)
+{
+	auto* pawn = static_cast<AAlicePawn*>(stack->Object);
+	if (result && pawn)
+	{
+		int32_t& yaw = *reinterpret_cast<int32_t*>(result);
+		yaw = LockOnStartYaw(pawn, yaw);
+	}
+}
+
+static void LockOnTurnTo(Site&, Frame* stack, void* result)
+{
+	auto* pawn = static_cast<AAlicePawn*>(stack->Object);
+	if (!result || !pawn || !localLockOnDeltaRot)
+		return;
+
+	int32_t& yaw = *reinterpret_cast<int32_t*>(result);
+	yaw = LockOnStartYaw(pawn, yaw);
+
+	const float now = pawn->WorldInfo ? pawn->WorldInfo->TimeSeconds : 0.0f;
+	if (lockOnYaw.pawn != pawn || lockOnYaw.time != now)
+	{
+		lockOnYaw.pawn = pawn;
+		lockOnYaw.time = now;
+		lockOnYaw.from = yaw;
+		lockOnYaw.to = yaw + ScriptParm<int32_t>(stack, localLockOnDeltaRot);
+	}
+}
+
+// DeltaAngle = NormalizeRotAxis(BiasAngle.Yaw - AliceCamera.CameraCache.POV.Rotation.Yaw)
+static const Expect lockOnTurnFrom[] =
+{
+	{ 0, Token::StructMember },
+	{ 19, Token::StructMember },
+	{ 38, Token::StructMember },
+	{ 57, Token::Context },
+	{ 58, Token::LocalVariable, Expect::Local, "AliceCamera" },
+	{ -9, Token::LocalVariable, Expect::Local, "BiasAngle" },
+	{ -29, Token::Subtract_IntInt },
+};
+
+// AliceEyeRot.Yaw = AliceCamera.CameraCache.POV.Rotation.Yaw + DeltaRot
+static const Expect lockOnTurnTo[] =
+{
+	{ 0, Token::StructMember },
+	{ 19, Token::StructMember },
+	{ 38, Token::StructMember },
+	{ 57, Token::Context },
+	{ 58, Token::LocalVariable, Expect::Local, "AliceCamera" },
+	{ -1, Token::Add_IntInt },
+	{ -10, Token::OutVariable, Expect::Local, "AliceEyeRot" },
+};
+
+static const SiteSpec lockOnTurnFromSite = { "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", lockOnTurnFrom, std::size(lockOnTurnFrom), &LockOnTurnFrom };
+static const SiteSpec lockOnTurnToSite = { "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", lockOnTurnTo, std::size(lockOnTurnTo), &LockOnTurnTo };
+
 // ---- Mouse smoothing ----
 
 constexpr float SmoothResetTime = 0.25f;
@@ -1480,6 +1562,15 @@ void ResolveFixHighFPSCamera()
 	poiTurnLeft = reinterpret_cast<float*>(FindConstant(fnUpdateRotation, left, sizeof(left)));
 
 	InstallSite(lockOnAimSite);
+
+	UFunction* fnAdjustCombat = UFunction::FindFunction("Function AliceGame.AlicePawn.AdjustCombatCameraRotation");
+	localLockOnDeltaRot = fnAdjustCombat ? FindProperty(fnAdjustCombat, "DeltaRot", false) : nullptr;
+	const bool lockOnTurn = localLockOnDeltaRot && FindPlace(lockOnTurnFromSite.function, lockOnTurnFrom, std::size(lockOnTurnFrom)) && FindPlace(lockOnTurnToSite.function, lockOnTurnTo, std::size(lockOnTurnTo));
+	if (lockOnTurn)
+	{
+		InstallSite(lockOnTurnFromSite);
+		InstallSite(lockOnTurnToSite);
+	}
 
 	fnPlayerTick = UFunction::FindFunction("Function AliceGame.AlicePlayerController.PlayerTick");
 	resolved = fnPlayerTick != nullptr;

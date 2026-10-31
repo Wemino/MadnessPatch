@@ -51,6 +51,9 @@ void ApplyDPIAware();
 
 // Input
 void ApplyUseSDLControllerInput();
+void ResolveInputResponsiveness();
+bool LookAccelerationDisabled(AAlicePlayerController* pc);
+bool MouseSmoothingDisabled();
 
 // Graphics
 void ApplyImprovedTextureStreaming();
@@ -78,9 +81,7 @@ int QueryCalloutPlatform();
 // MainLoop
 void ApplyMainLoopHooks();
 
-namespace HysteriaLockOnGuard { void Tick(); }
 namespace FixMissingMusic { void Tick(); }
-namespace InputResponsiveness { void Tick(); }
 namespace BlackBarGuard { void Tick(); }
 namespace BlockCameraInMenu { void Tick(); }
 namespace MenuMouseCursor { void Tick(); }

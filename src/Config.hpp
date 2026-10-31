@@ -14,7 +14,6 @@ inline bool FixHighFPSCamera = false;
 inline bool CrashFixes = false;
 inline bool FixInputBinding = false;
 inline bool FixWindowHandling = false;
-inline bool HysteriaLockOnGuardEnabled = false;
 inline bool FixStuckKeys = false;
 inline bool FixMissingMusicEnabled = false;
 inline bool FixMapProperties = false;
@@ -99,7 +98,6 @@ inline void ReadConfig()
 	CrashFixes = IniHelper::ReadInteger("Fixes", "CrashFixes", 1) == 1;
 	FixInputBinding = IniHelper::ReadInteger("Fixes", "FixInputBinding", 1) == 1;
 	FixWindowHandling = IniHelper::ReadInteger("Fixes", "FixWindowHandling", 1) == 1;
-	HysteriaLockOnGuardEnabled = IniHelper::ReadInteger("Fixes", "HysteriaLockOnGuard", 1) == 1;
 	FixStuckKeys = IniHelper::ReadInteger("Fixes", "FixStuckKeys", 1) == 1;
 	FixMissingMusicEnabled = IniHelper::ReadInteger("Fixes", "FixMissingMusic", 1) == 1;
 	FixMapProperties = IniHelper::ReadInteger("Fixes", "FixMapProperties", 1) == 1;

@@ -148,6 +148,7 @@
     <ClCompile Include="..\src\Input\SDLControllerInput.cpp" />
     <ClCompile Include="..\src\Input\InputBinding.cpp" />
     <ClCompile Include="..\src\Input\FixKeyCommands.cpp" />
+    <ClCompile Include="..\src\Input\InputResponsiveness.cpp" />
     <ClCompile Include="..\src\Graphics\ImprovedTextureStreaming.cpp" />
     <ClCompile Include="..\src\Graphics\TrilinearFiltering.cpp" />
     <ClCompile Include="..\src\Graphics\DisableBackgroundLevelStreaming.cpp" />
@@ -160,11 +161,9 @@
     <ClCompile Include="..\src\Graphics\OverlapGPUPhysX.cpp" />
     <ClCompile Include="..\src\MainLoop\BlockCameraInMenu.cpp" />
     <ClCompile Include="..\src\MainLoop\MainLoop.cpp" />
-    <ClCompile Include="..\src\MainLoop\HysteriaLockOnGuard.cpp" />
     <ClCompile Include="..\src\MainLoop\FixMissingMusic.cpp" />
     <ClCompile Include="..\src\Engine\ProcessEvent.cpp" />
     <ClCompile Include="..\src\Engine\ScriptPatches.cpp" />
-    <ClCompile Include="..\src\MainLoop\InputResponsiveness.cpp" />
     <ClCompile Include="..\src\MainLoop\BlackBarGuard.cpp" />
     <ClCompile Include="..\src\MainLoop\MenuMouseCursor.cpp" />
     <ClCompile Include="..\src\dllmain.cpp" />
