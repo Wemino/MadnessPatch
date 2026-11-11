@@ -103,7 +103,6 @@ constexpr int MaxSites = 64;
 constexpr uint32_t SiteForgetFrames = 300;
 constexpr float BlendEndTolerance = 1.0e-4f; // of a blend's weight
 constexpr float MaxTurnUnits = 1.0e9f;
-constexpr float UnsetCameraFloat = -998.0f;
 
 struct FramePart
 {
@@ -296,9 +295,6 @@ static UProperty* parmLockOnBlendTime = nullptr;
 static UProperty* parmLockOnOut = nullptr;
 static UProperty* parmFPSDeltaTime = nullptr;
 static UProperty* parmFPSEnter = nullptr;
-static UProperty* parmShrinkDeltaTime = nullptr;
-static UProperty* parmShrinkShrinking = nullptr;
-static UProperty* parmShrinkForceSet = nullptr;
 static UProperty* parmSmoothMouse = nullptr;
 static UProperty* parmSmoothDeltaTime = nullptr;
 static UProperty* parmSmoothCount = nullptr;
@@ -753,7 +749,7 @@ struct BlendTrack
 	bool ends[MaxFrameParts] = {};
 };
 
-enum BlendKind { BlendBackOfPlayer = 1, BlendLockOn, BlendFPSSettings, BlendShrinkSettings, BlendAim };
+enum BlendKind { BlendBackOfPlayer = 1, BlendLockOn, BlendFPSSettings, BlendAim };
 
 constexpr int MaxTracks = 8;
 constexpr float MaxStartWeight = 0.34f;
@@ -1023,59 +1019,6 @@ static bool BlendFPSCameraSettings(UObject* self, Frame* stack, void*)
 	return true;
 }
 
-static BlendTrack shrinkTrack;
-static AAlicePawn* shrinkPawn = nullptr;
-static float shrinkElapsed = 0.0f;
-static bool shrinkShrinking = false;
-
-static bool BlendShrinkCameraDistance(UObject* self, Frame* stack, void*)
-{
-	AAlicePawn* pawn = static_cast<AAlicePawn*>(self);
-	const float fDeltaTime = ScriptParm<float>(stack, parmShrinkDeltaTime);
-	const bool bShrinking = ScriptParm<uint32_t>(stack, parmShrinkShrinking) != 0;
-	const bool bForceSet = ScriptParm<uint32_t>(stack, parmShrinkForceSet) != 0;
-	const float speed = bShrinking ? pawn->ShrinkSpeed : pawn->UnShrinkSpeed;
-	if (bForceSet || !frame.valid || !(fDeltaTime > 0.0f) || !(speed > 0.0f))
-	{
-		shrinkPawn = nullptr;
-		return false;
-	}
-
-	const float from = pawn->CameraElapsedBlendTime;
-	const bool continued = shrinkPawn == pawn && shrinkShrinking == bShrinking && shrinkTrack.frameIndex + 1 == frame.index && shrinkElapsed <= from;
-	const float before = continued ? shrinkElapsed : from;
-	const float elapsed = from + fDeltaTime; // as the script adds it
-	shrinkPawn = pawn;
-	shrinkElapsed = elapsed;
-	shrinkShrinking = bShrinking;
-	if (!continued)
-	{
-		shrinkTrack = BlendTrack{};
-		shrinkTrack.kind = BlendShrinkSettings;
-	}
-
-	pawn->CameraElapsedBlendTime = elapsed;
-	const float weight = std::clamp(elapsed / speed, 0.0f, 1.0f);
-	MoveTrack(shrinkTrack, std::clamp(before / speed, 0.0f, 1.0f), weight, 0.0f, false);
-
-	const FAliceCameraProperties& target = bShrinking ? pawn->ShrinkCamera : pawn->DefaultCamera;
-	const float eyeHeight = bShrinking ? pawn->ShrinkBaseEyeHeight : static_cast<AAlicePawn*>(pawn->Class->ClassDefaultObject)->BaseEyeHeight;
-	pawn->BaseEyeHeight += weight * (eyeHeight - pawn->BaseEyeHeight);
-
-	const bool distance = !bShrinking || pawn->ShrinkCamera.Distance > UnsetCameraFloat;
-	const bool maxDistance = !bShrinking || pawn->ShrinkCamera.MaxDistance > UnsetCameraFloat;
-	const bool minDistance = !bShrinking || pawn->ShrinkCamera.MinDistance > UnsetCameraFloat;
-	for (int i = 0; i < shrinkTrack.partCount; i++)
-	{
-		const float share = shrinkTrack.shares[i];
-		if (distance) pawn->AliceCameraDistance += share * (target.Distance - pawn->AliceCameraDistance);
-		if (maxDistance) pawn->AliceCameraMaxDistance += share * (target.MaxDistance - pawn->AliceCameraMaxDistance);
-		if (minDistance) pawn->AliceCameraMinDistance += share * (target.MinDistance - pawn->AliceCameraMinDistance);
-	}
-
-	return true;
-}
-
 static struct
 {
 	BlendTrack track;
@@ -1152,6 +1095,134 @@ static const Expect lockOnAim[] =
 };
 
 static const SiteSpec lockOnAimSite = { "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", lockOnAim, std::size(lockOnAim), &LockOnAimBlend, "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", "fDeltaTime" };
+
+// ---- Alpha blends ----
+
+struct LerpBlend
+{
+	BlendTrack track;
+	bool started = false;
+	float weight = 0.0f;
+	float alpha = 0.0f;
+};
+
+static void BlendAlpha(LerpBlend& blend, float& alpha, float before, float lagGrowth)
+{
+	const float weight = alpha;
+	if (!frame.valid || !(weight >= 0.0f) || !(weight < 1.0f))
+	{
+		blend.started = false;
+		return;
+	}
+
+	if (blend.started && blend.track.frameIndex == frame.index)
+	{
+		alpha = blend.alpha;
+		return;
+	}
+
+	const bool continued = blend.started && blend.track.frameIndex + 1 == frame.index && blend.weight <= weight;
+	if (!continued)
+	{
+		blend.track = BlendTrack{};
+		blend.track.kind = BlendAim;
+		blend.track.lagging = lagGrowth > 0.0f;
+		blend.track.frameWeight = weight;
+		blend.started = true;
+	}
+
+	MoveTrack(blend.track, continued ? blend.weight : before, weight, lagGrowth, false);
+
+	float left = 1.0f;
+	for (int i = 0; i < blend.track.partCount; i++)
+	{
+		left *= 1.0f - blend.track.shares[i];
+	}
+
+	blend.weight = weight;
+	blend.alpha = frame.own ? weight : 1.0f - left;
+	alpha = blend.alpha;
+}
+
+static LerpBlend zoomInBlend, zoomOutBlend, strafeAimBlend;
+
+// AliceCameraFOV = Target * FOVWeight + (1 - FOVWeight) * AliceCameraFOV, then the time is added
+static void AimZoom(LerpBlend& blend, Site& site, Frame* stack, void* result, float blendTime)
+{
+	float deltaTime;
+	if (!result || !(blendTime > 0.0f) || !SiteDeltaTime(site, stack, deltaTime) || !(deltaTime > 0.0f))
+	{
+		blend.started = false;
+		return;
+	}
+
+	float& alpha = *reinterpret_cast<float*>(result);
+	BlendAlpha(blend, alpha, alpha, deltaTime / blendTime);
+}
+
+static void AimZoomIn(Site& site, Frame* stack, void* result)
+{
+	AAlicePlayerController* pc = g_State.AlicePlayerController;
+	AAlicePawn* pawn = pc ? pc->MyAlicePawn : nullptr;
+	AimZoom(zoomInBlend, site, stack, result, pawn ? pawn->AimingFOVBlendTime : 0.0f);
+}
+
+static void AimZoomOut(Site& site, Frame* stack, void* result)
+{
+	AAlicePlayerController* pc = g_State.AlicePlayerController;
+	AAlicePawn* pawn = pc ? pc->MyAlicePawn : nullptr;
+	AimZoom(zoomOutBlend, site, stack, result, pawn ? pawn->AimingFOVOffBlendTime : 0.0f);
+}
+
+// AliceDir = VLerp(OldLockOnAimTarget, AliceDir, CameraElapsedBlendTime / CameraBlendTime), from the combat to the strafe camera
+static void StrafeAimBlend(Site&, Frame* stack, void* result)
+{
+	AAlicePawn* pawn = static_cast<AAlicePawn*>(stack->Object);
+	if (!result || !pawn || !frame.valid || !(pawn->CameraBlendTime > 0.0f))
+	{
+		strafeAimBlend.started = false;
+		return;
+	}
+
+	float& alpha = *reinterpret_cast<float*>(result);
+	BlendAlpha(strafeAimBlend, alpha, std::max(alpha - frame.deltaTime / pawn->CameraBlendTime, 0.0f), 0.0f);
+}
+
+// FOVWeight = MyAlicePawn.AimingFOVBlendTimeElapsed / MyAlicePawn.AimingFOVBlendTime
+static const Expect aimZoomIn[] =
+{
+	{ 0, Token::Divide_FloatFloat },
+	{ 1, Token::Context },
+	{ 22, Token::InstanceVariable, Expect::Member, "AimingFOVBlendTimeElapsed", &AAlicePawn::StaticClass },
+	{ 31, Token::Context },
+	{ 52, Token::InstanceVariable, Expect::Member, "AimingFOVBlendTime", &AAlicePawn::StaticClass },
+	{ -9, Token::LocalVariable, Expect::Local, "FOVWeight" },
+};
+
+// FOVWeight = MyAlicePawn.AimingFOVOffBlendTimeElapsed / MyAlicePawn.AimingFOVOffBlendTime
+static const Expect aimZoomOut[] =
+{
+	{ 0, Token::Divide_FloatFloat },
+	{ 1, Token::Context },
+	{ 22, Token::InstanceVariable, Expect::Member, "AimingFOVOffBlendTimeElapsed", &AAlicePawn::StaticClass },
+	{ 31, Token::Context },
+	{ 52, Token::InstanceVariable, Expect::Member, "AimingFOVOffBlendTime", &AAlicePawn::StaticClass },
+	{ -9, Token::LocalVariable, Expect::Local, "FOVWeight" },
+};
+
+// AliceDir = VLerp(OldLockOnAimTarget, AliceDir, CameraElapsedBlendTime / CameraBlendTime)
+static const Expect strafeAim[] =
+{
+	{ 0, Token::Divide_FloatFloat },
+	{ 1, Token::InstanceVariable, Expect::Member, "CameraElapsedBlendTime", &AAlicePawn::StaticClass },
+	{ 10, Token::InstanceVariable, Expect::Member, "CameraBlendTime", &AAlicePawn::StaticClass },
+	{ -9, Token::LocalVariable, Expect::Local, "AliceDir" },
+	{ -18, Token::InstanceVariable, Expect::Member, "OldLockOnAimTarget", &AAlicePawn::StaticClass },
+};
+
+static const SiteSpec aimZoomInSite = { "Function AliceGame.AliceCamMod_BackOfPlayer.ImplementAliceFPSCamera", aimZoomIn, std::size(aimZoomIn), &AimZoomIn, "Function AliceGame.AliceCamMod_BackOfPlayer.ImplementAliceFPSCamera" };
+static const SiteSpec aimZoomOutSite = { "Function AliceGame.AliceCamMod_BackOfPlayer.ImplementAliceFPSCamera", aimZoomOut, std::size(aimZoomOut), &AimZoomOut, "Function AliceGame.AliceCamMod_BackOfPlayer.ImplementAliceFPSCamera" };
+static const SiteSpec strafeAimSite = { "Function AliceGame.AlicePawn.AdjustCombatCameraRotation", strafeAim, std::size(strafeAim), &StrafeAimBlend };
 
 // ---- Lock-on yaw ----
 
@@ -1526,15 +1597,6 @@ void ResolveFixHighFPSCamera()
 		OverrideScriptFunction(fnFPSSettings, &BlendFPSCameraSettings);
 	}
 
-	UFunction* fnShrink = UFunction::FindFunction("Function AliceGame.AlicePawn.BlendShrinkCameraDistance");
-	parmShrinkDeltaTime = FindProperty(fnShrink, "fDeltaTime", false);
-	parmShrinkShrinking = FindProperty(fnShrink, "bShrinking", false);
-	parmShrinkForceSet = FindProperty(fnShrink, "bForceSet", false);
-	if (parmShrinkDeltaTime && parmShrinkShrinking && parmShrinkForceSet)
-	{
-		OverrideScriptFunction(fnShrink, &BlendShrinkCameraDistance);
-	}
-
 	parmSmoothMouse = FindProperty(fnSmoothMouse, "aMouse", false);
 	parmSmoothDeltaTime = FindProperty(fnSmoothMouse, "DeltaTime", false);
 	parmSmoothCount = FindProperty(fnSmoothMouse, "SampleCount", false);
@@ -1562,6 +1624,9 @@ void ResolveFixHighFPSCamera()
 	poiTurnLeft = reinterpret_cast<float*>(FindConstant(fnUpdateRotation, left, sizeof(left)));
 
 	InstallSite(lockOnAimSite);
+	InstallSite(aimZoomInSite);
+	InstallSite(aimZoomOutSite);
+	InstallSite(strafeAimSite);
 
 	UFunction* fnAdjustCombat = UFunction::FindFunction("Function AliceGame.AlicePawn.AdjustCombatCameraRotation");
 	localLockOnDeltaRot = fnAdjustCombat ? FindProperty(fnAdjustCombat, "DeltaRot", false) : nullptr;

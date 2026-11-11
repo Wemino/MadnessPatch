@@ -110,7 +110,13 @@ static void __fastcall ProcessEvent_Hook(int This, void*, UFunction* Function, i
 				eased = want;
 			}
 
-			eased += (want - eased) * 0.05f;
+			float rate = 0.05f, realTime;
+			if (uParams && GetRealFrameTime(cam, *reinterpret_cast<const float*>(uParams), realTime))
+			{
+				rate = 1.0f - powf(1.0f - rate, realTime / TARGET_FRAME_TIME);
+			}
+
+			eased += (want - eased) * rate;
 			cam->CameraCache.POV.FOV = eased;
 		}
 	}

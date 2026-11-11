@@ -77,6 +77,7 @@ struct PawnFramePlan
 };
 
 static std::unordered_map<APawn*, PawnStepState> pawnStates;
+static float pawnPurge = 0.0f;
 static std::vector<APawn*> velocityShownPawns;
 static int pawnStepDepth = 0;
 
@@ -296,26 +297,6 @@ static PawnStepEnd RunPawnStep(APawn* pawn, float gameTime)
 	return PawnStepEnd::Simulated;
 }
 
-static void PurgePawnStates(float now)
-{
-	static float lastPurge = 0.0f;
-	if (now >= lastPurge && now - lastPurge < 1.0f)
-		return;
-
-	lastPurge = now;
-	for (auto it = pawnStates.begin(); it != pawnStates.end();)
-	{
-		if (it->second.lastTime > now || now - it->second.lastTime > PawnForgetTime)
-		{
-			it = pawnStates.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
-}
-
 static bool PawnStartsOver(const PawnStepState& st, APawn* pawn, AWorldInfo* world, float DeltaSeconds)
 {
 	const float now = world->TimeSeconds;
@@ -388,9 +369,6 @@ static void RestoreScriptVelocity(APawn* pawn, PawnStepState& st)
 		pawn->Velocity = st.scriptVelocity;
 	}
 }
-
-static bool IsFullFrame(float frameTime) { return fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW; }
-static float StepDueAt(bool fullFrame) { return TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK); }
 
 static PawnStepState* BeginPawnFrame(APawn* pawn, float DeltaSeconds, PawnFramePlan& plan)
 {
@@ -567,7 +545,7 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 	AWorldInfo* world = pawn->WorldInfo;
 	const float now = world->TimeSeconds;
 
-	PurgePawnStates(now);
+	PurgeStates(pawnStates, &PawnStepState::lastTime, pawnPurge, now, PawnForgetTime);
 
 	PawnFramePlan plan;
 	PawnStepState* begun = BeginPawnFrame(pawn, DeltaSeconds, plan);
@@ -594,73 +572,56 @@ static void __fastcall PawnPerformPhysics_Hook(APawn* pawn, void*, float DeltaSe
 
 	const float dilation = world->TimeDilation * pawn->CustomTimeDilation;
 	const float frameTime = DeltaSeconds / dilation; // real time
-	const bool inStep = st.accumulator == TARGET_FRAME_TIME; // the last frame ended exactly on its simulated pose
-	st.accumulator += frameTime;
-
 	const bool fullFrame = plan.fullFrame;
-	const float due = StepDueAt(fullFrame);
 	const bool modeChanged = ModesOf(pawn, st.gamePawn) != st.modes;
 
 	pawnStepDepth++;
 	bool stepped = true;
 	bool simulated = false; // this frame ran the physics
 
-	if (st.accumulator > due)
+	RunTargetSteps(st.accumulator, frameTime, DeltaSeconds, dilation, [&](TargetStep& step)
 	{
-		PlaceAhead(pawn, st);
-
-		int steps = 0;
-		while (st.accumulator > due && steps < MAX_TARGET_STEPS)
+		PlaceAhead(pawn, st); // its first step alone finds it elsewhere
+		if (st.ahead)
 		{
-			TargetStep step;
-			if (st.ahead)
+			step = { TARGET_FRAME_TIME, TARGET_FRAME_TIME * dilation, false };
+			st.prevLocation = st.simLocation;
+			st.prevRotation = st.simRotation;
+			st.simLocation = st.aheadLocations[0];
+			st.simRotation = st.aheadRotations[0];
+			st.ahead--;
+			for (int i = 0; i < st.ahead && i + 1 < PawnMaxStepsAhead; i++)
 			{
-				step = { TARGET_FRAME_TIME, TARGET_FRAME_TIME * dilation, false };
-				st.prevLocation = st.simLocation;
-				st.prevRotation = st.simRotation;
-				st.simLocation = st.aheadLocations[0];
-				st.simRotation = st.aheadRotations[0];
-				st.ahead--;
-				for (int i = 0; i < st.ahead && i + 1 < PawnMaxStepsAhead; i++)
-				{
-					st.aheadLocations[i] = st.aheadLocations[i + 1];
-					st.aheadRotations[i] = st.aheadRotations[i + 1];
-				}
+				st.aheadLocations[i] = st.aheadLocations[i + 1];
+				st.aheadRotations[i] = st.aheadRotations[i + 1];
 			}
-			else
+		}
+		else
+		{
+			st.prevLocation = pawn->Location;
+			st.prevRotation = pawn->Rotation;
+			simulated = true;
+			const PawnStepEnd end = RunPawnStep(pawn, step.gameTime);
+			if (end == PawnStepEnd::Left)
 			{
-				step = NextTargetStep(st.accumulator, fullFrame, inStep, frameTime, DeltaSeconds, dilation);
+				stepped = false;
+				return false;
+			}
+
+			if (end == PawnStepEnd::Teleported)
+			{
 				st.prevLocation = pawn->Location;
 				st.prevRotation = pawn->Rotation;
-				simulated = true;
-				const PawnStepEnd end = RunPawnStep(pawn, step.gameTime);
-				if (end == PawnStepEnd::Left)
-				{
-					stepped = false;
-					break;
-				}
-
-				if (end == PawnStepEnd::Teleported)
-				{
-					st.prevLocation = pawn->Location;
-					st.prevRotation = pawn->Rotation;
-				}
-
-				st.simLocation = pawn->Location;
-				st.simRotation = pawn->Rotation;
-				st.stepVelocity = pawn->Velocity;
 			}
 
-			st.accumulator = step.landed ? TARGET_FRAME_TIME : st.accumulator - step.realTime;
-			st.lastStepTime = step.realTime;
-			steps++;
+			st.simLocation = pawn->Location;
+			st.simRotation = pawn->Rotation;
+			st.stepVelocity = pawn->Velocity;
 		}
 
-		if (stepped && st.accumulator > due)
-		{
-			st.accumulator = fmodf(st.accumulator, TARGET_FRAME_TIME); // a hitch longer than the step budget, the rest is dropped
-		}
-	}
+		st.lastStepTime = step.realTime;
+		return true;
+	});
 
 	if (stepped && !simulated && modeChanged && st.ahead < PawnMaxStepsAhead && !fullFrame)
 	{
@@ -1168,7 +1129,6 @@ void HoldRollingPushes(bool stepped, bool step)
 static safetyhook::InlineHook CrowdAgentPerformPhysics{};
 static safetyhook::InlineHook CrowdAgentTickSpecial{};
 
-constexpr float CrowdStepSlack = 1.0e-5f;
 constexpr float CrowdStateGap = 0.25f; // real time
 constexpr float CrowdForgetTime = 5.0f; // real time
 
@@ -1188,26 +1148,7 @@ struct CrowdState
 };
 
 static std::unordered_map<AActor*, CrowdState> crowdStates;
-
-static void PurgeCrowdStates(float now)
-{
-	static float lastPurge = 0.0f;
-	if (now >= lastPurge && now - lastPurge < 1.0f)
-		return;
-
-	lastPurge = now;
-	for (auto it = crowdStates.begin(); it != crowdStates.end();)
-	{
-		if (now < it->second.lastSeen || now - it->second.lastSeen > CrowdForgetTime)
-		{
-			it = crowdStates.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
-}
+static float crowdPurge = 0.0f;
 
 static void PlaceAgent(AActor* agent, const FVector& location, const FRotator& rotation)
 {
@@ -1253,7 +1194,7 @@ static void __fastcall CrowdAgentPerformPhysics_Hook(AActor* agent, void*, float
 	}
 
 	float now = agent->WorldInfo->RealTimeSeconds;
-	PurgeCrowdStates(now);
+	PurgeStates(crowdStates, &CrowdState::lastSeen, crowdPurge, now, CrowdForgetTime);
 
 	CrowdState& st = crowdStates[agent];
 	st.physicsRan = true;
@@ -1285,39 +1226,30 @@ static void __fastcall CrowdAgentPerformPhysics_Hook(AActor* agent, void*, float
 	}
 
 	st.lastSeen = now;
-	st.accumulator += realTime;
 	st.tick = false;
 	st.tickTime = 0.0f;
 
-	float due = TARGET_FRAME_TIME + CrowdStepSlack;
-	int steps = 0;
-	if (st.accumulator > due)
+	int steps = RunTargetSteps(st.accumulator, realTime, DeltaSeconds, dilation, [&](const TargetStep& step)
 	{
-		PlaceAgent(agent, st.simLocation, st.simRotation);
-		while (st.accumulator > due && steps < MAX_TARGET_STEPS)
+		PlaceAgent(agent, st.simLocation, st.simRotation); // its first step alone finds it elsewhere
+		st.prevLocation = agent->Location;
+		st.prevRotation = agent->Rotation;
+		CrowdAgentPerformPhysics.unsafe_thiscall<void>(agent, step.gameTime);
+		if (agent->bDeleteMe)
 		{
-			st.prevLocation = agent->Location;
-			st.prevRotation = agent->Rotation;
-			CrowdAgentPerformPhysics.unsafe_thiscall<void>(agent, TARGET_FRAME_TIME * dilation);
-			if (agent->bDeleteMe)
-			{
-				st.valid = false;
-				return;
-			}
-
-			st.simLocation = agent->Location;
-			st.simRotation = agent->Rotation;
-			st.accumulator -= TARGET_FRAME_TIME;
-			st.tick = true;
-			st.tickTime += TARGET_FRAME_TIME * dilation;
-			steps++;
+			st.valid = false;
+			return false;
 		}
 
-		if (st.accumulator > due)
-		{
-			st.accumulator = fmodf(st.accumulator, TARGET_FRAME_TIME);
-		}
-	}
+		st.simLocation = agent->Location;
+		st.simRotation = agent->Rotation;
+		st.tick = true;
+		st.tickTime += step.gameTime;
+		return true;
+	});
+
+	if (!st.valid)
+		return;
 
 	st.show = true;
 	if (steps == 0)

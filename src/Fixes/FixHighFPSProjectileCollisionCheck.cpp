@@ -23,27 +23,8 @@ struct ProjectileState
 };
 
 static std::unordered_map<AAliceGameProjectile*, ProjectileState> projectileStates;
+static float projectilePurge = 0.0f;
 static AAliceGameProjectile* pawnsOnlyCheck = nullptr;
-
-static void PurgeProjectileStates(float now)
-{
-	static float lastPurge = 0.0f;
-	if (now >= lastPurge && now - lastPurge < 1.0f)
-		return;
-
-	lastPurge = now;
-	for (auto it = projectileStates.begin(); it != projectileStates.end();)
-	{
-		if (now < it->second.lastSeen || now - it->second.lastSeen > ProjectileForgetTime)
-		{
-			it = projectileStates.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
-}
 
 static void __fastcall RangeAttackPawnCollisionCheck_Hook(AAliceGameProjectile* projectile, void*, float DeltaSeconds)
 {
@@ -60,7 +41,7 @@ static void __fastcall RangeAttackPawnCollisionCheck_Hook(AAliceGameProjectile* 
 	}
 
 	float now = projectile->WorldInfo->TimeSeconds;
-	PurgeProjectileStates(now);
+	PurgeStates(projectileStates, &ProjectileState::lastSeen, projectilePurge, now, ProjectileForgetTime);
 
 	ProjectileState& st = projectileStates[projectile];
 	float tickTime = DeltaSeconds / projectile->CustomTimeDilation;

@@ -21,7 +21,6 @@ constexpr size_t InterpMaxCloth = 256;
 constexpr size_t InterpMaxParticleSystems = 256;
 constexpr uint32_t PhysXParticleMaxId = 0xFFFF;
 constexpr float PhysXScale = 50.0f; // Unreal units per PhysX unit
-constexpr size_t MaxGravityActors = 256;
 
 // ---- Scene ----
 
@@ -32,10 +31,13 @@ struct GravityActor
 	UClass* cls = nullptr;
 };
 
-static std::vector<GravityActor> gravityActors;
+static std::unordered_map<AActor*, GravityActor> gravityActors; // the frame's, for its step
 static bool applyingGravity = false;
 static float sceneAccumulator = TARGET_FRAME_TIME;
 static float sceneLastStepTime = TARGET_FRAME_TIME;
+static float sceneDilation = 1.0f; // the last frame's
+static float sceneSinceStep = 0.0f; // real time of the frames since the last step
+static float sceneDrift = 0.0f; // the game time they ran, over what this frame's dilation makes of them
 static uint32_t particleStep = 0;
 static float particleAlpha = 1.0f;
 
@@ -48,11 +50,11 @@ static bool StillThere(const GravityActor& g)
 static void ApplyGravity()
 {
 	applyingGravity = true;
-	for (const GravityActor& g : gravityActors)
+	for (const auto& [actor, g] : gravityActors)
 	{
 		if (StillThere(g))
 		{
-			AddRBGravAndDamping.unsafe_thiscall<void>(g.actor);
+			AddRBGravAndDamping.unsafe_thiscall<void>(actor);
 		}
 	}
 	applyingGravity = false;
@@ -67,19 +69,7 @@ static void __fastcall AddRBGravAndDamping_Hook(AActor* actor, void*)
 		return;
 	}
 
-	for (const GravityActor& g : gravityActors)
-	{
-		if (g.actor == actor)
-			return;
-	}
-
-	if (gravityActors.size() >= MaxGravityActors)
-	{
-		AddRBGravAndDamping.unsafe_thiscall<void>(actor);
-		return;
-	}
-
-	gravityActors.push_back({ actor, actor->ObjectInternalInteger, actor->Class });
+	gravityActors.try_emplace(actor, GravityActor{ actor, actor->ObjectInternalInteger, actor->Class });
 }
 
 static void __fastcall TickWorldRBPhys_Hook(UWorld* world, void*, float DeltaSeconds)
@@ -116,31 +106,31 @@ static void __fastcall TickWorldRBPhys_Hook(UWorld* world, void*, float DeltaSec
 		g_State.physSceneStepped = true;
 		sceneAccumulator = TARGET_FRAME_TIME;
 		sceneLastStepTime = TARGET_FRAME_TIME;
+		sceneDilation = timeDilation;
+		sceneSinceStep = 0.0f;
+		sceneDrift = 0.0f;
 	}
 
 	float gameTime = 0.0f;
 	int steps = 0;
 	if (DeltaSeconds > 0.0f) // zero while the world only ticks the players
 	{
-		float frameTime = DeltaSeconds / timeDilation;
-		bool inStep = sceneAccumulator == TARGET_FRAME_TIME;
-		sceneAccumulator += frameTime;
+		const float frameTime = DeltaSeconds / timeDilation;
 
-		bool fullFrame = fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW;
-		float due = TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK);
-		while (sceneAccumulator > due && steps < MAX_TARGET_STEPS)
+		if (timeDilation != sceneDilation)
 		{
-			TargetStep step = NextTargetStep(sceneAccumulator, fullFrame, inStep, frameTime, DeltaSeconds, timeDilation);
-			sceneAccumulator = step.landed ? TARGET_FRAME_TIME : sceneAccumulator - step.realTime;
+			sceneDrift += sceneSinceStep * (sceneDilation - timeDilation);
+			sceneDilation = timeDilation;
+		}
+
+		steps = RunTargetSteps(sceneAccumulator, frameTime, DeltaSeconds, timeDilation, [&](const TargetStep& step)
+		{
+			gameTime += step.landed ? step.gameTime : std::max(step.gameTime + sceneDrift, 0.0f);
+			sceneDrift = 0.0f;
 			sceneLastStepTime = step.realTime;
-			gameTime += step.gameTime;
-			steps++;
-		}
-
-		if (sceneAccumulator > due)
-		{
-			sceneAccumulator = fmodf(sceneAccumulator, TARGET_FRAME_TIME);
-		}
+			return true;
+		});
+		sceneSinceStep = steps > 0 ? 0.0f : sceneSinceStep + frameTime;
 	}
 
 	if (steps > 0)

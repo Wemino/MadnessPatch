@@ -117,3 +117,53 @@ inline TargetStep NextTargetStep(float accumulator, bool fullFrame, bool inStep,
 	float stepTime = std::clamp(wanted, TARGET_FRAME_TIME - TARGET_FRAME_WINDOW, TARGET_FRAME_TIME + TARGET_FRAME_WINDOW);
 	return { stepTime, stepTime * dilation, stepTime == wanted };
 }
+
+inline bool IsFullFrame(float frameTime) { return fabsf(frameTime - TARGET_FRAME_TIME) <= TARGET_FRAME_WINDOW; }
+inline float StepDueAt(bool fullFrame) { return TARGET_FRAME_TIME + (fullFrame ? TARGET_FRAME_WINDOW : TARGET_STEP_SLACK); }
+
+template <typename RunStep>
+inline int RunTargetSteps(float& accumulator, float frameTime, float deltaSeconds, float dilation, RunStep runStep)
+{
+	const bool inStep = accumulator == TARGET_FRAME_TIME;
+	accumulator += frameTime;
+
+	const bool fullFrame = IsFullFrame(frameTime);
+	const float due = StepDueAt(fullFrame);
+	int steps = 0;
+	while (accumulator > due && steps < MAX_TARGET_STEPS)
+	{
+		TargetStep step = NextTargetStep(accumulator, fullFrame, inStep, frameTime, deltaSeconds, dilation);
+		if (!runStep(step))
+			return steps;
+
+		accumulator = step.landed ? TARGET_FRAME_TIME : accumulator - step.realTime;
+		steps++;
+	}
+
+	if (accumulator > due)
+	{
+		accumulator = fmodf(accumulator, TARGET_FRAME_TIME); // a hitch longer than the step budget, the rest is dropped
+	}
+
+	return steps;
+}
+
+template <typename Map, typename State>
+inline void PurgeStates(Map& states, float State::* lastSeen, float& lastPurge, float now, float forgetTime)
+{
+	if (now >= lastPurge && now - lastPurge < 1.0f)
+		return;
+
+	lastPurge = now;
+	for (auto it = states.begin(); it != states.end();)
+	{
+		if (now < it->second.*lastSeen || now - it->second.*lastSeen > forgetTime)
+		{
+			it = states.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
