@@ -6,6 +6,8 @@ struct GlobalState
 	bool isInit = false;
 	HMODULE GameModule = NULL;
 
+	bool isUALPresent = false;
+
 	// Display configuration
 	float screenHeight = 0.0f;
 	float screenWidth = 0.0f;

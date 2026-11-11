@@ -46,6 +46,7 @@ inline bool EnableCrashHandler = false;
 inline bool SkipEAIntro = false;
 inline bool SkipSHIntro = false;
 inline bool SkipUEIntro = false;
+inline bool LoadASIPlugins = false;
 
 // Modding
 inline bool DumpArchiveAssets = false;
@@ -138,6 +139,7 @@ inline void ReadConfig()
 	SkipEAIntro = IniHelper::ReadInteger("General", "SkipEAIntro", 0) == 1;
 	SkipSHIntro = IniHelper::ReadInteger("General", "SkipSHIntro", 1) == 1;
 	SkipUEIntro = IniHelper::ReadInteger("General", "SkipUEIntro", 1) == 1;
+	LoadASIPlugins = IniHelper::ReadInteger("General", "LoadASIPlugins", 1) == 1;
 
 	// Modding
 	DumpArchiveAssets = IniHelper::ReadInteger("Modding", "DumpArchiveAssets", 0) == 1;

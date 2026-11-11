@@ -109,6 +109,7 @@ static void Init()
 	ApplyGetPointerHook();
 	ApplyProcessEventHook();
 	ApplyMainLoopHooks();
+	ApplyASILoader();
 }
 
 static HANDLE WINAPI CreateMutexW_Hook(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bInitialOwner, LPCWSTR lpName)
@@ -189,8 +190,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 			// Cache the executable-code span used by the render-dispatch crash fix
 			MemoryHelper::ComputeCodeRange();
 
+			g_State.isUALPresent = IsUALPresent();
+
 			// Skip wrapper initialization when loaded as .asi
-			if (!IsUALPresent())
+			if (!g_State.isUALPresent)
 			{
 				SystemHelper::LoadProxyLibrary();
 			}

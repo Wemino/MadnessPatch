@@ -38,6 +38,7 @@ void ApplyWarnAlice1InstallFolder();
 void ApplyAchievementSupport();
 void UpdateAchievementProgress();
 void ApplyGameLanguage();
+void ApplyASILoader();
 
 // Modding
 void ApplyExportFiles();

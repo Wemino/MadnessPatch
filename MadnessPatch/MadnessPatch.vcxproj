@@ -141,6 +141,7 @@
     <ClCompile Include="..\src\General\WarnAlice1InstallFolder.cpp" />
     <ClCompile Include="..\src\General\AchievementSupport.cpp" />
     <ClCompile Include="..\src\General\GameLanguage.cpp" />
+    <ClCompile Include="..\src\General\ASILoader.cpp" />
     <ClCompile Include="..\src\Display\FontScaling.cpp" />
     <ClCompile Include="..\src\Display\AutoResolution.cpp" />
     <ClCompile Include="..\src\Display\UseWindowed.cpp" />

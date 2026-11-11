@@ -138,11 +138,6 @@ namespace MemoryHelper
 			g_State.CodeHi = hi;
 		}
 	}
-
-	inline bool IsExeCode(uint32_t addr)
-	{
-		return addr >= g_State.CodeLo && addr < g_State.CodeHi;
-	}
 };
 
 namespace HookHelper

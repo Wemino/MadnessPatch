@@ -83,6 +83,9 @@
     <ClCompile Include="..\src\General\GameLanguage.cpp">
       <Filter>src\General</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\General\ASILoader.cpp">
+      <Filter>src\General</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Display\FontScaling.cpp">
       <Filter>src\Display</Filter>
     </ClCompile>
