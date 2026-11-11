@@ -29,6 +29,10 @@ constexpr int SIM_MAX_COLLIDERS = 64;
 constexpr float SIM_CUT_SPEED = 12000.0f;
 constexpr float SIM_CUT_MIN_DIST = 32.0f;
 constexpr float SIM_CUT_TURN_COS = 0.5f;
+constexpr float SIM_POSE_CUT_TURN = 31.4f;
+constexpr float SIM_POSE_CUT_MIN_TURN = 0.14f;
+constexpr float SIM_POSE_CUT_HELD = 0.25f;
+constexpr int SIM_POSE_CUT_FRAMES = 3;
 constexpr uint64_t SIM_INPUT_STALE_MS = 250;
 constexpr uint64_t SIM_SLOT_BUSY_MS = 1000;
 constexpr uint64_t SIM_PURGE_AFTER_MS = 30000;
@@ -46,6 +50,8 @@ struct ParticleSimState
 	bool primed = false;
 	bool hasPrevInputs = false;
 	bool theirs = false;
+	bool posed = false;
+	int cutFrames = 0;
 	float prevMatrix[16] = {};
 	float prevLengthScale = 1.0f;
 	float prevForceWind[6] = {};
@@ -334,6 +340,42 @@ static bool SimInputsCut(const float* prev, const float* live, float delta)
 	}
 
 	return false;
+}
+
+static bool SimInCutscene()
+{
+	AAlicePlayerController* pc = g_State.AlicePlayerController;
+	UAlicePlayerInput* input = pc ? (UAlicePlayerInput*)pc->PlayerInput : nullptr;
+	return pc && !pc->bInMainMenu && (pc->bCinematicMode || (input && input->bDisableInputInCinematic));
+}
+
+static float SimPoseChange(const float* prev, const float* live, float delta)
+{
+	if (SimInputsCut(prev, live, delta))
+		return 1.0f;
+
+	float dx = live[12] - prev[12], dy = live[13] - prev[13], dz = live[14] - prev[14];
+	float reach = SIM_CUT_SPEED * delta;
+	if (reach < SIM_CUT_MIN_DIST) reach = SIM_CUT_MIN_DIST;
+	float turn = SIM_POSE_CUT_TURN * delta;
+	if (turn < SIM_POSE_CUT_MIN_TURN) turn = SIM_POSE_CUT_MIN_TURN;
+
+	float change = sqrtf(dx * dx + dy * dy + dz * dz) / reach;
+
+	for (int r = 0; r < 3; r++)
+	{
+		const float* a = prev + r * 4;
+		const float* b = live + r * 4;
+		float ab = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+		float aa = a[0] * a[0] + a[1] * a[1] + a[2] * a[2];
+		float bb = b[0] * b[0] + b[1] * b[1] + b[2] * b[2];
+
+		float cosine = ab / sqrtf(aa * bb);
+		float turned = cosine < 1.0f ? acosf(cosine) / turn : 0.0f;
+		if (turned > change) change = turned;
+	}
+
+	return change;
 }
 
 static void InterpolateSimMatrix(const float* a, const float* b, float s, float* out)
@@ -689,6 +731,33 @@ static uint32_t StepAtFixedRate(safetyhook::InlineHook& original, const Particle
 		tick = state->accumulator >= TARGET_FRAME_TIME;
 	}
 
+	bool posed = false;
+	if (rootOf && state->primed && state->hasPrevInputs && delta > 0.0f && !state->posed && SimInCutscene())
+	{
+		float change = SimPoseChange(state->prevMatrix, matrix, span);
+		if (change < SIM_POSE_CUT_HELD)
+		{
+			posed = state->cutFrames > 0 && state->cutFrames <= SIM_POSE_CUT_FRAMES;
+			state->cutFrames = 0;
+		}
+		else if (state->cutFrames > 0 || change >= 1.0f)
+		{
+			state->cutFrames++;
+			if (state->cutFrames <= SIM_POSE_CUT_FRAMES) tick = false;
+		}
+		else
+		{
+			state->cutFrames = SIM_POSE_CUT_FRAMES + 1;
+		}
+	}
+	else
+	{
+		state->cutFrames = 0;
+	}
+
+	if (tick) state->posed = false;
+	if (posed) state->posed = tick = true;
+
 	bool rootsChanged = rootOf && UpdateSimRoots(layout, sim, *state);
 	if (state->primed && rootsChanged)
 	{
@@ -702,6 +771,7 @@ static uint32_t StepAtFixedRate(safetyhook::InlineHook& original, const Particle
 		return StepTheirs(original, thisPtr, delta, state, particles, numParticles, stride);
 
 	state->theirs = false;
+	if (posed) state->primed = false;
 
 	for (int c = 0; c < trackedColliders; c++)
 	{
@@ -834,7 +904,7 @@ static uint32_t StepAtFixedRate(safetyhook::InlineHook& original, const Particle
 			std::swap(state->offPrev, state->offCurr);
 		}
 
-		result = original.unsafe_thiscall<uint32_t>(thisPtr, state->primed || !(delta > 0.0f && delta < SIM_STEP_DT) ? SIM_STEP_DT : delta);
+		result = original.unsafe_thiscall<uint32_t>(thisPtr, state->primed || posed || !(delta > 0.0f && delta < SIM_STEP_DT) ? SIM_STEP_DT : delta);
 
 		memcpy(state->tickMatrix, matrix, sizeof(state->tickMatrix));
 		state->hasTickMatrix = true;
@@ -884,8 +954,11 @@ static uint32_t StepAtFixedRate(safetyhook::InlineHook& original, const Particle
 		}
 		else
 		{
+			float late = posed ? state->accumulator - TARGET_FRAME_TIME : 0.0f;
+			if (late > TARGET_FRAME_TIME) late = TARGET_FRAME_TIME;
+
 			memcpy(state->offPrev, state->offCurr, numParticles * 4 * sizeof(float));
-			state->accumulator = 0.0f;
+			state->accumulator = late > 0.0f ? late : 0.0f;
 			state->primed = true;
 		}
 	}
