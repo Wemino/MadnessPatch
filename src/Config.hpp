@@ -23,7 +23,7 @@ inline bool FixFadeToBlack = false;
 inline bool FixWeaponSwitchFadeInEnabled = false;
 inline bool FixMorphTargets = false;
 inline bool FixCharacterLighting = false;
-inline int FixMSAAFog = 0;
+inline bool FixMSAAFog = false;
 inline bool FixSlowLoading = false;
 inline bool FixUpgradeCursorLeak = false;
 inline bool FixTheatricalsTitles = false;
@@ -108,7 +108,7 @@ inline void ReadConfig()
 	FixWeaponSwitchFadeInEnabled = IniHelper::ReadInteger("Fixes", "FixWeaponSwitchFadeIn", 1) == 1;
 	FixMorphTargets = IniHelper::ReadInteger("Fixes", "FixMorphTargets", 1) == 1;
 	FixCharacterLighting = IniHelper::ReadInteger("Fixes", "FixCharacterLighting", 1) == 1;
-	FixMSAAFog = std::clamp(IniHelper::ReadInteger("Fixes", "FixMSAAFog", 1), 0, 2);
+	FixMSAAFog = IniHelper::ReadInteger("Fixes", "FixMSAAFog", 1) != 0;
 	FixSlowLoading = IniHelper::ReadInteger("Fixes", "FixSlowLoading", 1) == 1;
 	FixUpgradeCursorLeak = IniHelper::ReadInteger("Fixes", "FixUpgradeCursorLeak", 1) == 1;
 	FixTheatricalsTitles = IniHelper::ReadInteger("Fixes", "FixTheatricalsTitles", 1) == 1;

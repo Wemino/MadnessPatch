@@ -221,8 +221,6 @@ Set `ForceMSAA` in `MadnessPatch.ini` (0 = off, 2, 4, 8 or 16, -1 = use the in-g
 
 With anti-aliasing enabled, fog wasn’t working properly around the edges of characters and objects, making them appear to have a bright outline in foggy areas. A thin bright line also appeared along the top and left edges of the screen. Both issues have been fixed, so fog now looks more natural and covers the entire screen.
 
-`FixMSAAFog = 2` is a higher quality mode that's more demanding on the GPU.
-
 <div align="center">
   <table>
     <tr>
