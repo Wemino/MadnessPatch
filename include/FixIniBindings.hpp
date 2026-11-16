@@ -136,7 +136,8 @@ namespace FixIniBindings
 
 	static bool FixFile(const std::filesystem::path& filePath)
 	{
-		if (!std::filesystem::exists(filePath))
+		std::error_code ec;
+		if (!std::filesystem::exists(filePath, ec))
 		{
 			return false;
 		}
@@ -198,7 +199,7 @@ namespace FixIniBindings
 		char exePath[MAX_PATH];
 		GetModuleFileNameA(NULL, exePath, MAX_PATH);
 
-		std::filesystem::path configDir = std::filesystem::weakly_canonical(std::filesystem::path(exePath).parent_path() / ".." / ".." / "AliceGame" / "Config");
+		const std::filesystem::path configDir = (std::filesystem::path(exePath).parent_path() / ".." / ".." / "AliceGame" / "Config").lexically_normal();
 
 		FixFile(configDir / "DefaultInput.ini");
 		FixFile(configDir / "DefaultControlLayout.ini");
